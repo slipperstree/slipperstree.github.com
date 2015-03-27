@@ -98,6 +98,99 @@
           
           
             
+              <a class="post-title-link" href="/2015/03/27/pi-ssh-scan/">
+                SSH暴力扫描的防范手段
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2015-03-27
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/27/pi-ssh-scan/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/27/pi-ssh-scan/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>之前买了一块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。基本上长成下面这个样子：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:39</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:42</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:57</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:58</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1255]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">user</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4918 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:59</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:01</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:10</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:14</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:19</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br></pre></td></tr></table></figure></p>
+<p>虽然对自己设置的密码强度有信心，但自己家里被人偷窥的感觉总是不爽。<br>解决方案有很多：</p>
+<ul>
+<li>被动方式。监视系统日志，发现有连续登录失败的尝试就屏蔽来源ip的请求，也就是封IP。</li>
+<li>弱主动方式。修改SSH端口，SSH默认端口是22，改个端口可以档掉一部分扫描，但挡不住连端口也一起扫描的家伙。</li>
+<li>强主动方式。关掉SSH的密码登录验证，只允许使用公密钥方式登录。这种方式最安全，缺点是初始设置稍微麻烦点，且用一个新的客户端总要进行初始设置。</li>
+</ul>
+<p>下面一个一个试着做。</p>
+<h2 id="监视系统日志，封IP">监视系统日志，封IP</h2><h2 id="修改SSH端口">修改SSH端口</h2><h2 id="关掉SSH的密码登录验证">关掉SSH的密码登录验证</h2><p>未完。</p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/LINUX/">
+                #LINUX
+              </a>
+            
+              <a href="/tags/SSH/">
+                #SSH
+              </a>
+            
+              <a href="/tags/树莓派/">
+                #树莓派
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/03/24/chinease/">
                 《 中国人的撕扯人生：一边是上流，一边是逐流 》
               </a>
@@ -815,7 +908,7 @@
       <div class="post-meta">
         <span class="post-time">
           
-            发表于 2014-08-16
+            发表于 2014-08-15
           
         </span>
         
@@ -925,11 +1018,11 @@
       <p class="site-description motion-element">这是在树莓派上部署的一个小站</p>
       <div class="site-state motion-element">
         <div class="site-state-item site-state-posts">
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </div>
         <div class="site-state-item site-state-tags">
-            <span class="site-state-item-count">12</span>
+            <span class="site-state-item-count">15</span>
             <span class="site-state-item-name">标签</span>
         </div>
         <div class="site-state-item site-state-pages">

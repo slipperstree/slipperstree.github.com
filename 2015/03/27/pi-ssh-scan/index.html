@@ -20,9 +20,9 @@
 
 
 
-	<meta name="keywords" content="git,hexo,lighttpd,webserver," />
+	<meta name="keywords" content="LINUX,SSH,树莓派," />
 
-  <title> Hexo，肚脐？ // Mango Love Carrot </title>
+  <title> SSH暴力扫描的防范手段 // Mango Love Carrot </title>
 </head>
 
 <body>
@@ -85,7 +85,7 @@
           
           
             
-              Hexo，肚脐？
+              SSH暴力扫描的防范手段
             
           
         </h1>
@@ -94,15 +94,15 @@
       <div class="post-meta">
         <span class="post-time">
           
-            发表于 2014-08-15
+            发表于 2015-03-27
           
         </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/08/16/Hexo/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/16/Hexo/"></span>
+            <a href="/2015/03/27/pi-ssh-scan/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/27/pi-ssh-scan/"></span>
             </a>
           </span>
           
@@ -117,22 +117,15 @@
         
 
         
-          <h1 id="概要">概要</h1><p>这个博客运行在我自己家里的树莓派上。几天前曾经用sqlite+wordpress搭建过<a href="http://mangolovecarrot.net:8080/wordpress/" target="_blank" rel="external">另一个博客</a>，你访问一下试试就知道有多慢了(如果已经访问不了那就是已经被我删掉了)，打开一个页面平均需要5秒以上，这还是没有加载任何第3方插件的情况下，于是放弃。</p>
-<h1 id="Hexo">Hexo</h1><p>几番搜寻，决定采用静态html式的博客框架，这种框架最大的优点就是快快快。#(废话，静态页面当然快)#<br>最后采用的是一个叫Hexo(很像<em>肚脐</em>的日语发音<em>heso</em>，作者<a href="http://zespia.tw/blog/2012/10/11/hexo-debut/" target="_blank" rel="external">自己说的</a>)的框架，作者是一个台湾大学生。该框架是基于Node.js的javascript框架。相比其他类似框架的好处是通过makedown生成静态html非常快。另外就是它那<a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">逼格奇高</a>的程序猿写作方式我很喜欢。</p>
-<h2 id="安装">安装</h2><p>安装Hexo很简单，但在这之前你还需要这些：</p>
+          <p>之前买了一块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。基本上长成下面这个样子：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:39</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:42</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:57</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:58</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1255]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">user</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4918 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:59</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:01</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:10</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:14</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:19</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br></pre></td></tr></table></figure></p>
+<p>虽然对自己设置的密码强度有信心，但自己家里被人偷窥的感觉总是不爽。<br>解决方案有很多：</p>
 <ul>
-<li><strong>Git</strong>，一个源码管理工具，如果你希望把你生成的网站发布到GitHub上去的话那就安装吧。如果你仅仅只是使用Hexo来生成静态html页面然后发布到本地web服务器上的话可以跳过这一步。要注意的是，以后当你想更换Hexo的主题时你还是需要使用Git工具来下载那些托管在GitHub上的主题包。<em>（当然这并不是必须的）</em></li>
-<li><strong>lighttpd</strong>，一个轻量级的web服务器，用来将网站发布在你本地，你也可以选择其他任何你熟悉的webserver比如apache。当然，如果你选择发布在GitHub上<em>（意味着你不能使用自己喜欢的域名）</em>那么你可以跳过这一步。</li>
-<li><strong>Node.js</strong>，一个强大的javascript库，是Hexo的基础，必须安装。</li>
+<li>被动方式。监视系统日志，发现有连续登录失败的尝试就屏蔽来源ip的请求，也就是封IP。</li>
+<li>弱主动方式。修改SSH端口，SSH默认端口是22，改个端口可以档掉一部分扫描，但挡不住连端口也一起扫描的家伙。</li>
+<li>强主动方式。关掉SSH的密码登录验证，只允许使用公密钥方式登录。这种方式最安全，缺点是初始设置稍微麻烦点，且用一个新的客户端总要进行初始设置。</li>
 </ul>
-<h3 id="安装_Git">安装 Git</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install git</span><br></pre></td></tr></table></figure>
-<h3 id="安装_lighttpd">安装 lighttpd</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install lighttpd</span><br></pre></td></tr></table></figure>
-<h3 id="安装_Node-js和npm">安装 Node.js和npm</h3><p>关于安装这个，Hexo官网给出的方法是<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -qO- http<span class="variable">s:</span>//raw.github.<span class="keyword">com</span>/creationix/nvm/master/install.<span class="keyword">sh</span> | <span class="keyword">sh</span></span><br><span class="line">nvm install <span class="number">0.10</span></span><br></pre></td></tr></table></figure></p>
-<p>我按照上面的命令试图安装，这种方法是下载最新src并在本地进行编译，我那可怜的树莓派足足跑了1个小时还没编译完成，最后强制中断了。<br>我依然采用万能的apt-get来进行安装（这要归功于写出raspbian系统并为这个系统提供了几乎所有常用的并且已经编译完成的软件包的大牛们）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> npm</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="安装_Hexo">安装 Hexo</h3><p>很简单也是一行命令搞定<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> -g hexo</span><br></pre></td></tr></table></figure></p>
-<h2 id="创建Hexo文件系统">创建Hexo文件系统</h2><p>进入任意目录执行以下命令即可创建一个Hexo的一整套文件系统。由于我打算部署在lighttpd里，所以我将Hexo的文件系统创建在lighttpd服务器的根目录<strong>/var/www</strong>下，注意更新该目录需要root权限，所以请记得使用sudo<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">su</span></span><br><span class="line"><span class="keyword">cd</span> /<span class="keyword">var</span>/www</span><br><span class="line">hexo init hx</span><br></pre></td></tr></table></figure></p>
-<p>不出意外，在<strong>/var/www</strong>下会生成一个名为<strong>hx</strong>的文件夹，这就是hexo的文件系统了。</p>
-<h1 id="写博客">写博客</h1><p><em>未完待续</em></p>
+<p>下面一个一个试着做。</p>
+<h2 id="监视系统日志，封IP">监视系统日志，封IP</h2><h2 id="修改SSH端口">修改SSH端口</h2><h2 id="关掉SSH的密码登录验证">关掉SSH的密码登录验证</h2><p>未完。</p>
 
         
       </div>
@@ -143,20 +136,16 @@
         
           <div class="post-tags">
             
-              <a href="/tags/git/">
-                #git
+              <a href="/tags/LINUX/">
+                #LINUX
               </a>
             
-              <a href="/tags/hexo/">
-                #hexo
+              <a href="/tags/SSH/">
+                #SSH
               </a>
             
-              <a href="/tags/lighttpd/">
-                #lighttpd
-              </a>
-            
-              <a href="/tags/webserver/">
-                #webserver
+              <a href="/tags/树莓派/">
+                #树莓派
               </a>
             
           </div>
@@ -166,11 +155,11 @@
           <div class="post-nav">
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2014/08/18/guoxue200/">国学常识200题</a>
-              
             </div>
 
             <div class="post-nav-next post-nav-item">
+              
+                <a href="/2015/03/24/chinease/">《 中国人的撕扯人生：一边是上流，一边是逐流 》</a>
               
             </div>
           </div>
@@ -187,8 +176,8 @@
   
     <div class="comments" id="comments">
       
-        <div class="ds-thread" data-thread-key="2014/08/16/Hexo/"
-             data-title="Hexo，肚脐？" data-url="http://blog.mangolovecarrot.net/2014/08/16/Hexo/">
+        <div class="ds-thread" data-thread-key="2015/03/27/pi-ssh-scan/"
+             data-title="SSH暴力扫描的防范手段" data-url="http://blog.mangolovecarrot.net/2015/03/27/pi-ssh-scan/">
         </div>
 
       
@@ -261,7 +250,7 @@
         <div class="post-toc">
           
           
-            <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#概要"><span class="nav-number">1.</span> <span class="nav-text">概要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hexo"><span class="nav-number">2.</span> <span class="nav-text">Hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">2.1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装_Git"><span class="nav-number">2.1.1.</span> <span class="nav-text">安装 Git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装_lighttpd"><span class="nav-number">2.1.2.</span> <span class="nav-text">安装 lighttpd</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装_Node-js和npm"><span class="nav-number">2.1.3.</span> <span class="nav-text">安装 Node.js和npm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装_Hexo"><span class="nav-number">2.1.4.</span> <span class="nav-text">安装 Hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建Hexo文件系统"><span class="nav-number">2.2.</span> <span class="nav-text">创建Hexo文件系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写博客"><span class="nav-number">3.</span> <span class="nav-text">写博客</span></a></li></ol></div>
+            <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#监视系统日志，封IP"><span class="nav-number">1.</span> <span class="nav-text">监视系统日志，封IP</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改SSH端口"><span class="nav-number">2.</span> <span class="nav-text">修改SSH端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关掉SSH的密码登录验证"><span class="nav-number">3.</span> <span class="nav-text">关掉SSH的密码登录验证</span></a></li></ol></div>
           
         </div>
         <div class="post-toc-indicator-bottom post-toc-indicator"></div>
