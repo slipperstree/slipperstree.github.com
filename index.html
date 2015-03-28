@@ -1,0 +1,1297 @@
+<!doctype html>
+<html class="theme-next use-motion">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.3.0"/>
+
+
+    <meta name="description" content="这是在树莓派上部署的一个小站" />
+
+
+
+
+    <meta name="keywords" content="Hexo,next" />
+
+
+
+
+
+    <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.3.0" />
+
+
+
+
+  <title> Mango Love Carrot </title>
+</head>
+
+<body>
+  <div class="container one-column 
+   page-home 
+">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+    <a href="/" class="brand">
+        <span class="logo">
+          <i class="icon-logo"></i>
+        </span>
+        <span class="site-title">Mango Love Carrot</span>
+    </a>
+</h1>
+
+
+  <ul id="menu" class="menu">
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首页
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          归档
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+            
+          
+
+          <div id="posts" class="posts-expand">
+            
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/27/pi-ssh-scan/">
+                SSH暴力扫描的防范手段
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2015-03-27
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/27/pi-ssh-scan/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/27/pi-ssh-scan/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <h1 id="背景">背景</h1><p>之前买了一块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。基本上长成下面这个样子：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:39</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:42</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:57</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:58</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1255]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">user</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4918 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:59</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:01</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:10</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:14</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:19</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br></pre></td></tr></table></figure></p>
+<p>虽然对自己设置的密码强度有信心，但自己家里被人偷窥的感觉总是不爽。<br>解决方案有很多：</p>
+<ul>
+<li>被动方式。监视系统日志，发现有连续登录失败的尝试就屏蔽来源ip的请求，也就是封IP。</li>
+<li>弱主动方式。修改SSH端口，SSH默认端口是22，改个端口可以档掉一部分扫描，但挡不住连端口也一起扫描的家伙。</li>
+<li>强主动方式。关掉SSH的密码登录验证，只允许使用公密钥方式登录。这种方式最安全，缺点是初始设置稍微麻烦点，且用一个新的客户端总要进行初始设置。</li>
+</ul>
+<p>下面一个一个试着做。</p>
+<h1 id="扫描系统日志，封IP">扫描系统日志，封IP</h1><p>系统日志的位置：<br>/var/log/auth.log</p>
+<p>这个日志文件专门记录登入登出以及调用sudo等敏感操作。我们需要的尝试登录失败的记录就在里面。<br>我写了一个简单的shell程序。每一步都做了注释，应该很好懂。<br>´´´</p>
+<h1 id="!/bin/bash">!/bin/bash</h1><h1 id="日志文件">日志文件</h1><p>LOG_FILE=”/var/log/auth.log”</p>
+<h1 id="上一次login失败的ip">上一次login失败的ip</h1><p>last_ip=””</p>
+<h1 id="上一次列入黑名单的ip">上一次列入黑名单的ip</h1><p>last_blocked_ip=””</p>
+<h1 id="当前处理行数">当前处理行数</h1><p>lines=0</p>
+<h1 id="每次运行时都删掉之前生成的ip列表文件">每次运行时都删掉之前生成的ip列表文件</h1><p>rm -rf block_ip.log</p>
+<h1 id="获取错误日志总行数，以便输出处理进度">获取错误日志总行数，以便输出处理进度</h1><p>total=”$(grep “Failed” ${LOG_FILE} | wc -l)”</p>
+<h1 id="检索错误日志，并逐行取得试图登录系统的ip">检索错误日志，并逐行取得试图登录系统的ip</h1><p>grep “Failed” $LOG_FILE | while read LINE; do<br>{</p>
+<h1 id="从当前行取得ip">从当前行取得ip</h1><h1 id="awk_NF-3_的意思是以空格或tab为分隔符，从后往前数第3个项目">awk NF-3 的意思是以空格或tab为分隔符，从后往前数第3个项目</h1><p>  ip=”$(echo ${LINE} | awk ‘{print $(NF-3)}’)”<br>  lines=$(($lines + 1))</p>
+<h1 id="下面这条语句实现了显示进度的功能，注意最后是以\r结尾的，作用是不换行，把光标移动到行首">下面这条语句实现了显示进度的功能，注意最后是以\r结尾的，作用是不换行，把光标移动到行首</h1><p>  printf “Progress Line: $lines”/“$total\r”</p>
+<h1 id="echo_$lines”/“$total">echo $lines”/“$total</h1><h1 id="同一个IP连续两次登录错误的话就认为是恶意登录，将该ip记录到ip列表文件中">同一个IP连续两次登录错误的话就认为是恶意登录，将该ip记录到ip列表文件中</h1><p>  if [ “$last_ip” == “$ip” ] &amp;&amp; [ “$ip” != “$last_blocked_ip”   ]; then<br>    echo “$ip” &gt;&gt; block_ip.log<br>    last_blocked_ip=$ip<br>  fi<br>  last_ip=$ip<br>}<br>done</p>
+<h1 id="至此，所有日志里试图连续尝试登录失败的ip全部被记录在block_ip-log这个文件中了。">至此，所有日志里试图连续尝试登录失败的ip全部被记录在<em>block_ip.log</em>这个文件中了。</h1><h1 id="接着我们把这个列表里重复的ip删掉">接着我们把这个列表里重复的ip删掉</h1><p>sort block_ip.log | uniq &gt; sorted_ip.log</p>
+<h1 id="这样我们就得到了一个不重复的，试图暴力破解我们密码的坏人的ip列表">这样我们就得到了一个不重复的，试图暴力破解我们密码的坏人的ip列表</h1><h1 id="屏蔽他们！">屏蔽他们！</h1><p>cat sorted_ip.log | while read LINE; do<br>{<br>  ip=${LINE}</p>
+<h1 id="将ip加入黑名单">将ip加入黑名单</h1><p>  iptables -A INPUT -s “$ip” -j DROP<br>}<br>done<br>´´´<br>这样，封ip就成功了。<br>这个程序还可以改成使用 tail -f 不停监视最新的日志，随时封新发现的ip的模式。有兴趣的自己动手改一下。</p>
+<h1 id="修改SSH端口">修改SSH端口</h1><p>todo</p>
+<h1 id="关掉SSH的密码登录验证">关掉SSH的密码登录验证</h1><p>todo</p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/LINUX/">
+                #LINUX
+              </a>
+            
+              <a href="/tags/SSH/">
+                #SSH
+              </a>
+            
+              <a href="/tags/树莓派/">
+                #树莓派
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/03/24/chinease/">
+                《 中国人的撕扯人生：一边是上流，一边是逐流 》
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2015-03-24
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/03/24/chinease/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/24/chinease/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>这篇文章写得很好。</p>
+<p>作者： 桂旭江</p>
+<p>这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
+<p>《舌尖上的中国》第二季描写了一对年轻夫妻，放弃了大城市的高薪工作，移居在云南的一个小镇，种菜、做饭、骑车、在月光下读书写字，恬静淡然的画面诗一般的美丽。我相信，这样的镜头会触动无数人的心灵，他们内心深处一定或多或少向往这样的生活。</p>
+<p>但是，我更确信，没有几个人能够像他们一样把向往变成现实。在这个时代的洪流中，向上不易，放下更难。</p>
+<p>一、人总在出世、入世的撕扯中挣扎前行</p>
+<p>Anita，一位看上去柔弱娇丽的女子，十几年的职场打拼，己经实现的财富足以令她“美美容养养花，没事去趟温哥华”；己经获得过的影响全国行业规则的工作业绩，也足以令她此生骄傲。她曾经早早立愿35岁退休，做一个云游四方的老太婆。</p>
+<p>可是，她几乎从来没有闲过，从一条战壕跳进另一条战壕，基本是零时差。刚刚读完EMBA，就再一次把自己扔进创业的炼炉，成为一家名叫麻布袋的互联网金融公司的创始人，这家以农业为重点的P2P公司正在加速起跑的突破期，她像个性别不明的女汉子那样冲锋陷阵，顾不上花容失色，忘记了我本娇娥。己经记不清有多少个夜晚是盯着屏幕度过，有多少次会议控制不住地对着下属咆哮，又有多少次在享受喜悦的五分钟之后就开始下一轮焦虑。</p>
+<p>丰衣足食，情怀小资，又为什么要这样“自找苦吃”？</p>
+<p>我知道这没有答案，这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
+<p>撕扯他们的，一边是马云、马化腾、王健林们的创业故事，财富、梦想、活着就是要改变世界的热血燃烧。种种成功学铺天盖地，如果没有事业，人生的价值如何体现？而另一边又是星云大师、净空法师们的劝世恒言，人生本修行，万般皆身外，何必苦苦相争？</p>
+<p>一边是孩子，一边是位子。无数的文章在提醒：陪孩子一起成长吧，一生只有这一次。可是又有无数文章在提示，人生需要定位，更需要上位，想要老婆孩子热坑头，就腾出你的位置吧。</p>
+<p>一边是老人，一边是超人。你会在夜里梦到老人离你而去，惊醒过来，泪湿枕巾。你恨不得从此陪伴他们身边，陪伴他们最后的旅程。可是，擦干眼泪，对着梳妆台，你又想起今天要安排的一件件任务，你得做个超人，向上下证明你的能力。问候的电话，还是晚上再打吧。</p>
+<p>一边是上流，一边是逐流。你痛恨腐败、藐视权威、嘲讽马屁，你心里住着一位清高上流的你。但每当机会来临，你立即苦思可以利用的关系、向手握权力的人表达由衷的敬意，想方设法用最安全的办法把它“搞定”。你发现，此时上流的你，正在闭目养神，不闻不问。</p>
+<p>一边是同学会，一边是追悼会。同学会的真正意义并非“拆散一对是一对”，而是人生比较和刺激。当年并排坐的小伙伴，如今己经分出了三六九等，有的春风得意，有的落寞失意。好在比赛尚未结束，赶紧迎头赶上，下次一定要锦衣豪车，把那些钱多人贱的土豪比下去。只有到追悼会，才惊觉生命脆弱，万贯身家终究黄土一抔。活着的意义又在心中翻腾，还要这么拼吗？</p>
+<p>一边是在路上，一边是故乡。中国的职场人，最喜欢的歌曲一定包括《在路上》、《爱拼才会赢》、《飞得更高》，它们总能让“一颗不安分的心”澎湃沸腾。但下一曲，可能就是许巍的《故乡》或者李健的《心升明月》，有些伤感，有些迷茫，有些心生倦意。</p>
+<p>但是，故乡在哪里，何时能归去？</p>
+<p>二、比较让人们总是停不下脚步</p>
+<p>何生这几年总是向往归乡，他似乎已经厌倦身为一个企业高管的无奈，总是深情描绘他的理想生活：写歌、填曲、吟唱，了却一生的夙愿。</p>
+<p>去年年底，公司不景气，何生与老板没有谈妥待遇问题，待业了。再见他时，阴云遮不住地浮上眉眼。我说你小子光北京的房产就三四套，吃租金就比得上一家两口小白领，这回正好圆一圆文艺梦了，祝贺你啊！</p>
+<p>何生嘴角牵出一丝苦笑：文艺个屁，现在还不是时候。</p>
+<p>“那什么时候才是时候呢？”</p>
+<p>“我不知道，反正现在还不是时候。”</p>
+<p>一个多月后，何生成功应聘一家食品公司的副总。再见他时，神采奕奕，不过话说三句又开始埋怨担子重压力大。</p>
+<p>我本来还想嘲笑他几句，突然在他身上仿佛看到了自己，如果我是何生，真的能快乐地开始理想生活吗？该嘲笑的，又岂止是这个人。</p>
+<p>我一直想，不断刺激我们奔跑的动力到底在哪里？成功、财富？我们并不肯全盘认领；自我价值的实现？生命的意义？实在有些宏大飘渺。</p>
+<p>最赤裸的解剖其实是：人在摆脱温饱困扰之后，就开始寻找自我的证明，而证明的起点和终点是——比较。</p>
+<p>对于人这种群居动物来说，“比较”几乎是所有的不幸和幸福的源泉。从生到死，我们永远活在比较中，比成绩，比学历，比升迁，比车房，比谁的关系更硬，比谁的对象更靓，比谁的孩子更出息。俞敏洪就对他的同学说：如果什么都比不过，我就争取比你们活得久。</p>
+<p>比较的结果之一，是我们常常对未来产生莫名的恐惧，名义上是担心资产贬值、孩子教育、年老医疗，而本质上，是恐惧未来活得不如别人。</p>
+<p>比较的结果之二，是我们不能接受掉队，我们总觉得身边的脚步隆隆，不断有人超车而去，我们不敢停下，生怕成为吃灰的落伍者，生怕成为被嘲讽或者怜悯的弱者。</p>
+<p>比较的结果之三，是我们总在试图让别人尊重，不断要用成就来刷屏，向周围提示自己的存在。我们甚至己经想不起，到底想要成为什么样的人，所谓理想，原来全是想像成为别的人。</p>
+<p>比较的结果之四，便是这数不清的撕扯。我们越来越发现事业、工作、成就之外那些事物的美好和重要，却又忍受不住比较带来的刺激，于是一边奔跑，一边回头，总想着弥补些什么，总以为下一站就是终点。</p>
+<p>真的到了下一站，往往又变成新的起点。</p>
+<p>这也许是一个阶层历史性的阶段，之前或之后，可能都不会如此大规模地体验这种撕扯的狼狈。</p>
+<p>三、只有“90后”也许能逃脱撕扯的烦恼</p>
+<p>大体上，“50后”、“60后”这批人是不太纠结的，因为他们的词典当中本来就没有“放下”，他们像旋转的马达，不到断电，决不停息。</p>
+<p>恰恰是“70后”、“80后”的两代——“70后”人到中年，“80后”渐成砥柱，这个群体己经成为中产阶级的主体。相比“50后”、“60后”，他们更多倾向于认为工作不再是生活的必须，奋斗也不再是生命唯一的意义。</p>
+<p>但另一方面，他们又注定比不上更年轻一代洒脱，他们还做不到“喜欢就好，无所谓功名”。他们一方面是上一代的反对者，一方面又对下一代心存疑虑；他们可以赞赏“浪费生命、虚度光阴”，却很难身体力行。</p>
+<p>这出世与入世的撕扯，大概至少可以上溯两千年。一边是帝王将相、建功立业，一边是田园归隐、竹林禅意。中国文化早已约定了读书人不为相便学禅的路径，光宗耀祖、名垂青史是主旋律，而相忘山水也是一条退路。</p>
+<p>更重要的影响，其实来自西方。那些在奥斯卡或者戛纳闪耀的影片，无论场景如何离奇震撼，人性、亲情、爱是永远埋藏的主题；那些在黄金海岸或者夏威夷漫步的中国人，亲眼目睹了“外国人”是如何享受生活和生命。</p>
+<p>但是，他们与上一代的告别还不彻底，更多的“觉醒”，只在微信的朋友圈里感慨流传，稍不留神就变成廉价的心灵鸡汤。</p>
+<p>于是，我们一面向往成功，一面嘲笑成功；一面追逐金钱，一面耻于谈钱；一面向往自然与自由，一面深信自由的前提是财富；一面开导别人看开一些，一面告诫自己时不我待；一面向亲人抱歉，一面提刀上马；一面誓言早早退休，一面生怕门清庭闲……</p>
+<p>当这样的撕扯与纠结成为一代人的集体困扰，所折射的，至少是这个社会大转型的一个侧影，就像沉重的列车在急转弯处，发出巨大的摩擦声。</p>
+<p>吴晓波为他18岁的女儿写了一封信，大意是，只要你喜欢，就坚持去做，不要为别人活着，也无所谓成名成功。这封信有一个漂亮的标题，叫做《把生命浪费在美好的事物上》。</p>
+<p>这算是一个“60后”对“90后”最深情的祝福吧。</p>
+<p>也许，再过二十年，当他18岁的女儿成长为这个社会的中生代，那列车的摩擦声会远去，愿意奋斗的奋斗，愿意浪费的浪费；财富与唱歌一样，并无轻重之分。</p>
+<p>那将是一个远离贫穷的时代，富足是常态，金钱与成功就像GDP一样，不再是衡量生活价值的第一标杆。在这个时代里，上一代的撕扯变得陌生甚至有些可笑，他们并不太能理解，选择为什么那么的艰难，工作与生活本该是统一的整体，为什么变成难以调和的矛盾体。</p>
+<p>我并不确信这个时代是否会来到，但至少满怀期望。</p>
+<p>最后补充推荐一本书，对这篇文章有共鸣的人，有时间可以去看看，毛姆的《月亮与六便士》</p>
+<p>更多详情:<a href="http://www.zhihu.com/question/28045700/answer/39163953" target="_blank" rel="external">http://www.zhihu.com/question/28045700/answer/39163953</a></p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/网摘/">
+                #网摘
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/11/yhxmyzn42/">
+                生命，宇宙以及一切的答案
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2014-09-11
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/11/yhxmyzn42/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/11/yhxmyzn42/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>一般情况下如果有一个问题恰好是你所不知道的（大多数情况下都会是这样），你大概会立刻去百度或者Google一下，这往往很有效。但当你想了解<strong>“生命，宇宙以及一切”</strong>这种宏大问题的答案时，你如果还指望Google能给你答案就奇怪了，实际上这并不是最奇怪的，最奇怪的是Google的确会告诉你这个问题的答案就像你问的只是一加一等于几一样。</p>
+<blockquote>
+<p>What is the answer to life, the universe, and everything?<br>42</p>
+</blockquote>
+<p>没错，Google给出的答案是42。<br>另外，在Google的总部还矗立着这样一座雕塑：<br><img src="http://static.flickr.com/69/162655998_65078555eb_o.jpg" alt="42"><br>你同样可以去问苹果的Siri，只是你需要用你蹩脚（或是非常蹩脚）的英文念出上面这句话。<br>那么，为什么是42？<br>这是在向一本（或一个系列）80年代出版的科幻小说致敬。书名是《The Hitchhiker’s Guide to the Galaxy》（中文译名《银河系漫游指南》或《银河系搭便车指南》）。它是一个叫道格拉斯·亚当斯的人写的，他当过阿拉伯王公的保镖，准备着一旦有人举着鸡蛋或者炸弹尖叫着跑过来，就立刻鼠窜，他客串过PINKFLOYD的吉他手，因为跟乐队成员是好朋友，他还做过鸡场清洁工。。。<br>这个系列一共有5部，被称为…<strong>银河系漫游五部曲</strong>也被誉为<strong>科幻圣经</strong>，包括：</p>
+<ul>
+<li>《银河系漫游指南》</li>
+<li>《宇宙尽头餐馆》</li>
+<li>《生命、宇宙及一切》</li>
+<li>《再见，谢谢鱼》</li>
+<li>《基本无害》</li>
+</ul>
+<p>这是一本很好玩的书，绝对有趣，我想作者应该会是一个更有趣的人。遗憾的是他40多岁就去世了，否则他可以在有生之年多写一些有趣的书可以让这个世界变得更有趣一点点。（同样有趣且英年早逝的另一个作家是中国作家王小波）<br>这本书有趣到几乎翻到任何一页有能让你开心一笑的无厘头，假装严肃等等一切荒诞不经的桥段。比如：</p>
+<ul>
+<li>有一种理论宣称，如果任何一个人真正发现了宇宙存在的原因、宇宙存在的目的，宇宙就会立刻消失，被某种更为怪异、更难以理解的玩意儿取代。还有另外一种理论宣称，上述事件已经发生过了。</li>
+<li>有两个原因让《银河系漫游指南》超过《银河系百科全书》，成为所有知识和智慧的标准：“第一，它稍微便宜一点儿；第二、它的封面上以大而友善的字体写着：不要恐慌。” </li>
+<li>关于如何走私鹦鹉生殖腺，《指南》说：“把它插在一根小棍上，这是非常惹人厌恶但极受欢迎的鸡尾酒装饰物，很多有钱白痴愿意花一大笔钱买这东西，只是为了给其他的有钱白痴留下深刻印象。”</li>
+<li>这是一副祖·杰塔200型超级色度危险感应太阳镜，专门用于帮助人们在面对危险时采取一种放松的态度。一旦感应到出现麻烦的第一个征兆，它就会完全变黑，阻止你再看到任何可能警示你的东西。</li>
+<li>在一个无限大的宇宙里（比如，我们生活的这个），不论是你能想象的东西，还是你不能想象的东西，都能在某个地方自己长出来。近来就有人发现了一座森林，里面的树上都结着棘轮螺丝刀果实。棘轮螺丝刀果实的一生非常有趣。当被摘下来以后，它需要一个黑洞洞、灰扑扑的抽屉来装自己，一装就是好几年。然后，某一天晚上，它会突然孵化，褪掉自己那快碎成渣的表皮，变成一个完全认不出来的金属物品，两头都有突起，身上有棱，还有为螺丝准备的凹槽。到达这个形态的棘轮螺丝刀果实，一旦被发现，就会马上被扔掉。没人知道这一切有什么意义。大自然，大概正以她无穷的智慧，考虑着这个问题吧。</li>
+<li>“我的快乐能力，”他接着说，“小的可以装进火柴盒。而且你不必把火柴取出来。”</li>
+<li>“我做过一次演讲。”他突然开口道，前言不搭后语。“你很快就会明白我为什么说起这个。那是因为我的脑子运行过于迅速了。粗略算来，我至少比你聪明三百亿倍。举个例子吧。想个数字，随便哪个。”“嗯，五。”床垫说。“错。”马文说，“明白了？”床垫被深深地震撼了。它意识到，自己面前这位绝非寻常人等。</li>
+<li>遥远的黑暗中，突然亮起一行古怪的绿色霓虹灯。它静静地亮出如下字样：“你被转移了。”那行字又熄灭了。阿瑟一点也不喜欢那种熄灭方式。它是以一种带有鄙视感的、花哨的效果熄灭的。于是，阿瑟告诉自己，这只是可笑的幻觉。霓虹灯要么开、要么关，取决于是否有电流从中通过。他告诉自己，霓虹灯在两种状态之间转换，绝不可能有什么鄙视感的花哨效果。</li>
+<li>不过，最最惊天动地的飞船，当数“版求一号”。那是版求星人制造的第一艘飞船，它惊人不是因为它很棒。它可一点也不棒。它约等于一块废铁。看上去，像是在谁家后院里胡乱拼成的——它的确也是。最最惊人的地方，不在于它有多好（它一点也不好），而是它竟然被造出来了。</li>
+</ul>
+<p>书中这种有趣的描写俯拾皆是。最后再解释一下42这个答案是怎么来的。</p>
+<blockquote>
+<p>一个具有超级智慧的泛维度种族就曾建造了一台巨型超级电脑，被称为“沉思”，用来计算关于生命、宇宙以及一切终极问题的答案。<br>经过七百五十万年的漫长岁月，沉思计算着、衡量着，最后宣布，这个问题的答案是42——但所有人都已经忘记当初的问题是什么，于是，一台更大的电脑被建造出来，以寻求对应于这个答案的确切问题究竟是什么。因为，只有当确切地知道问题是什么时，才能理解这个答案的意思……<br>这台电脑被称为“地球”，它是如此之大，常常被错当成一颗行星。在它表面游荡的那些长得和猿差不多的奇怪生物尤其爱犯这个错误，这些家伙完全没有意识到他们只不过是一个巨型电脑程序的一部分而已<br>如果不是为了那个大目的，发生在这个叫做地球的玩意儿上的其他所有事情就完全没有一丁点儿意义了。连这么简单明显的常识都意识不到，实在是太怪了。<br>不幸的是，就在最后结果即将出来之前的关键时刻，地球被沃贡人摧毁了。完全出乎意料。而沃贡人的目的只是为了腾出地方来修建——沃贡人是这样宣称的——一条新的超空间通道。</p>
+</blockquote>
+<p>噗。。。</p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/书评/">
+                #书评
+              </a>
+            
+              <a href="/tags/搞笑/">
+                #搞笑
+              </a>
+            
+              <a href="/tags/科幻/">
+                #科幻
+              </a>
+            
+              <a href="/tags/道格拉斯/">
+                #道格拉斯
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/25/WINSCP文件名显示乱码问题/">
+                WINSCP文件名显示乱码问题
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2014-08-25
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/25/WINSCP文件名显示乱码问题/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/25/WINSCP文件名显示乱码问题/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>最近捣鼓树莓派用的最多的软件就是putty跟winscp。在日文系统下，winscp的文件列表里的中文文件名全是乱码。后来发现只要在登录设置窗口里把utf-8编码的开关打开就能正常显示了。(注意，是登录设置窗口。不是主菜单里的环境设置)<br>修改前(默认)<br><img src="01.png" alt="01"></p>
+<p>修改后<br><img src="02.png" alt="02"></p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/20/lets_webpy/">
+                利用webpy搭建一个简单的网页版hexo编辑器
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2014-08-20
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/20/lets_webpy/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/20/lets_webpy/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>相信看到本文的读者都已经搭建了自己的hexo站点。hexo（或者任何其他静态html框架）有一个非常不方便的地方就是每次写博客，你都必须ssh到你的服务器上执行以下命令来创建一篇新文章：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">hexo</span> n 文章标题</span><br></pre></td></tr></table></figure></p>
+<p>然后再用nano或者是vim等文字编辑器来更新这个md文件。编辑完以后再执行下面两条命令生成文章并发布。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">g</span></span><br><span class="line">hexo <span class="literal">d</span></span><br></pre></td></tr></table></figure></p>
+<p>这个过程很geek，可能也是最先吸引程序猿们使用这套东西的原因。但最终你会觉得厌烦，为什么我把精力集中在写文章上呢？<br>本文的目的就是利用强大方便的webpy来搭建一个简单但完备的在线版hexo编辑器，这个编辑器应该具有：</p>
+<ul>
+<li>发布新文章</li>
+<li>修改旧文章</li>
+<li>删除旧文章</li>
+<li>通过web页面指示后台执行hexo命令生成html并发布</li>
+</ul>
+<p>我们开始吧</p>
+<h1 id="安装">安装</h1><h2 id="安装hexo">安装hexo</h2><h2 id="安装webpy">安装webpy</h2><h1 id="验证">验证</h1><h2 id="验证hexo">验证hexo</h2><h2 id="验证webpy">验证webpy</h2><h1 id="造轮子">造轮子</h1><h2 id="设计">设计</h2><h3 id="首页">首页</h3><p>首页分成有两个部分。</p>
+<ol>
+<li>顶部的命令按钮区。<br>目前只有一个最基本的功能按钮，写新文章。</li>
+<li>文章列表区。<br>初期显示时取得hexo的_post目录下所有文件(文章)的列表显示。每一个文件都有一组对应的操作按钮。(目前只有最基本的修改和删除按钮)为了页面整洁，这些操作按钮默认不显示，当点到某文章时才动态显示出来。</li>
+</ol>
+<h3 id="创建新文章页">创建新文章页</h3><p>这个页面接收一个新标题(其实是文件名)作为参数并显示在页面顶部。不可修改。主体只需要一个文本框和一个提交按钮。文本框用来编辑md源文件。点击提交按钮则将文章写入文件然后调用hexo命令生成html并发布。</p>
+<h3 id="修改旧文章页">修改旧文章页</h3><p>布局基本和创建新文章一样。一个编辑文本框，一个提交按钮。</p>
+<h3 id="其他">其他</h3><h4 id="回收站功能">回收站功能</h4><h4 id="登录功能">登录功能</h4><h2 id="关键代码">关键代码</h2><ul>
+<li><p>为了避免中文乱码，统一设置字符集为UTF-8</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line"><span class="function"><span class="title">reload</span><span class="params">(sys)</span></span></span><br><span class="line">sys.<span class="function"><span class="title">setdefaultencoding</span><span class="params">(<span class="string">'utf8'</span>)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>取得文章列表函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里替换成你自己的hexo根目录</span></span><br><span class="line">hexoRoot = <span class="string">'/home/pi/hexo_root'</span></span><br><span class="line">postDir = hexoRoot + <span class="string">'/source/_posts/'</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getWzList</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># Make list for show</span></span><br><span class="line">    wzList = []</span><br><span class="line">    idx = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> lists <span class="keyword">in</span> os.listdir(postDir): </span><br><span class="line">        path = os.path.join(postDir, lists) </span><br><span class="line">        <span class="keyword">if</span> os.path.isfile(path):</span><br><span class="line">            wzList.append([os.path.basename(path), <span class="string">'wz_'</span>+str(idx)])</span><br><span class="line">            idx = idx + <span class="number">1</span></span><br><span class="line">    wzList.sort(reverse=<span class="keyword">True</span>)</span><br><span class="line">    <span class="keyword">return</span> wzList</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>首页基本上什么都不做直接返回文章列表给模板</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">GET</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> render.index(getWzList())</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新文章时调用hexo命令<br>为了执行hexo命令需要更改工作目录到你的hexo根目录下。<br>记得要先备份一下当前工作目录，执行完hexo命令以后需要恢复原来的工作目录，否则读取模板文件时会出错。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更改工作目录</span></span><br><span class="line">sWebpyDir = os.getcwd()</span><br><span class="line">os.<span class="keyword">chdir</span>(hexoRoot)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 执行 Hexo n ... 这里的sNewTitle是从index页面传过来的参数</span></span><br><span class="line">os.<span class="keyword">system</span>(<span class="string">'hexo n '</span> + sNewTitle)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 恢复原来的webpy的工作目录</span></span><br><span class="line">os.<span class="keyword">chdir</span>(sWebpyDir)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>读取md文件</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">now = datetime<span class="class">.datetime</span><span class="class">.now</span>()</span><br><span class="line">filename = now.<span class="function"><span class="title">strftime</span><span class="params">(<span class="string">'%Y-%m-%d-'</span>)</span></span> + sNewTitle + <span class="string">'.md'</span></span><br><span class="line">fileHandle = open ( postDir + filename )</span><br><span class="line">fileContent = fileHandle.<span class="function"><span class="title">read</span><span class="params">()</span></span></span><br><span class="line">fileHandle.<span class="function"><span class="title">close</span><span class="params">()</span></span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="运行效果">运行效果</h2>
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/python/">
+                #python
+              </a>
+            
+              <a href="/tags/webpy/">
+                #webpy
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/18/guoxue200/">
+                国学常识200题
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2014-08-18
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/18/guoxue200/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/18/guoxue200/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <p>国学常识200题（含答案）教给孩子！<br>2014-01-02 环球青少年家庭教育</p>
+<ol>
+<li>“但愿人长久，千里共婵娟”，其中婵娟指的是什么？ (A)<br>A.  月亮     B. 姻缘 </li>
+<li>王先生的QQ签名档最近改成了“庆祝弄璋之喜”，王先生近来的喜事是： (C)<br>A. 新婚   B. 搬家   C. 妻子生了个男孩 D. 考试通过 </li>
+<li>“爆竹声中一岁除，春风送暖入屠苏”，这里的“屠苏”指的是：(C)<br>A. 苏州   B. 房屋     C. 酒   D. 庄稼 </li>
+<li>“拱手而立”表示对长者的尊敬，一般来说，男子行拱手礼时应该： (A)<br>A.  左手在外   B. 右手在外 </li>
+<li>我国的京剧脸谱色彩含义丰富，红色一般表示忠勇侠义，白色一般表示阴险奸诈，那么黑色一般表示： (A)<br>A.  忠耿正直   B. 刚愎自用 </li>
+<li>《三十六计》是体现我国古代卓越军事思想的一部兵书，下列不属于《三十六计》的是：(B)<br>A. 浑水摸鱼   B. 反戈一击   C. 笑里藏刀   D. 反客为主 </li>
+<li>“床前明月光”是李白的千古名句，其中 “床”指的是什么？(C)<br>A. 窗户     B. 卧具     C. 井上的围栏 </li>
+<li>1932年，清华大学招生试题中有一道对对子题，上联“孙行者”，下面下联中最合适的是： (A)<br>A. 胡适之   B. 周作人     C. 郁达夫   D. 唐三藏 </li>
+<li><p>“月上柳梢头，人约黄昏后”描写的是哪个传统节日？ (B)<br>A. 中秋节   B. 元宵节     C. 端午节 D.  七夕节 </p>
+</li>
+<li><p>我国古代有很多计量单位，比如诗句“黄河远上白云间，一片孤城万仞山”中的“仞”，一仞约相当于： (B)<br>A. 一个成年人的高度     B. 成年人一臂的长度 </p>
+</li>
+<li>下列哪一句诗描写的场景最适合采用水墨画来表现？ (C)<br>A. 落霞与孤鹜齐飞，秋水共长天一色<br>B.  返景入深林，复照青苔上<br>C.  孤舟蓑笠翁，独钓寒江雪<br>D.  接天莲叶无穷碧，映日荷花别样红 </li>
+<li>下列哪个成语典故与项羽有关？ (D)<br>A. 隔岸观火<br>B.  暗度陈仓<br>C.  背水一战<br>D. 破釜沉舟 </li>
+<li>《百家姓》中没有下面哪个姓？ (C)<br>A. 乌<br>B. 巫<br>C. 肖<br>D. 萧 </li>
+<li>“生旦净末丑”是京剧的行当，其中“净”是： (A)<br>A. 男角<br>B. 女角 </li>
+<li>我们常说的“十八般武艺”最初指的是什么？ (A)<br>A. 使用十八种兵器的技能<br>B.  十八种武术动作</li>
+<li>假如你的一首五绝诗被杂志社采用，按照正文部分每字5元来计算，你应得多少稿费？ (B)<br>A. 50元<br>B. 100元<br>C. 200元 </li>
+<li>下面哪个字常用作表示顺序的第五位？(A)<br>A. 戊<br>B.  戍<br>C.  戌 </li>
+<li>诸子百家中名家的特点是注重逻辑辩证，以下哪个典故能体现名家的这一特点？  (A)<br>A. “白马非马”<br>B.  “指鹿为马” </li>
+<li>古人的婚礼在什么时间举行？ C()<br>A. 早上<br>B. 中午<br>C.  傍晚 </li>
+<li>“近朱者赤，近墨者黑”所蕴含的道理和下列哪句话最相似？ (B)<br>A. 青出于蓝，而胜于蓝<br>B.  蓬生麻中，不扶而直<br>C. 公生明，偏生暗</li>
+<li>“天时不如地利，地利不如人和”出自：（A）<br>A. 《孟子》 B. 《庄子》</li>
+<li>我国书法艺术博大精深，请问“欧体”是指谁的字体？(B)<br>A. 欧阳修   B. 欧阳洵</li>
+<li>文学史上被称作“小李杜”的是杜牧和谁？(B)<br>A. 李贺     B. 李商隐</li>
+<li>“大禹治水”的故事家喻户晓，大禹治理的是哪个流域的洪水？(B)<br>A. 长江流域    B. 黄河流域</li>
+<li>古代宫殿大门前成对的石狮一般都是：(A)<br>A. 左雄右雌    B.  左雌右雄</li>
+<li>“结发”在古时是指结婚时：(C)<br>A.  丈夫把头发束起来     B. 妻子把头发束起来<br>C. 把夫妻头发束在一起</li>
+<li>“鄂尔多斯”在蒙古语中是什么意思？(C)<br>A. 大草原 B. 盛产羊毛的地方 C . 众多宫殿 D. 美丽的地方</li>
+<li>《西游记》中唐僧的原型是：(A)<br>A. 玄奘 B. 鉴真</li>
+<li>唐代诗人贾岛“二句三年得，一吟双泪流”的诗句是：(A)<br>A . 独行潭底影，数息树边身。 B. 鸟宿池边树，僧敲月下门。</li>
+<li>我国传统表示次序的“天干”共有几个字？(A)<br>A. 十个 B.  十二个</li>
+<li>被誉为“万国之园”的是：(B)<br>A. 颐和园 B.  圆明园</li>
+<li>“水”字属于下列哪种汉字构成方式？(A)<br>A. 象形字 B . 表意字</li>
+<li>现在我们常用“阳春白雪”和“下里巴人”指代高雅和通俗的文艺作品，请问这两个成语最初指的是什么？(C)<br>A. 文章 B. 画作 C. 乐曲</li>
+<li>京剧《贵妃醉酒》是根据哪部古代戏曲改编而成的？(B)<br>A. 《桃花扇》 B. 《长生殿》 C. 《牡丹亭》 D. 《南柯梦》</li>
+<li>道家思想在我国影响深远，请问历史中的哪一时期最接近道家所主张的无为而治？(A)<br>A . 文景之治 B. 光武中兴 C. 贞观之治 D. 开无盛世</li>
+<li>下面哪句话出自《孟子》？(D)<br>A. 水能载舟，亦能覆舟 B. 先天下之忧而忧，后天下之乐而乐<br>C. 民惟邦本，本固邦宁 D . 独乐乐，与人乐乐，熟乐？</li>
+<li>下列哪个不是北京的别称？(C)<br>A. 大都  B. 中都  C . 上都  D.  南京</li>
+<li>“讳疾忌医”典故中的君王是：(B)<br>A. 齐桓公    B. 蔡桓公</li>
+<li>“桃花潭水深千尺，不及汪伦送我情”诗中的“我”指的是谁？(B)<br>A. 杜甫    B . 李白</li>
+<li>我们熟悉的《百家姓》是按照什么方式排列的？(B)<br>A. 人口数量 B . 政治地位</li>
+<li>“一门父子三词客，千古文章八大家”这幅对联中提到的“三父子”是：(B)<br>A. 曹操. 曹丕. 曹植 B. 苏洵. 苏轼. 苏辙<br>C . 班彪. 班固. 班超</li>
+<li>孔子提倡中庸之道的理论基础是：(B)<br>A. 阴阳五行 B. 天人合一 C. 道法自然</li>
+<li>拍电影时常用的“杀青”来表示拍摄完成，“杀青”原指什么？(A)<br>A. 制作竹筒的一道工序 B. 加工新茶的一种方法</li>
+<li>下面哪个成语和曹操有关？(B)<br>A. 画饼充饥 B. 望梅止渴</li>
+<li>成语“白驹过隙”比喻：(B)<br>A. 速度飞快 B. 时光飞逝</li>
+<li>墨子的主要思想是“兼爱”，他所反对的“爱有差等”这一观点是哪家学派的？(A)<br>A . 儒家 B. 法家 C. 道家 D. 名家</li>
+<li>下列选项中与“亡羊补牢”意思最接近的是：(C)<br>A. 人无远虑，必有近忧 B. 祸兮，福之所倚，福兮，祝之所伏<br>C. 往者不可谏，来者犹可追 D. 失之东隅，收之桑榆</li>
+<li>王羲之对一种动物十分偏爱，并从它的体态姿势上领悟到书法执笔运笔的道理，这是什么动物？(B)<br>A. 鹤 B . 鹅 C. 鸡 D.  鱼</li>
+<li>“美”字最初的含义是：(B)<br>A. 羊大即为美  B. 戴着头饰站立的人<br>C. 土地里生长的花朵  D. 远方茂盛的森林</li>
+<li>孔子为自己的教学定睛“孔门四教”，具体指的是：(B)<br>A. 修身. 齐家. 治国. 平天下  B. 文. 行. 忠. 信</li>
+<li>以下两位谁曾经中过状元？(B)<br>A. 范仲淹   B) B. 文天祥</li>
+<li>俗语说“化干戈为玉帛”，干戈都是兵器，其中哪个指的是防御武器？(A)<br>A . 干   B. 戈</li>
+<li>《霸王别姬》是京剧中的名段，“虞姬”这一角色在京剧中属于：(B)<br>A. 花旦   B. 青衣</li>
+<li>《尚书》中的“尚”是什么意思？(A)<br>A. 上古 B. 崇尚 C.  官名</li>
+<li>“勿以恶小而为之，勿以善小而不为”语出《三国志》，这是谁说的？(C)<br>A. 诸葛亮  B. 曹操  C. 刘备  D. 周瑜</li>
+<li>如果在华佗去世后不及，曹操还想寻找一位名医为自己治病，他可以找下列的哪一位？(D)<br>A. 扁鹊  B. 孙思邈  C. 李时珍  D . 张仲景</li>
+<li>在我国风俗中，常常避讳73和84这两个岁数，因为这是两位历史人物去世的年龄，他们是：(A)<br>A. 孔子和孟子           B. 老子和庄子<br>C. 汉高祖和汉武帝       D. 周武王和周文王</li>
+<li>“一问三不知”出自《左传》，说的是哪“三不知”？(B)<br>A. 天文. 地理. 文学    B. 事情的开始. 经过. 结果<br>C . 孔子. 孟子. 老子   D. 自己的姓名. 籍贯. 生辰八字</li>
+<li>“不以物喜，不以己悲”出自哪篇目哪篇古文？）（B）<br>A. 《醉翁亭记》 B. 《岳阳楼记》</li>
+<li>“水则载舟，水则覆舟”是谁的名言？（B）<br>A. 老子     B. 荀子</li>
+<li>篆刻分为阴文印和阳文印，北京奥运会徽“中国印”是：（A）<br>A.  阴文印    B. 阳文印</li>
+<li>向别人介绍自己的弟弟妹妹应该用下面哪种称谓？（B）<br>A. 家弟家妹    B. 舍弟舍妹 . 息弟息妹</li>
+<li>“揭竿为旗，斩木为兵”形容的是哪一场起义？（B）<br>A. 赤眉起义 . 陈胜吴广起义    B. 绿林起义 . 黄巾起义</li>
+<li>下面哪位诗人是“初唐四杰”之一？（B）<br>A. 王维     B. 王勃</li>
+<li>古代战争中指挥军队撤退时要敲击：（B）<br>A. 鼓     B. 锣</li>
+<li>“词苑千载，群芳竞秀，盛开一枝女儿花”说的是哪位历史上的哪位才女？（C）<br>A. 朱淑真   B. 秦良玉   C . 李清照</li>
+<li>古人用“父母教，须敬听；父母责，须顺承”来劝谕人们要尊敬父母，这句话出自：（A）<br>A. 《弟子规》 B . 《三字经》  C. 《千字文》</li>
+<li>下列哪项不是端午节的习俗？（C）<br>A.  挂香包  B. 插艾蒿  C. 登高采菊 D . 喝雄黄酒</li>
+<li>“态生两靥之愁，娇袭一身之病”玉对黛玉的第一印象，其中“靥”是指：（A）<br>A. 酒窝  B. 眼睛 C . 嘴角 D . 腮帮</li>
+<li>“弱冠”指的是男子多少岁？（B）<br>A. 十五岁    B. 二十岁<br>71“入木三分”这个成语原本是用来形容什么的？（B）<br>A. 文章     B. 书法</li>
+<li>河姆渡遗址位于：（B）<br>A. 黄河流域     B. 长江流域</li>
+<li>《诗经》是我国第一部诗歌总集，《诗经》里面包括多少首诗？（B）<br>A. 三百首     B. 三百零五首</li>
+<li>《孙子兵法》的作者是：（A）<br>A. 孙武      B. 孙膑</li>
+<li>算盘是中国传统计算工具，利用算盘能进行开平方的运算吗？（A）<br>A. 能      B. 不能</li>
+<li>下面哪个成语与秦始皇有关？（A）<em>难道不是C吗?</em><br>A. 指鹿为马   B . 奇货可居    C . 图穷匕见</li>
+<li>唱念做打是中国戏曲表演的四种艺术手段，也是戏曲表演的四项基本功，其中“做”指的是：（C）<br>A. 面部表情 B. 舞蹈动作 C. 器械表演</li>
+<li>“海上升明白，天涯共此时”是谁的名句？（B）<br>A. 王勃    B. 张九龄</li>
+<li>李清照词中的“绿肥红瘦”描写的是什么季节的景色？（B）<br>A. 晚春      B. 仲夏</li>
+<li>成语“机不可失”出自张九龄之笔，它的下句是：（A）<br>A. 时不再来     B. 失不再来</li>
+<li>“熄火连三月，家书抵万金”古代书信通过邮驿传递。唐代管理这类工作的中央管理机构是：（A）<br>A. 尚书省   B. 中书省    C . 门下省</li>
+<li>陕西省一块著名的“无字碑”，它与哪位皇帝有关？（A）<br>A. 秦始皇     B. 武则天</li>
+<li>西湖的白堤的得名与哪位诗人有关？（B）<br>A. 白居易     B. 李白</li>
+<li>孟子说：“不以规矩，不成方圆”，这里“规矩”的意思是：（A）<br>A. 法律条文     B. 美德善行 . 圆规曲尺</li>
+<li>“一琴一鹤”所形容的是：（C）<br>A. 为政清简    B . 平安长春    C. 淡泊名利</li>
+<li>“夕阳无限好，只是近黄昏”是谁的诗句？（A）<br>A. 李商隐 B. 骆宾王</li>
+<li>《红楼梦》是我国古代著名的长篇小说之一，它的别名是：（A）<em>这里应该是石头记 -博主按</em><br>A. 《金陵记》   B . 《石头记》</li>
+<li>成语“一衣带水”中的“水”原指：（B）<br>A. 黄河   B. 长江   C . 淮河</li>
+<li>“问世间情为何物，直教生死相许”这句诗是谁写的？（B）<br>A.  元好问    B. 柳永   C . 晏殊</li>
+<li>孟子说：“君子有三乐”，下列哪项不在其“三乐”之列？（A）<br>A. 父母俱存，兄弟无故    B . 仰不愧于天，俯不作于人<br>C. 乡人无不称其善也D . 得天下英才而教育之</li>
+<li>中国历史上被誉为“药王“的是：（C）<br>A. 扁鹊   B. 华佗   C. 孙思邈   D. 李时珍</li>
+<li>张衡发明的地动仪上有几条龙？（A）<br>A. 八条     B. 二十二条</li>
+<li>都江堰和秦始皇陵哪个的修建年代更早？（A）<br>A. 都江堰     B. 秦始皇陵</li>
+<li>在古代人们尊称对方的妻子：（B）<br>A. 令爱      B. 令正</li>
+<li>从事贸易活动的人叫做“商人”，这跟历史上的商代有关吗？（A）<br>A. 有关     B . 无关</li>
+<li>水浒一百单八将中有几位女性？（B）<br>A. 两位     B. 三位</li>
+<li>苏轼在《念奴娇·赤壁怀古》中提到了“羽扇纶巾，谈笑间，樯橹灰飞烟灭”，“羽扇纶巾”形容的是下面哪位历史人物？（B）<br>A. 诸葛亮     B. 周瑜      C. 曹操</li>
+<li>按照戏曲界的行话，以下哪个表示最后一出？（B）<br>A. 压轴戏     B. 大轴戏</li>
+<li>成语“请君入瓮”，“请”的是谁？（B）<br>A. 来俊臣     B . 周兴</li>
+<li>琵琶本名“批把”，“批把”一词来源于什么？（B）<br>A. 制造琵琶的材料       B. 演奏琵琶的方式</li>
+<li>切脉是中医独创的诊法，中医把脉时摸的是：（B）<br>A. 静脉     B. 动脉</li>
+<li>周敦颐在《爱莲说》中把菊花形容为：（B）<br>A. 花之君子者      B. 花之隐逸者</li>
+<li>我国古代的很多事物都有自己的雅称，请问我们常说的“润笔”指的是什么？（A）<br>A. 文章书画稿费      B . 替人研磨墨汁     C. 为人作序</li>
+<li>“路漫漫其修远兮，吾将上下而求索”是谁的名言？（B）<br>A.  孔子      B . 屈原</li>
+<li>“杏林”指代的是：（B）<br>A. 教育界     B. 医学界</li>
+<li>神话故事“夸父逐日”出自哪部书？（A）<br>A. 《山海经》     B. 《世说新语》</li>
+<li>“顷刻间千秋事业，方寸地万里江山；三五步行遍天下，六七人百万雄兵”描写的是：（C）<br>A. 下棋     B. 战场     C . 戏台</li>
+<li>《二十四史》是我国古代二十四史的总称，其中只有一部是完全意义上的通史，它是：（B）<br>A. 《汉书》  B . 《史记》  C . 《三国志》   D . 《左传》</li>
+<li>根据中国传统建筑的特点，面对大院的门口，你的左手边是什么方向？（B）<em>前提是你得站在院外</em><br>A.  东   B. 西   C. 南    D . 北</li>
+<li>孔子弟子中擅长做生意的是谁？（C）<br>A. 子路    B. 子张    C. 子贡   D . 颜回</li>
+<li>元太祖铁木真是蒙古草原上的英雄，他被人们尊称为“成吉思汗”，“汗”的意思是大王，那么“成吉思汗”的意思是：（B）<br>A.  天空    B . 大海     C. 草原    D . 高山</li>
+<li>“塞翁失马”这一典故出自：（A）<br>A. 《淮南子》     B . 《庄子》</li>
+<li>中国古代最大的一部百科全书是：（A）<br>A. 《永乐大典》     B. 《四库全书》</li>
+<li>太极拳讲究“以柔克刚，以静制动，以弱胜强”这和下面哪位思想家的观点不谋而合？（A）<br>A. 老子    B . 孟子     C. 荀子     D. 孔子</li>
+<li>“洛阳纸贵”比喻作品风行一时，广为流传，这个成语与以下哪部著作有关？（A）<br>A. 左思的《三都赋》       B. 司马相如的《长六赋》<br>C . 班固的《两都赋》       D . 张衡的《二京赋》</li>
+<li>“红娘”今指代为爱情牵线搭桥的人，请问她最早出现在哪部文学作品中？（A）<br>A.  元稹的《莺莺传》       B. 王实甫的《西厢记》</li>
+<li>《三国演义》中的“三英战吕布”的“三英”指的是：（B）<br>A. 赵云，张飞，关羽        B. 刘备，关羽，张飞</li>
+<li>我们常用“社稷”来指代国家，其中“社”字代表的是：（A）<br>A.  土地之神        B . 五谷之神</li>
+<li>我国古代的文人雅士都喜欢研墨挥毫，请问下面哪种是正确的研磨方法？（B）<br>A.  先快后慢        B. 先慢后快</li>
+<li>唐代边塞诗人王昌龄的“但使龙城飞将在，不教胡马度阴山”中的“飞将”指的是谁？（D）<br>A. 张飞     B. 关羽     C. 卫青     D .  李广</li>
+<li>下列民间爱情故事起源年代最早的是：（B）<br>A. 《白蛇传》     B. 《梁山仙与祝英台》     C. 《唐伯虎点秋香》</li>
+<li>度量衡是我国古代使用的计量单位，其中“衡”是指的哪个方面的标准？（D）<br>A.  长度     B . 面积      C. 体积      D. 重量</li>
+<li>木版年画发源于四大名镇中的哪个名镇？（C）<br>A. 汉口镇     . 景德镇     . 朱仙镇     . 佛山镇</li>
+<li>下列哪部著作的成书时间最长？（A）<br>A. 《徐霞客游记》  B. 《说文解字》 C . 《天工开物》 D . 《梦溪笔谈》</li>
+<li>“疱丁解牛”形容做事得心应手，“疱丁”指的是什么？（B）<br>A. 一个年轻力壮的厨师        B. 一个名叫“丁”的厨师</li>
+<li>“少壮不努力，老大徒伤悲”出自：（A）<br>A. 《长歌行》      B . 《短歌行》</li>
+<li>下列哪个成语和“道听途说”词意更接近？（B）<br>A. 空穴来风        B . 三人成虎</li>
+<li>《红楼梦》的作者曹雪芹是家喻户晓的文学家，“雪芹”是他的：（C）<br>A. 名       B . 字        C. 号</li>
+<li>下面哪句话是孔子说的？（A）<br>A. 有朋自远方来，不亦乐乎！      B. 天下兴亡，匹夫有责</li>
+<li>在古代，人们将乐器分为“丝”. “竹”，分别指弹弦乐器和吹奏乐器，其中哪个是指吹奏乐器？（B）<br>A. 丝      B. 竹</li>
+<li>“在天愿做比翼鸟，在地愿为连理枝”这句诗描写的是谁的爱情故事？（B）<br>A. 牛郎和织女      B. 唐明皇和杨贵妃</li>
+<li>“信言不美，美言不信”体现出：（B）<br>A. 怀疑精神       B. 辩证法思想</li>
+<li>中国人常说“五福临门”，下面哪一项是属于“五福”的？（A）<br>A. 品德高尚       B. 子孙成群</li>
+<li>“文章千古事，得失寸心知”是谁的名句？（B）<br>A. 李白      B. 杜甫</li>
+<li>“生当作人杰，死亦为鬼雄，至今思项羽，不肯过江东。”是谁咏赞项羽的名句？（B）<br>A. 辛弃疾       B. 李清照</li>
+<li>为了孩子的学习环境而三迁居的是哪个历史故事？（A）<br>A.  孟母教子 B. 举案齐眉 C.  岳母刺字</li>
+<li>陛下是古时对君王的尊称，其中“陛”的意思是：（A）<br>A.  宫殿的台阶 B. 天的别称 三玉玺</li>
+<li>下面哪个剧种被称为“中国百戏之师”？（C）<br>A. 京剧 B. 黄梅戏 C. 昆曲 D. 越剧</li>
+<li>我国现在存最早的兵书是：（A）<br>A. 《孙子兵法》 B. 《孙膑兵法》</li>
+<li>唐诗“东边日出西边雨”的下一句是：（A）<br>A.  道是无晴还有晴 二B. 也无风雨也无晴</li>
+<li>“苦心人，无不负，卧薪尝胆，三千越申可吞吴”描写的是谁？（B）<br>A. 伍子胥 B. 勾践</li>
+<li>下面哪句诗的作者离开家的时间更长？（B）<br>A. 人归落雁后，思发在花前 B. 儿童相见不相识，笑问客从何处来</li>
+<li>《在水一方》的歌词来源于：（A）<br>A. 《诗经》 B. 《陌上桑》 C. 《楚辞》 D. 《孔雀东南飞》</li>
+<li>我们现在所能看到的《兰亭序》是王羲之的真迹吗？（B）<br>A. 是 B. 不是</li>
+<li>我国古代对于年龄有很多独特的称呼，其中满一百岁被称为：（A）<br>A. 期颐      B. 耄耋</li>
+<li>舞狮是我国优秀的民间艺术，有南狮和北狮之分，其中狮头以刘备. 关羽. 张飞等三国人物的戏曲脸谱来打造的是：（A）<br>A. 南狮      B. 北狮</li>
+<li>文人对各种植物有自己的偏爱，陶渊明喜爱菊花，北宋文豪苏东坡则说过：宁可食无肉，不可：（B）<br>A.  居无松  B. 居无竹  C. 居无梅  D. 居无菊</li>
+<li>唐朝文宗御封的“三绝”指的是李白的诗歌. 张旭的草书和：（A）<br>A. 裴旻的剑舞   B. 公孙大娘的舞蹈    D. 吴道子的画</li>
+<li>天干地支纪年始于汉代，请问这种纪年是以哪一天为起点的？（C）<br>A. 除夕   B. 正月初一   C. 立春   D. 春分</li>
+<li>王实甫在《西厢记》中写道：“淋漓襟袖啼红泪，比司马青衫更湿”，其中“司马青衫”指的是：（C）<br>A.  司马相如   B. 崔莺莺   C. 白居易   D.  杜甫</li>
+<li>“金戈铁马，气吞万里如虎“是谁的词句？（B）<br>A. 岳飞      B. 辛弃疾</li>
+<li>“会当凌绝顶，一览众山小”是杜甫的名句，诗人登上了哪座山发出了这样的感慨？（B）<br>A. 黄山     B. 泰山</li>
+<li>《齐民要术》是关于：（B）<br>A. 君主如何统治国家的著作   B. 农业生产和农事活动的著作</li>
+<li>孔子为什么“三月不知肉滋味”？（B）<br>A. 读到一本好书     B. 听到一段好乐曲</li>
+<li>“桃李满天下”的“桃李“指什么？（B）<br>A. 朋友       B. 学生</li>
+<li>《康熙字典》成书于哪个朝代？（B）<br>A. 秦朝 B. 清朝</li>
+<li>风筝最初是用来做什么的？（A）<br>A. 通报消息      B. 娱乐健身</li>
+<li>“鼎”的最初用途是：（C）<br>A. 祭祀用礼器   B. 地位象征物   C. 烹煮器具</li>
+<li>如果你想到图书馆借阅寓言性质的书，在下列书籍中应优先选择哪一本？（C）<br>A. 《史记》 B. 《论语》 C. 《庄子》</li>
+<li>“三更半夜”中的“三更”指的是几点？（B）<br>A. 21点至23点  B. 23点至凌晨1点  C. 凌晨1点至3点</li>
+<li>明朝永乐年间，从西洋归来的郑和船队带回了一只西方异域兽“麒麟”，就是现在我们所知的：（D）<br>A. 狮子  B. 金钱豹  C. 河马  D. 长颈鹿</li>
+<li>下列古代名曲哪一首是琵琶曲？（A）<br>A. 十面埋伏    B. 高山流水</li>
+<li>“老吾老以及人之老”是中华民族的传统美德，这句话是谁最早提出的？（B）<br>A. 孔子      B.  孟子</li>
+<li>成语“咫尺天涯”中“咫”. “尺”都是古代计量单位，其中“咫”和“尺”哪个更长？（B）<br>A. 咫       B.  尺</li>
+<li>草书. 行书. 楷书. 隶书四种字体当中哪一种是其余三种的起源？（D）<br>A. 草书   B. 行书   C. 楷书   D. 隶书</li>
+<li>吃年糕的习俗与下列哪位历史人物有关？（A）<br>A.  伍子胥    B. 范蠡   C.  屈原</li>
+<li>“大材小用古所叹，管仲. 萧何实流亚”是陆游的一句名诗，其中“大材小用”形容的是下面哪位人物？（B）<br>A. 韩愈   B. 辛弃疾   C. 庞统   D.  宋玉</li>
+<li>甲骨文最早是在哪种物品上发现的？（B）<br>A. 青铜器   B. 药材   C. 墓碑   D. 竹筒</li>
+<li>下列哪个成语典故说的是吕不讳的故事？（A）<br>A. 一字千金   B. 一诺千金   C. 一饭千金   D. 一掷千金</li>
+<li>以下哪个字不含“黑色”的意思？（D）<br>A. 玄    B. 皂    C. 青     D. 苍</li>
+<li>下面四句话中，意义与其它三句不同的是：（D）<br>A. 合抱之木生于毫末     B. 九层之台起于累土<br>C. 千里之行始于足下       D. 一日之行在于清晨</li>
+<li>《三国演义》中有关羽“单刀赴会”的故事，历史上也确有“单刀赴会”一事，赴会的是：（D）<br>A. 赵云   B. 张飞     C. 周瑜     D. 鲁肃</li>
+<li>以下哪位女性的名字被用来命名外太空环形山？（D）<br>A. 班昭   B. 蔡文姬  C. 王昭君  D. 李清照</li>
+<li>小王模仿古人填了一首词，写完后发现正文刚好100字，请问他用的是哪种词牌？（C）<br>A. 满庭芳   B. 雨霖铃     C. 念奴娇   D. 水龙吟</li>
+<li>以下几位历史人物谁在家排行老大？（C）<br>A. 孔子   B. 诸葛亮   C. 班固  D. 程顾</li>
+<li>“双簧”是我们一门独特的曲艺艺术，它得名于：（A）<br>A. 初演的两个人都姓黄    B. 表演者使用的乐器叫做簧<br>C. 表演者巧舌如簧</li>
+<li>在白族姑娘的头饰上，蕴含着一个完美熟悉的词语，它就是：（B）<br>A. 阴晴圆缺 B. 风花雪月  C. 梅兰竹菊  D. 春夏秋冬</li>
+<li>我国很早就有了穿木屐的相关史书记载，下面的鞋就是东晋时谢灵运发生的“谢公屐”，它当时的用途是：（C）<br>A. 舞鞋  B. 上朝穿的朝鞋   C. 登山鞋</li>
+<li>“及时当勉励，岁月不待人”是谁的名句？（B）<br>A. 苏轼；B. 陶渊明</li>
+<li>曹植七步成诗，相传历史上还有一位三步就能成诗的人，他是：（B）<br>A. 王安石； B. 寇准</li>
+<li>《论语》中认为“为仁之本”的是：（B）<br>A. 忠义； B. 孝悌</li>
+<li>“七月流火，九月授衣”，其中“七月流火”指的是：（B）<br>A. 天气炎热似火；B. 天气渐渐转凉；C. 流星异常出现。</li>
+<li>“实事求是”一词出自哪部典籍？（D）<br>A. 《左传》；B. 《战国策》；C. 《史记》；D. 《汉书》。</li>
+<li>“醉里挑灯看剑，梦回吹角连营”出自谁的作品？（C）<br>A. 陆游；B. 岳飞；C. 辛弃疾；D. 李清照。</li>
+<li>秦始皇统一中国后，将全国文字统一成了下面哪一种？（B）<br>一. 楷书；二. 小篆；三. 鸟虫文；四. 行书。</li>
+<li>“但愿人长久，千里共婵娟”，苏东坡借这首词表达了对谁的思念之情？（B）<br>A. 妻子； B. 兄弟； C. 朋友； D. 父亲。</li>
+<li>宣纸得名于它的：（C）<br>A. 用途； B. 材质； C. 产地； D. 使用人群。</li>
+<li>下面哪个是农历五月的别称？（C）<br>A. 杏月； B. 桃月  C. 榴月  D. 荷月。</li>
+<li>下列诗词名句出自男子之笔的是：（C）<br>A. 看朱成碧思纷纷，憔悴支离 为忆君；<br>B. 北风历兮肃冷冷，胡笳动兮边马鸣；<br>C. 人生若只如初见，何事秋风悲画扇；<br>D. 物是人非事事休，欲语泪先流。<br>190古代有很多姓氏都来源于官职，司马的职能是什么？（B）<br>A. 农耕； B. 军政； C. 养马； D. 水利。</li>
+<li>旗袍是具有中国特色的女性服饰。旗袍是：（A）<br>A. 左襟压右襟； B. 右襟压左襟。</li>
+<li>《三国演义》中刘备见到诸葛亮家悬挂了一幅对联，写的是：（A）<br>A. 淡泊以明志，宁静而致远；B. 鞠躬尽瘁，死而后已。</li>
+<li>清代的“八大山人”指的是：（A）<br>A. 一位画家； B. 八位画家。</li>
+<li>下列植物中，不应当出现在《岁寒三友图》中的是：（A）<br>A. 菊； B. 梅； C. 竹。</li>
+<li>. 古琴最初只有五根弦，代表着金. 木. 水. 火. 土。后来又增加了两根弦，这两根弦代表：（D）<br>A. 天. 地； B. 南. 北； C. 阴. 阳； D. 文. 武。</li>
+<li>下面哪个诗句描写的不是古琴？（B）<br>A. 欲把心事付瑶琴； B. 一弦一柱思华年；<br>C. 为我一挥手，如听万壑松； D. 寒苦不忍言，为君奏丝桐。</li>
+<li>“楚河”和“汉界”在今天的哪个省？（B）<br>A. 湖北； B河南； C河北； D湖南。</li>
+<li>个成语典故和棋文化有关？（C）<br>A势如破竹； B出奇制胜； C专心致志； D渭分明。</li>
+<li>峻丽，骨力劲健”形容的是历史上哪位书法家的字？（C）<br>A王羲之； B颜真卿； C柳公权； D吴道子。</li>
+<li>存最早用纸作画的作品是：（C）<br>A. 清明上河图》； B. 洛神赋图》；<br>C. 五牛图》； D. 历代帝王图》。</li>
+</ol>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/国学/">
+                #国学
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/16/Hexo/">
+                Hexo，肚脐？
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          
+            发表于 2014-08-16
+          
+        </span>
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/16/Hexo/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/16/Hexo/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    
+      <div class="post-body">
+
+        
+        
+
+        
+          
+            <h1 id="概要">概要</h1><p>这个博客运行在我自己家里的树莓派上。几天前曾经用sqlite+wordpress搭建过<a href="http://mangolovecarrot.net:8080/wordpress/" target="_blank" rel="external">另一个博客</a>，你访问一下试试就知道有多慢了(如果已经访问不了那就是已经被我删掉了)，打开一个页面平均需要5秒以上，这还是没有加载任何第3方插件的情况下，于是放弃。</p>
+<h1 id="Hexo">Hexo</h1><p>几番搜寻，决定采用静态html式的博客框架，这种框架最大的优点就是快快快。#(废话，静态页面当然快)#<br>最后采用的是一个叫Hexo(很像<em>肚脐</em>的日语发音<em>heso</em>，作者<a href="http://zespia.tw/blog/2012/10/11/hexo-debut/" target="_blank" rel="external">自己说的</a>)的框架，作者是一个台湾大学生。该框架是基于Node.js的javascript框架。相比其他类似框架的好处是通过makedown生成静态html非常快。另外就是它那<a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">逼格奇高</a>的程序猿写作方式我很喜欢。</p>
+<h2 id="安装">安装</h2><p>安装Hexo很简单，但在这之前你还需要这些：</p>
+<ul>
+<li><strong>Git</strong>，一个源码管理工具，如果你希望把你生成的网站发布到GitHub上去的话那就安装吧。如果你仅仅只是使用Hexo来生成静态html页面然后发布到本地web服务器上的话可以跳过这一步。要注意的是，以后当你想更换Hexo的主题时你还是需要使用Git工具来下载那些托管在GitHub上的主题包。<em>（当然这并不是必须的）</em></li>
+<li><strong>lighttpd</strong>，一个轻量级的web服务器，用来将网站发布在你本地，你也可以选择其他任何你熟悉的webserver比如apache。当然，如果你选择发布在GitHub上<em>（意味着你不能使用自己喜欢的域名）</em>那么你可以跳过这一步。</li>
+<li><strong>Node.js</strong>，一个强大的javascript库，是Hexo的基础，必须安装。</li>
+</ul>
+<h3 id="安装_Git">安装 Git</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install git</span><br></pre></td></tr></table></figure>
+<h3 id="安装_lighttpd">安装 lighttpd</h3><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-<span class="keyword">get</span> install lighttpd</span><br></pre></td></tr></table></figure>
+<h3 id="安装_Node-js和npm">安装 Node.js和npm</h3><p>关于安装这个，Hexo官网给出的方法是<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -qO- http<span class="variable">s:</span>//raw.github.<span class="keyword">com</span>/creationix/nvm/master/install.<span class="keyword">sh</span> | <span class="keyword">sh</span></span><br><span class="line">nvm install <span class="number">0.10</span></span><br></pre></td></tr></table></figure></p>
+<p>我按照上面的命令试图安装，这种方法是下载最新src并在本地进行编译，我那可怜的树莓派足足跑了1个小时还没编译完成，最后强制中断了。<br>我依然采用万能的apt-get来进行安装（这要归功于写出raspbian系统并为这个系统提供了几乎所有常用的并且已经编译完成的软件包的大牛们）<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get <span class="operator"><span class="keyword">install</span> nodejs</span><br><span class="line">sudo apt-<span class="keyword">get</span> <span class="keyword">install</span> npm</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="安装_Hexo">安装 Hexo</h3><p>很简单也是一行命令搞定<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> -g hexo</span><br></pre></td></tr></table></figure></p>
+<h2 id="创建Hexo文件系统">创建Hexo文件系统</h2><p>进入任意目录执行以下命令即可创建一个Hexo的一整套文件系统。由于我打算部署在lighttpd里，所以我将Hexo的文件系统创建在lighttpd服务器的根目录<strong>/var/www</strong>下，注意更新该目录需要root权限，所以请记得使用sudo<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">su</span></span><br><span class="line"><span class="keyword">cd</span> /<span class="keyword">var</span>/www</span><br><span class="line">hexo init hx</span><br></pre></td></tr></table></figure></p>
+<p>不出意外，在<strong>/var/www</strong>下会生成一个名为<strong>hx</strong>的文件夹，这就是hexo的文件系统了。</p>
+<h1 id="写博客">写博客</h1><p><em>未完待续</em></p>
+
+          
+        
+      </div>
+    
+
+    
+      <div class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/git/">
+                #git
+              </a>
+            
+              <a href="/tags/hexo/">
+                #hexo
+              </a>
+            
+              <a href="/tags/lighttpd/">
+                #lighttpd
+              </a>
+            
+              <a href="/tags/webserver/">
+                #webserver
+              </a>
+            
+          </div>
+        
+
+        
+
+        
+        
+          <div class="post-eof"></div>
+        
+      </div>
+    
+  </div>
+
+
+  
+
+          </div>
+
+          
+        </div>
+
+        
+<div class="sidebar-toggle">
+  <div class="sidebar-toggle-line-wrap">
+    <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+    <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+  </div>
+</div>
+
+<div id="sidebar" class="sidebar">
+  <div class="sidebar-inner">
+
+    
+
+    <div class="site-overview">
+      <div class="site-author motion-element">
+        <img class="site-author-image" src="/images/default_avatar.jpg" alt="mango" />
+        <p class="site-author-name">mango</p>
+      </div>
+      <p class="site-description motion-element">这是在树莓派上部署的一个小站</p>
+      <div class="site-state motion-element">
+        <div class="site-state-item site-state-posts">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </div>
+        <div class="site-state-item site-state-tags">
+            <span class="site-state-item-count">15</span>
+            <span class="site-state-item-name">标签</span>
+        </div>
+        <div class="site-state-item site-state-pages">
+            <span class="site-state-item-count">1</span>
+            <span class="site-state-item-name">页面</span>
+        </div>
+      </div>
+
+      
+
+      <div class="social-info motion-element">
+        
+      </div>
+
+      
+      
+
+    </div>
+
+    
+
+  </div>
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2014 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">mango</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 - <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT</a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $(".fancybox").fancybox();
+    });
+  </script>
+
+  <script type="text/javascript">
+  function hasMobileUA () {
+    var nav = window.navigator;
+    var ua = nav.userAgent;
+    var pa = /iPad|iPhone|Android|Opera Mini|BlackBerry|webOS|UCWEB|Blazer|PSP|IEMobile|Symbian/g;
+
+    return pa.test(ua);
+  }
+
+  function isDesktop () {
+    return screen.width > 991 && !hasMobileUA();
+  }
+
+  function isTablet () {
+    return screen.width < 992 && screen.width > 767 && hasMobileUA();
+  }
+
+  function isMobile () {
+    return screen.width < 767 && hasMobileUA();
+  }
+
+  function escapeSelector (selector) {
+    return selector.replace(/[!"$%&'()*+,.\/:;<=>?@[\\\]^`{|}~]/g, "\\$&")
+  }
+</script>
+
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" id="motion.page.home">
+    $(document).ready(function () {
+      $.Velocity.RunSequence([
+        { e: $('.brand'), p: { opacity: 1 }, o: { duration: 100 } },
+        { e: $('.logo'), p: { opacity: 1, top: 0 }, o: { duration: 50} },
+        { e: $('.site-title'), p: { opacity: 1, top: 0 }, o: { duration: 200, sequenceQueue: false } }
+      ]);
+      $('.menu-item').velocity('transition.slideDownIn', {display: null});
+    });
+  </script>
+
+
+  <script type="text/javascript" id="motion.global">
+  $(document).ready(function () {
+    var body = $('body');
+    var isSidebarVisible = false;
+    var sidebarToggle = $('.sidebar-toggle');
+    var sidebarToggleLine1st = $('.sidebar-toggle-line-first')
+    var sidebarToggleLine2nd = $('.sidebar-toggle-line-middle');
+    var sidebarToggleLine3rd = $('.sidebar-toggle-line-last');
+    var sidebar = $('.sidebar');
+
+    var SIDEBAR_WIDTH = '320px';
+    var SIDEBAR_DISPLAY_DURATION = 300;
+
+    var sidebarToogleLineStatusInit = {width: '100%', opacity: 1, left: 0, rotateZ: 0, top: 0};
+
+    var sidebarToggleLine1stStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine1stStatusArrow = {width: '50%', rotateZ: '-45deg', top: '2px'};
+    var sidebarToogleLine1stStatusClose = {width: '100%', rotateZ: '-45deg', top: '5px'};
+
+    var sidebarToggleLine2ndStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine2ndStatusArrow = {width: '90%'};
+    var sidebarToogleLine2ndStatusClose = {opacity: 0};
+
+    var sidebarToggleLine3rdStatusInit = sidebarToogleLineStatusInit;
+    var sidebarToggleLine3rdStatusArrow = {width: '50%', rotateZ: '45deg', top: '-2px'};
+    var sidebarToogleLine3rdStatusClose = {width: '100%', rotateZ: '45deg', top: '-5px'};
+
+    sidebatToggleMotion();
+    postsListMotion();
+    backToTopMotion();
+
+
+    $(document)
+      .on('sidebar.isShowing', function () {
+        isDesktop() && body.velocity(
+          {paddingRight: SIDEBAR_WIDTH},
+          SIDEBAR_DISPLAY_DURATION
+        );
+        sidebarContentMotion();
+      })
+      .on('sidebar.isHiding', function () {});
+
+
+    function backToTopMotion () {
+      var b2top = $('.back-to-top');
+      b2top.on('click', function () {
+        body.velocity('scroll');
+      });
+    }
+
+    function sidebarShowMotion () {
+
+      sidebarToggleLine1st.velocity(sidebarToogleLine1stStatusClose);
+      sidebarToggleLine2nd.velocity(sidebarToogleLine2ndStatusClose);
+      sidebarToggleLine3rd.velocity(sidebarToogleLine3rdStatusClose);
+
+      sidebar.velocity({width: SIDEBAR_WIDTH}, {
+        display: 'block',
+        duration: SIDEBAR_DISPLAY_DURATION,
+        complete: function () {
+          sidebar.addClass('sidebar-active');
+          sidebar.trigger('sidebar.didShow');
+        }
+      });
+      sidebar.trigger('sidebar.isShowing');
+    }
+
+    function sidebarHideMotion () {
+      isDesktop() && body.velocity({paddingRight: 0});
+      sidebar.velocity('reverse');
+
+      sidebarToggleLine1st.velocity(sidebarToggleLine1stStatusInit);
+      sidebarToggleLine2nd.velocity(sidebarToggleLine2ndStatusInit);
+      sidebarToggleLine3rd.velocity(sidebarToggleLine3rdStatusInit);
+
+      sidebar.removeClass('sidebar-active');
+      sidebar.trigger('sidebar.isHiding');
+    };
+
+    function sidebarContentMotion () {
+      $('.sidebar .motion-element').velocity(
+        'transition.slideRightIn',
+        {stagger: 50, drag: true}
+      );
+    }
+
+    function postsListMotion () {
+      var postMotionOptions = postMotionOptions || {stagger: 300, drag: true};
+      $('.post').velocity('transition.slideDownIn', postMotionOptions);
+    }
+
+    function sidebatToggleMotion () {
+      sidebarToggle.on('click', function () {
+        isSidebarVisible ? sidebarHideMotion() : sidebarShowMotion();
+        isSidebarVisible = !isSidebarVisible;
+      });
+
+      sidebarToggle.hover(function () {
+        if (isSidebarVisible) {return}
+        sidebarToggleLine1st.velocity('stop').velocity(sidebarToggleLine1stStatusArrow);
+        sidebarToggleLine2nd.velocity('stop').velocity(sidebarToggleLine2ndStatusArrow);
+        sidebarToggleLine3rd.velocity('stop').velocity(sidebarToggleLine3rdStatusArrow);
+      }, function () {
+        if (isSidebarVisible) {return}
+        sidebarToggleLine1st.velocity('stop').velocity(sidebarToggleLine1stStatusInit);
+        sidebarToggleLine2nd.velocity('stop').velocity(sidebarToggleLine2ndStatusInit);
+        sidebarToggleLine3rd.velocity('stop').velocity(sidebarToggleLine3rdStatusInit);
+      });
+    }
+  });
+
+</script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"mangolovecarrot"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+  
+</body>
+</html>
