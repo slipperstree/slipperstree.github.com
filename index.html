@@ -155,7 +155,7 @@
 <h1 id="echo_$lines”/“$total">echo $lines”/“$total</h1><h1 id="同一个IP连续两次登录错误的话就认为是恶意登录，将该ip记录到ip列表文件中">同一个IP连续两次登录错误的话就认为是恶意登录，将该ip记录到ip列表文件中</h1><p>  if [ “$last_ip” == “$ip” ] &amp;&amp; [ “$ip” != “$last_blocked_ip”   ]; then<br>    echo “$ip” &gt;&gt; block_ip.log<br>    last_blocked_ip=$ip<br>  fi<br>  last_ip=$ip<br>}<br>done</p>
 <h1 id="至此，所有日志里试图连续尝试登录失败的ip全部被记录在block_ip-log这个文件中了。">至此，所有日志里试图连续尝试登录失败的ip全部被记录在<em>block_ip.log</em>这个文件中了。</h1><h1 id="接着我们把这个列表里重复的ip删掉">接着我们把这个列表里重复的ip删掉</h1><p>sort block_ip.log | uniq &gt; sorted_ip.log</p>
 <h1 id="这样我们就得到了一个不重复的，试图暴力破解我们密码的坏人的ip列表">这样我们就得到了一个不重复的，试图暴力破解我们密码的坏人的ip列表</h1><h1 id="屏蔽他们！">屏蔽他们！</h1><p>cat sorted_ip.log | while read LINE; do<br>{<br>  ip=${LINE}</p>
-<h1 id="将ip加入黑名单">将ip加入黑名单</h1><p>  iptables -A INPUT -s “$ip” -j DROP<br>}<br>done<br>´´´<br>这样，封ip就成功了。<br>这个程序还可以改成使用 tail -f 不停监视最新的日志，随时封新发现的ip的模式。有兴趣的自己动手改一下。</p>
+<h1 id="将ip加入黑名单">将ip加入黑名单</h1><p>  iptables -A INPUT -s “$ip” -j DROP<br>}<br>done<br>´´´<br>这样，封ip就成功了。<br>这个程序还可以改成使用 tail -f 不停监视最新的日志，随时封新发现的ip的模式。有兴趣的可以自己动手改一下。</p>
 <h1 id="修改SSH端口">修改SSH端口</h1><p>todo</p>
 <h1 id="关掉SSH的密码登录验证">关掉SSH的密码登录验证</h1><p>todo</p>
 
