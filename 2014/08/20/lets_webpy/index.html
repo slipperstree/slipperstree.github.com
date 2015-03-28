@@ -118,6 +118,7 @@
 
         
           <p>相信看到本文的读者都已经搭建了自己的hexo站点。hexo（或者任何其他静态html框架）有一个非常不方便的地方就是每次写博客，你都必须ssh到你的服务器上执行以下命令来创建一篇新文章：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">hexo</span> n 文章标题</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
 <p>然后再用nano或者是vim等文字编辑器来更新这个md文件。编辑完以后再执行下面两条命令生成文章并发布。<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo <span class="keyword">g</span></span><br><span class="line">hexo <span class="literal">d</span></span><br></pre></td></tr></table></figure></p>
 <p>这个过程很geek，可能也是最先吸引程序猿们使用这套东西的原因。但最终你会觉得厌烦，为什么我把精力集中在写文章上呢？<br>本文的目的就是利用强大方便的webpy来搭建一个简单但完备的在线版hexo编辑器，这个编辑器应该具有：</p>
 <ul>
