@@ -20,9 +20,29 @@
 
 
 
-	<meta name="keywords" content="LINUX,SSH,树莓派," />
 
-  <title> SSH暴力扫描的防范手段 // Mango Love Carrot </title>
+    <meta name="keywords" content="Hexo,next" />
+
+
+
+
+
+    <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.3.0" />
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?06def1d033e0398f6bc6a19820065f44";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  <title> Hello World // Mango Love Carrot </title>
 </head>
 
 <body>
@@ -85,7 +105,7 @@
           
           
             
-              SSH暴力扫描的防范手段
+              Hello World
             
           
         </h1>
@@ -94,15 +114,15 @@
       <div class="post-meta">
         <span class="post-time">
           
-            发表于 2015-03-27
+            发表于 2015-04-20
           
         </span>
         
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/03/27/pi-ssh-scan/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/03/27/pi-ssh-scan/"></span>
+            <a href="/2015/04/20/hello-world/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/20/hello-world/"></span>
             </a>
           </span>
           
@@ -117,21 +137,15 @@
         
 
         
-          <p>之前买了块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。<br><a id="more"></a></p>
-<h1 id="背景">背景</h1><p>之前买了一块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。基本上长成下面这个样子：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:39</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:42</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1088]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 34063 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:57</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:58</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1255]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">user</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4918 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:30</span><span class="pseudo">:59</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:01</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1251]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">root</span> <span class="tag">from</span> 115<span class="class">.230</span><span class="class">.126</span><span class="class">.148</span> <span class="tag">port</span> 40513 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:10</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:14</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br><span class="line"><span class="tag">Mar</span> 26 09<span class="pseudo">:31</span><span class="pseudo">:19</span> <span class="tag">raspberrypi</span> <span class="tag">sshd</span><span class="attr_selector">[1370]</span>: <span class="tag">Failed</span> <span class="tag">password</span> <span class="tag">for</span> <span class="tag">invalid</span> <span class="tag">user</span> <span class="tag">ubnt</span> <span class="tag">from</span> 111<span class="class">.73</span><span class="class">.46</span><span class="class">.22</span> <span class="tag">port</span> 4432 <span class="tag">ssh2</span></span><br></pre></td></tr></table></figure></p>
-<p>虽然对自己设置的密码强度有信心，但自己家里被人偷窥的感觉总是不爽。<br>解决方案有很多：</p>
-<ul>
-<li>被动方式。监视系统日志，发现有连续登录失败的尝试就屏蔽来源ip的请求，也就是封IP。</li>
-<li>弱主动方式。修改SSH端口，SSH默认端口是22，改个端口可以档掉一部分扫描，但挡不住连端口也一起扫描的家伙。</li>
-<li>强主动方式。关掉SSH的密码登录验证，只允许使用公密钥方式登录。这种方式最安全，缺点是初始设置稍微麻烦点，且用一个新的客户端总要进行初始设置。</li>
-</ul>
-<p>下面一个一个试着做。</p>
-<h1 id="扫描系统日志，封IP">扫描系统日志，封IP</h1><p>系统日志的位置：<br>/var/log/auth.log</p>
-<p>这个日志文件专门记录登入登出以及调用sudo等敏感操作。我们需要的尝试登录失败的记录就在里面。<br>我写了一个简单的shell程序。每一步都做了注释，应该很好懂。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#!/bin/bash</span><br><span class="line"></span></span><br><span class="line"><span class="comment"># 日志文件</span></span><br><span class="line">LOG_FILE=<span class="string">"/var/log/auth.log"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 上一次login失败的ip</span></span><br><span class="line">last_ip=<span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 上一次列入黑名单的ip</span></span><br><span class="line">last_blocked_ip=<span class="string">""</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 当前处理行数</span></span><br><span class="line">lines=<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 每次运行时都删掉之前生成的ip列表文件</span></span><br><span class="line">rm -rf block_ip.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取错误日志总行数，以便输出处理进度</span></span><br><span class="line">total=<span class="string">"<span class="variable">$(grep "Failed" $&#123;LOG_FILE&#125; | wc -l)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检索错误日志，并逐行取得试图登录系统的ip</span></span><br><span class="line">grep <span class="string">"Failed"</span> <span class="variable">$LOG_FILE</span> | <span class="keyword">while</span> <span class="built_in">read</span> LINE; <span class="keyword">do</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment"># 从当前行取得ip</span></span><br><span class="line">  <span class="comment"># awk NF-3 的意思是以空格或tab为分隔符，从后往前数第3个项目</span></span><br><span class="line">  ip=<span class="string">"<span class="variable">$(echo $&#123;LINE&#125; | awk '&#123;print $(NF-3)</span>&#125;')"</span></span><br><span class="line">  lines=$((<span class="variable">$lines</span> + <span class="number">1</span>))</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 下面这条语句实现了显示进度的功能，注意最后是以\r结尾的，作用是不换行，把光标移动到行首</span></span><br><span class="line">  <span class="built_in">printf</span> <span class="string">"Progress Line: <span class="variable">$lines</span>"</span>/<span class="string">"<span class="variable">$total</span>\r"</span></span><br><span class="line">  <span class="comment">#echo $lines"/"$total</span></span><br><span class="line"></span><br><span class="line">  <span class="comment"># 同一个IP连续两次登录错误的话就认为是恶意登录，将该ip记录到ip列表文件中</span></span><br><span class="line">  <span class="keyword">if</span> [ <span class="string">"<span class="variable">$last_ip</span>"</span> == <span class="string">"<span class="variable">$ip</span>"</span> ] &amp;&amp; [ <span class="string">"<span class="variable">$ip</span>"</span> != <span class="string">"<span class="variable">$last_blocked_ip</span>"</span>   ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"<span class="variable">$ip</span>"</span> &gt;&gt; block_ip.log</span><br><span class="line">    last_blocked_ip=<span class="variable">$ip</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line">  last_ip=<span class="variable">$ip</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 至此，所有日志里试图连续尝试登录失败的ip全部被记录在*block_ip.log*这个文件中了。</span></span><br><span class="line"><span class="comment"># 接着我们把这个列表里重复的ip删掉</span></span><br><span class="line">sort block_ip.log | uniq &gt; sorted_ip.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这样我们就得到了一个不重复的，试图暴力破解我们密码的坏人的ip列表</span></span><br><span class="line"><span class="comment"># 屏蔽他们！</span></span><br><span class="line">cat sorted_ip.log | <span class="keyword">while</span> <span class="built_in">read</span> LINE; <span class="keyword">do</span></span><br><span class="line">&#123;</span><br><span class="line">  ip=<span class="variable">$&#123;LINE&#125;</span></span><br><span class="line">  <span class="comment"># 将ip加入黑名单</span></span><br><span class="line">  iptables -A INPUT <span class="operator">-s</span> <span class="string">"<span class="variable">$ip</span>"</span> -j DROP</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></table></figure>
-<p>这样，封ip就成功了。<br>这个程序还可以改成使用 tail -f 不停监视最新的日志，随时封新发现的ip的模式。有兴趣的可以自己动手改一下。</p>
-<h1 id="修改SSH端口">修改SSH端口</h1><p>todo</p>
-<h1 id="关掉SSH的密码登录验证">关掉SSH的密码登录验证</h1><p>todo</p>
+          <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
 
         
       </div>
@@ -140,34 +154,16 @@
     
       <div class="post-footer">
         
-          <div class="post-tags">
-            
-              <a href="/tags/LINUX/">
-                #LINUX
-              </a>
-            
-              <a href="/tags/SSH/">
-                #SSH
-              </a>
-            
-              <a href="/tags/树莓派/">
-                #树莓派
-              </a>
-            
-          </div>
-        
 
         
           <div class="post-nav">
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2015/04/20/raspi-study01/">用树莓派搭电子积木入门篇01</a>
-              
             </div>
 
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2015/03/24/chinease/">《 中国人的撕扯人生：一边是上流，一边是逐流 》</a>
+                <a href="/2015/04/20/raspi-study01/">用树莓派搭电子积木入门篇01</a>
               
             </div>
           </div>
@@ -184,8 +180,8 @@
   
     <div class="comments" id="comments">
       
-        <div class="ds-thread" data-thread-key="2015/03/27/pi-ssh-scan/"
-             data-title="SSH暴力扫描的防范手段" data-url="http://blog.mangolovecarrot.net/2015/03/27/pi-ssh-scan/">
+        <div class="ds-thread" data-thread-key="2015/04/20/hello-world/"
+             data-title="Hello World" data-url="http://blog.mangolovecarrot.net/2015/04/20/hello-world/">
         </div>
 
       
@@ -258,7 +254,7 @@
         <div class="post-toc">
           
           
-            <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#扫描系统日志，封IP"><span class="nav-number">2.</span> <span class="nav-text">扫描系统日志，封IP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#修改SSH端口"><span class="nav-number">3.</span> <span class="nav-text">修改SSH端口</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关掉SSH的密码登录验证"><span class="nav-number">4.</span> <span class="nav-text">关掉SSH的密码登录验证</span></a></li></ol></div>
+            <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick_Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create_a_new_post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run_server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate_static_files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy_to_remote_sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
           
         </div>
         <div class="post-toc-indicator-bottom post-toc-indicator"></div>
