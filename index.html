@@ -5,31 +5,42 @@
   <meta charset="UTF-8">
   
     <title>Mango Love Carrot</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="mango">
     
+
+    
     <meta name="description" content="这是在树莓派上部署的一个小站">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mango Love Carrot">
+<meta property="og:url" content="http://blog.mangolovecarrot.net/index.html">
+<meta property="og:site_name" content="Mango Love Carrot">
+<meta property="og:description" content="这是在树莓派上部署的一个小站">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mango Love Carrot">
+<meta name="twitter:description" content="这是在树莓派上部署的一个小站">
+
     
-    
-    
+    <link rel="alternative" href="/atom.xml" title="Mango Love Carrot" type="application/atom+xml">
     
     
     <link rel="icon" href="/img/favicon.ico">
     
     
-    <link rel="apple-touch-icon" href="/img/pacman.jpg">
-    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
 
   <body>
     <header>
-      <div>
+      
+<div>
 		
 			<div id="imglogo">
-				<a href="/"><img src="/img/logo.svg" alt="Mango Love Carrot" title="Mango Love Carrot"/></a>
+				<a href="/"><img src="/img/logo.png" alt="Mango Love Carrot" title="Mango Love Carrot"/></a>
 			</div>
 			
 			<div id="textlogo">
@@ -46,155 +57,598 @@
 					
 						<li><a href="/archives">存档</a></li>
 					
-					<li>
+						<li><a href="/about">关于</a></li>
 					
-					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
-						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
-						<input type="hidden" name="q" value="site:blog.mangolovecarrot.net">
-					</form>
+					<li>
+ 					
+						<form class="search" action="http://zhannei.baidu.com/cse/search" target="_blank">
+							<label>Search</label>
+						<input name="s" type="hidden" value= 3261146594675595000 ><input type="text" name="q" size="30" placeholder="搜索"><br>
+						</form>
 					
 					</li>
 				</ul>
 			</nav>			
 </div>
-
     </header>
     <div id="container">
       <div id="main">
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/" title="从同一台终端分别向Gitcafe不同帐号Push的方法" itemprop="url">
-  
-    <h1 itemprop="name">从同一台终端分别向Gitcafe不同帐号Push的方法</h1>
+   
     
-     
-           <p itemprop="description" >需求拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）
-操作申请了多个gitcafe的id，且每一个id都开设了gitcafe pages进行d</p>
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/" title="从同一台终端分别向Gitcafe不同帐号Push的方法" itemprop="url">从同一台终端分别向Gitcafe不同帐号Push的方法</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-04-21T19:21:55.000Z" itemprop="datePublished"> 发表于 Apr 22 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
         
-    
-    <time datetime="2015-04-21T19:21:55.000Z" itemprop="datePublished">Apr 22 2015</time>
-  </a>
-</section>
+        <h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）</p>
+<h1 id="操作">操作</h1><p>申请了多个gitcafe的id，且每一个id都开设了gitcafe pages进行deploy的时候希望通过ssh密钥验证的方式，所以在每个id的gitcafe的设置里都需要设定ssh公钥。可能是出于安全的考虑，在gitcafe里即使是不同的id也不允许使用相同的公钥所以我为每一个id都生成了一对专用的公钥和私钥（文件名不同，均放置在~/.ssh/下面）</p>
+<h1 id="问题">问题</h1><p>当我利用hexo进行deploy的时候，只有其中一个站点能成功deploy，其他几个均报错提示用户AAA没有push到BBB账户的权限！</p>
+<blockquote>
+<p>Error: PERMISSION DENIED: User AAA can’t write to BBB/BBB.</p>
+</blockquote>
+<h1 id="分析">分析</h1><p>虽然为每个账户都生成了独立的私钥密钥，但是ssh连接的时候，ssh客户端并不知道针对不同用户id应该使用哪个私钥。那么就需要在每一次deploy之前明确告诉接下来的ssh连接要使用的私钥。</p>
+<h1 id="解决">解决</h1><p>ssh-agent可以在其生命周期内使用指定的密钥文件。在hexo deploy之前指定，deploy结束后退出ssh-agent即可。（退出以后再进入需要重新指定）<br>新建一个sh文件，代码如下。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#! /bin/bash</span><br><span class="line"></span></span><br><span class="line"><span class="comment"># 启动ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定接下来要使用的私钥</span></span><br><span class="line">ssh-add ~/.ssh/id_rsa_<span class="keyword">for</span>_BBB</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做你想做的工作，我这里是使用hexo向gitcafe部署博客文件。（hexo的ssh连接信息已经实现配置好了，这部分不是本文重点，省略）</span></span><br><span class="line">hexo d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做完你要做的工作以后记得退出ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent -k`</span><br></pre></td></tr></table></figure>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/04/20/raspi-study01/" title="用树莓派搭电子积木入门篇01" itemprop="url">
-  
-    <h1 itemprop="name">用树莓派搭电子积木入门篇01</h1>
-    
-     
-       <p itemprop="description" >本教程对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓</p>
-      
-    
-    <time datetime="2015-04-20T07:26:10.000Z" itemprop="datePublished">Apr 20 2015</time>
-  </a>
-</section>
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/03/27/pi-ssh-scan/" title="SSH暴力扫描的防范手段" itemprop="url">
-  
-    <h1 itemprop="name">SSH暴力扫描的防范手段</h1>
-    
-     
-       <p itemprop="description" >之前买了块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。</p>
-      
-    
-    <time datetime="2015-03-27T10:47:37.000Z" itemprop="datePublished">Mar 27 2015</time>
-  </a>
-</section>
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/技术/">技术</a>
+</div>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2015/03/24/chinease/" title="《 中国人的撕扯人生：一边是上流，一边是逐流 》" itemprop="url">
-  
-    <h1 itemprop="name">《 中国人的撕扯人生：一边是上流，一边是逐流 》</h1>
-    
-     
-       <p itemprop="description" >这篇文章写得很好。
-作者： 桂旭江
-这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。
-《舌尖上的中国》第二季描写了一对年轻夫妻，放弃了大城市的高薪工作，移居在云南的一个小镇，种菜、做饭、骑车、在月光下读书写字，恬静淡然的画面诗一般的美丽。我相信</p>
-      
-    
-    <time datetime="2015-03-24T06:03:48.000Z" itemprop="datePublished">Mar 24 2015</time>
-  </a>
-</section>
 
-  <section class="post" itemscope itemprop="blogPost">
+  <div class="article-tags">
   
-    <a href="/2014/09/11/yhxmyzn42/" title="生命，宇宙以及一切的答案" itemprop="url">
-  
-    <h1 itemprop="name">生命，宇宙以及一切的答案</h1>
-    
-     
-       <p itemprop="description" >一般情况下如果有一个问题恰好是你所不知道的（大多数情况下都会是这样），你大概会立刻去百度或者Google一下，这往往很有效。但当你想了解“生命，宇宙以及一切”这种宏大问题的答案时，你如果还指望Google能给你答案就奇怪了，实际上这并不是最奇怪的，最奇怪的是Google的确会告诉</p>
-      
-    
-    <time datetime="2014-09-11T08:07:52.000Z" itemprop="datePublished">Sep 11 2014</time>
-  </a>
-</section>
+  <span></span> <a href="/tags/git/">git</a><a href="/tags/hexo/">hexo</a><a href="/tags/ssh/">ssh</a>
+  </div>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/08/25/WINSCP文件名显示乱码问题/" title="WINSCP文件名显示乱码问题" itemprop="url">
-  
-    <h1 itemprop="name">WINSCP文件名显示乱码问题</h1>
-    
-     
-       <p itemprop="description" >最近捣鼓树莓派用的最多的软件就是putty跟winscp。在日文系统下，winscp的文件列表里的中文文件名全是乱码。后来发现只要在登录设置窗口里把utf-8编码的开关打开就能正常显示了。(注意，是登录设置窗口。不是主菜单里的环境设置)</p>
-      
-    
-    <time datetime="2014-08-25T05:01:11.000Z" itemprop="datePublished">Aug 25 2014</time>
-  </a>
-</section>
+</div>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/08/20/lets_webpy/" title="利用webpy搭建一个简单的网页版hexo编辑器" itemprop="url">
-  
-    <h1 itemprop="name">利用webpy搭建一个简单的网页版hexo编辑器</h1>
-    
-     
-       <p itemprop="description" >相信看到本文的读者都已经搭建了自己的hexo站点。hexo（或者任何其他静态html框架）有一个非常不方便的地方就是每次写博客，你都必须ssh到你的服务器上执行以下命令来创建一篇新文章：1hexo n 文章标题</p>
-      
-    
-    <time datetime="2014-08-20T09:52:35.000Z" itemprop="datePublished">Aug 20 2014</time>
-  </a>
-</section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/08/18/guoxue200/" title="国学常识200题" itemprop="url">
-  
-    <h1 itemprop="name">国学常识200题</h1>
-    
-     
-       <p itemprop="description" >国学常识200题（含答案）教给孩子！2014-01-02 环球青少年家庭教育
 
-“但愿人长久，千里共婵娟”，其中婵娟指的是什么？ (A)A.  月亮     B. 姻缘 
-王先生的QQ签名档最近改成了“庆祝弄璋之喜”，王先生近来的喜事是： (C)A. 新婚   B. 搬家   C</p>
-      
-    
-    <time datetime="2014-08-18T11:55:48.000Z" itemprop="datePublished">Aug 18 2014</time>
-  </a>
-</section>
 
-  <section class="post" itemscope itemprop="blogPost">
-  
-    <a href="/2014/08/16/Hexo/" title="Hexo，肚脐？" itemprop="url">
-  
-    <h1 itemprop="name">Hexo，肚脐？</h1>
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/22/useMultiGitcafePagesWithSSHAgent/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
     
-     
-       <p itemprop="description" >概要这个博客运行在我自己家里的树莓派上。几天前曾经用sqlite+wordpress搭建过另一个博客，你访问一下试试就知道有多慢了(如果已经访问不了那就是已经被我删掉了)，打开一个页面平均需要5秒以上，这还是没有加载任何第3方插件的情况下，于是放弃。</p>
-      
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
     
-    <time datetime="2014-08-15T23:59:28.000Z" itemprop="datePublished">Aug 16 2014</time>
-  </a>
-</section>
+      <a href="/2015/04/20/raspi-study01/" title="用树莓派搭电子积木入门篇01" itemprop="url">用树莓派搭电子积木入门篇01</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-04-20T07:26:10.000Z" itemprop="datePublished"> 发表于 Apr 20 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="本教程对象读者">本教程对象读者</h1><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，那么这个教程并不适合你，你应该先接触一些更基础的知识。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/04/20/raspi-study01/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/树莓派教程入门篇/">树莓派教程入门篇</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/04/20/raspi-study01/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/20/raspi-study01/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/03/27/pi-ssh-scan/" title="SSH暴力扫描的防范手段" itemprop="url">SSH暴力扫描的防范手段</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-03-27T10:47:37.000Z" itemprop="datePublished"> 发表于 Mar 27 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>之前买了块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/03/27/pi-ssh-scan/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/技术/">技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/LINUX/">LINUX</a><a href="/tags/SSH/">SSH</a><a href="/tags/树莓派/">树莓派</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/03/27/pi-ssh-scan/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/03/27/pi-ssh-scan/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/03/24/chinease/" title="《 中国人的撕扯人生：一边是上流，一边是逐流 》" itemprop="url">《 中国人的撕扯人生：一边是上流，一边是逐流 》</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-03-24T06:03:48.000Z" itemprop="datePublished"> 发表于 Mar 24 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>这篇文章写得很好。</p>
+<p>作者： 桂旭江</p>
+<p>这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
+<p>《舌尖上的中国》第二季描写了一对年轻夫妻，放弃了大城市的高薪工作，移居在云南的一个小镇，种菜、做饭、骑车、在月光下读书写字，恬静淡然的画面诗一般的美丽。我相信，这样的镜头会触动无数人的心灵，他们内心深处一定或多或少向往这样的生活。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/03/24/chinease/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/网摘/">网摘</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/03/24/chinease/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/03/24/chinease/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/09/11/yhxmyzn42/" title="生命，宇宙以及一切的答案" itemprop="url">生命，宇宙以及一切的答案</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2014-09-11T08:07:52.000Z" itemprop="datePublished"> 发表于 Sep 11 2014</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>一般情况下如果有一个问题恰好是你所不知道的（大多数情况下都会是这样），你大概会立刻去百度或者Google一下，这往往很有效。但当你想了解<strong>“生命，宇宙以及一切”</strong>这种宏大问题的答案时，你如果还指望Google能给你答案就奇怪了，实际上这并不是最奇怪的，最奇怪的是Google的确会告诉你这个问题的答案就像你问的只是一加一等于几一样。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2014/09/11/yhxmyzn42/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/读书/">读书</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/书评/">书评</a><a href="/tags/搞笑/">搞笑</a><a href="/tags/科幻/">科幻</a><a href="/tags/道格拉斯/">道格拉斯</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2014/09/11/yhxmyzn42/#comments" class="ds-thread-count comments-count-link" data-thread-key="2014/09/11/yhxmyzn42/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/25/WINSCP文件名显示乱码问题/" title="WINSCP文件名显示乱码问题" itemprop="url">WINSCP文件名显示乱码问题</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2014-08-25T05:01:11.000Z" itemprop="datePublished"> 发表于 Aug 25 2014</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>最近捣鼓树莓派用的最多的软件就是putty跟winscp。在日文系统下，winscp的文件列表里的中文文件名全是乱码。后来发现只要在登录设置窗口里把utf-8编码的开关打开就能正常显示了。(注意，是登录设置窗口。不是主菜单里的环境设置)<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2014/08/25/WINSCP文件名显示乱码问题/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/技术/">技术</a>
+</div>
+
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2014/08/25/WINSCP文件名显示乱码问题/#comments" class="ds-thread-count comments-count-link" data-thread-key="2014/08/25/WINSCP文件名显示乱码问题/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/20/lets_webpy/" title="利用webpy搭建一个简单的网页版hexo编辑器" itemprop="url">利用webpy搭建一个简单的网页版hexo编辑器</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2014-08-20T09:52:35.000Z" itemprop="datePublished"> 发表于 Aug 20 2014</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>相信看到本文的读者都已经搭建了自己的hexo站点。hexo（或者任何其他静态html框架）有一个非常不方便的地方就是每次写博客，你都必须ssh到你的服务器上执行以下命令来创建一篇新文章：<br><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">hexo</span> n 文章标题</span><br></pre></td></tr></table></figure></p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2014/08/20/lets_webpy/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/技术/">技术</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/python/">python</a><a href="/tags/webpy/">webpy</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2014/08/20/lets_webpy/#comments" class="ds-thread-count comments-count-link" data-thread-key="2014/08/20/lets_webpy/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/18/guoxue200/" title="国学常识200题" itemprop="url">国学常识200题</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2014-08-18T11:55:48.000Z" itemprop="datePublished"> 发表于 Aug 18 2014</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>国学常识200题（含答案）教给孩子！<br>2014-01-02 环球青少年家庭教育</p>
+<ol>
+<li>“但愿人长久，千里共婵娟”，其中婵娟指的是什么？ (A)<br>A.  月亮     B. 姻缘 </li>
+<li>王先生的QQ签名档最近改成了“庆祝弄璋之喜”，王先生近来的喜事是： (C)<br>A. 新婚   B. 搬家   C. 妻子生了个男孩 D. 考试通过 </li>
+<li>“爆竹声中一岁除，春风送暖入屠苏”，这里的“屠苏”指的是：(C)<br>A. 苏州   B. 房屋     C. 酒   D. 庄稼 </li>
+</ol>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2014/08/18/guoxue200/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/文艺青年/">文艺青年</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/国学/">国学</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2014/08/18/guoxue200/#comments" class="ds-thread-count comments-count-link" data-thread-key="2014/08/18/guoxue200/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/16/Hexo/" title="Hexo，肚脐？" itemprop="url">Hexo，肚脐？</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2014-08-15T23:59:28.000Z" itemprop="datePublished"> 发表于 Aug 16 2014</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h1 id="概要">概要</h1><p>这个博客运行在我自己家里的树莓派上。几天前曾经用sqlite+wordpress搭建过<a href="http://mangolovecarrot.net:8080/wordpress/">另一个博客</a>，你访问一下试试就知道有多慢了(如果已经访问不了那就是已经被我删掉了)，打开一个页面平均需要5秒以上，这还是没有加载任何第3方插件的情况下，于是放弃。<br>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2014/08/16/Hexo/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/Hexo/">Hexo</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/git/">git</a><a href="/tags/hexo/">hexo</a><a href="/tags/lighttpd/">lighttpd</a><a href="/tags/webserver/">webserver</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2014/08/16/Hexo/#comments" class="ds-thread-count comments-count-link" data-thread-key="2014/08/16/Hexo/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
 
 
 </div>
@@ -209,13 +663,21 @@
 	<p class="asidetitle">分类</p>
 		<ul>
 		
+		  
 			<li><a href="/categories/Hexo/" title="Hexo">Hexo<sup>1</sup></a></li>
+		  
 		
+		  
 			<li><a href="/categories/技术/" title="技术">技术<sup>4</sup></a></li>
+		  
 		
+		  
 			<li><a href="/categories/文艺青年/" title="文艺青年">文艺青年<sup>1</sup></a></li>
+		  
 		
+		  
 			<li><a href="/categories/读书/" title="读书">读书<sup>1</sup></a></li>
+		  
 		
 		</ul>
 </div>
@@ -226,46 +688,109 @@
 	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
-			<li><a href="/tags/LINUX/" title="LINUX">LINUX<sup>1</sup></a></li>
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>2</sup></a></li>
+			
 		
-			<li><a href="/tags/SSH/" title="SSH">SSH<sup>1</sup></a></li>
+			
+				<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+			
 		
-			<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+			
+				<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/hexo/" title="hexo">hexo<sup>2</sup></a></li>
+			
+				<li><a href="/tags/树莓派教程入门篇/" title="树莓派教程入门篇">树莓派教程入门篇<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/lighttpd/" title="lighttpd">lighttpd<sup>1</sup></a></li>
+			
+				<li><a href="/tags/SSH/" title="SSH">SSH<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/python/" title="python">python<sup>1</sup></a></li>
+			
+				<li><a href="/tags/LINUX/" title="LINUX">LINUX<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
+			
+				<li><a href="/tags/树莓派/" title="树莓派">树莓派<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/webpy/" title="webpy">webpy<sup>1</sup></a></li>
+			
+				<li><a href="/tags/网摘/" title="网摘">网摘<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/webserver/" title="webserver">webserver<sup>1</sup></a></li>
+			
+				<li><a href="/tags/lighttpd/" title="lighttpd">lighttpd<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/书评/" title="书评">书评<sup>1</sup></a></li>
+			
+				<li><a href="/tags/搞笑/" title="搞笑">搞笑<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/国学/" title="国学">国学<sup>1</sup></a></li>
+			
+				<li><a href="/tags/道格拉斯/" title="道格拉斯">道格拉斯<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/搞笑/" title="搞笑">搞笑<sup>1</sup></a></li>
+			
+				<li><a href="/tags/书评/" title="书评">书评<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/树莓派/" title="树莓派">树莓派<sup>1</sup></a></li>
+			
+				<li><a href="/tags/webpy/" title="webpy">webpy<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/树莓派教程入门篇/" title="树莓派教程入门篇">树莓派教程入门篇<sup>1</sup></a></li>
+			
+				<li><a href="/tags/python/" title="python">python<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
+			
+				<li><a href="/tags/国学/" title="国学">国学<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/网摘/" title="网摘">网摘<sup>1</sup></a></li>
+			
+				<li><a href="/tags/webserver/" title="webserver">webserver<sup>1</sup></a></li>
+			
 		
-			<li><a href="/tags/道格拉斯/" title="道格拉斯">道格拉斯<sup>1</sup></a></li>
+			
+				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
+			
 		
 		</ul>
 </div>
 
 
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="http://chenyuge.com" target="_blank" title="Chenyuge&#39;s Blog">Chenyuge&#39;s Blog</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+<div class="doubanshow">
+<p class="asidetitle">豆瓣秀</p>
+<div>
+<script type="text/javascript" src="http://www.douban.com/service/badge/https://www.douban.com/people/tuoxieshu/?show=collection&amp;n=12&amp;columns=3&amp;hidelogo=yes&amp;hideself=yes&amp;cat=book|movie" ></script>
+</div>
+</div>
+
+
   <div class="rsspart">
-	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
 </div>
 
 </aside>
@@ -279,20 +804,45 @@
 	</div>
 	
 	
+	<section class="info">
+		<p> Hello ,I&#39;m Larry Page in Google. <br/>
+			This is my blog,believe it or not.</p>
+	</section>
+	 
 	<div class="social-font" class="clearfix">
 		
 		
+		<a href="https://github.com/https://github.com/slipperstree" target="_blank" class="icon-github" title="github"></a>
 		
+		
+		
+		
+		
+		
+		<a href="https://www.douban.com/people/https://www.douban.com/people/tuoxieshu" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		
+		<a href="mailto:slipperstree@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+			
 		
-		<a href="http://blog.mangolovecarrot.net" target="_blank" title="mango">mango</a>
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		
+		<a href="/about" target="_blank" title="mango">mango</a>
+		
 		
 		</p>
 </div>
 </footer>
-    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){ 
   $('.navbar').click(function(){
@@ -310,18 +860,6 @@ $(document).ready(function(){
       a = $('#asidepart'),
       c = $('.closeaside'),
       o = $('.openaside');
-  $(window).resize(function(){
-    getSize(); 
-    if (myWidth >= 1024) {
-      $('header nav').removeClass('shownav');
-    }else
-    {
-      m.removeClass('moveMain');
-      a.css('display', 'block').removeClass('fadeOut');
-      o.css('display', 'none');
-        
-    }
-  });
   c.click(function(){
     a.addClass('fadeOut').css('display', 'none');
     o.css('display', 'block').addClass('fadeIn');
@@ -335,18 +873,96 @@ $(document).ready(function(){
   $(window).scroll(function(){
     o.css("top",Math.max(80,260-$(this).scrollTop()));
   });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+        
+    }
+  });
 });
 </script>
 
 
 
 
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"mangolovecarrot"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
 
 
 
 
 
 
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F06def1d033e0398f6bc6a19820065f44' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
 
   </body>
  </html>
