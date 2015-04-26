@@ -4,7 +4,7 @@
     
   <url>
     <loc>http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/</loc>
-    <lastmod>2015-04-26T13:30:54.000Z</lastmod>
+    <lastmod>2015-04-26T13:58:43.000Z</lastmod>
     <data>
         <display>
         <title>树莓派动手做01-使用GPIO接口控制发光二极管</title>
@@ -14,6 +14,9 @@
          
          
            
+             
+              <breadCrumb title="技术" url="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
+          
         </display>
     </data>
     </url>
