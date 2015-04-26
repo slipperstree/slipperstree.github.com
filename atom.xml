@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-04-22T11:06:01.000Z</updated>
+  <updated>2015-04-26T14:11:42.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <link href="http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/"/>
     <id>http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/</id>
     <published>2015-04-21T19:21:55.000Z</published>
-    <updated>2015-04-22T11:06:01.000Z</updated>
-    <content type="html"><![CDATA[<h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）</p>
+    <updated>2015-04-26T14:11:42.000Z</updated>
+    <content type="html"><![CDATA[<h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）<br><a id="more"></a></p>
 <h1 id="操作">操作</h1><p>申请了多个gitcafe的id，且每一个id都开设了gitcafe pages进行deploy的时候希望通过ssh密钥验证的方式，所以在每个id的gitcafe的设置里都需要设定ssh公钥。可能是出于安全的考虑，在gitcafe里即使是不同的id也不允许使用相同的公钥所以我为每一个id都生成了一对专用的公钥和私钥（文件名不同，均放置在~/.ssh/下面）</p>
 <h1 id="问题">问题</h1><p>当我利用hexo进行deploy的时候，只有其中一个站点能成功deploy，其他几个均报错提示用户AAA没有push到BBB账户的权限！</p>
 <blockquote>
@@ -31,8 +31,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#! /bin/bash</span><br><span class="line"></span></span><br><span class="line"><span class="comment"># 启动ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定接下来要使用的私钥</span></span><br><span class="line">ssh-add ~/.ssh/id_rsa_<span class="keyword">for</span>_BBB</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做你想做的工作，我这里是使用hexo向gitcafe部署博客文件。（hexo的ssh连接信息已经实现配置好了，这部分不是本文重点，省略）</span></span><br><span class="line">hexo d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做完你要做的工作以后记得退出ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent -k`</span><br></pre></td></tr></table></figure>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）</p>
-<h1 id="操作">操作</h1><]]>
+    <![CDATA[<h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）<br>]]>
+    
     </summary>
     
       <category term="git" scheme="http://blog.mangolovecarrot.net/tags/git/"/>
