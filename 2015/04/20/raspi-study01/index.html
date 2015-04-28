@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>树莓派动手做01-使用GPIO接口控制发光二极管 | Mango Love Carrot</title>
+    <title>树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁 | Mango Love Carrot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="mango">
@@ -13,17 +13,17 @@
     
     <meta name="description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="树莓派动手做01-使用GPIO接口控制发光二极管">
+<meta property="og:title" content="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">
 <meta property="og:url" content="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/index.html">
 <meta property="og:site_name" content="Mango Love Carrot">
 <meta property="og:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。">
-<meta property="og:image" content="01.jpg">
 <meta property="og:image" content="ani.gif">
+<meta property="og:image" content="01.jpg">
 <meta property="og:image" content="PI.jpg">
 <meta property="og:image" content="GPIO.jpg">
 <meta property="og:image" content="connect.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="树莓派动手做01-使用GPIO接口控制发光二极管">
+<meta name="twitter:title" content="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">
 <meta name="twitter:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。">
 
     
@@ -83,7 +83,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/04/20/raspi-study01/" title="树莓派动手做01-使用GPIO接口控制发光二极管" itemprop="url">树莓派动手做01-使用GPIO接口控制发光二极管</a>
+      <a href="/2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁" itemprop="url">树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁</a>
   </h1>
   <p class="article-author">By
        
@@ -99,18 +99,18 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象读者"><span class="toc-number">1.</span> <span class="toc-text">对象读者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">3.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">4.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#树莓派GPIO针脚说明（适合1代Mode_B+或者2代Mode_B）"><span class="toc-number">5.</span> <span class="toc-text">树莓派GPIO针脚说明（适合1代Mode B+或者2代Mode B）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">6.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择开发语言"><span class="toc-number">7.</span> <span class="toc-text">选择开发语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Python以及GPIO库"><span class="toc-number">8.</span> <span class="toc-text">安装Python以及GPIO库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写代码"><span class="toc-number">9.</span> <span class="toc-text">写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">10.</span> <span class="toc-text">源代码下载</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象读者"><span class="toc-number">1.</span> <span class="toc-text">对象读者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">2.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">3.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">4.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#树莓派GPIO针脚说明（适合1代Mode_B+或者2代Mode_B）"><span class="toc-number">5.</span> <span class="toc-text">树莓派GPIO针脚说明（适合1代Mode B+或者2代Mode B）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">6.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择开发语言"><span class="toc-number">7.</span> <span class="toc-text">选择开发语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Python以及GPIO库"><span class="toc-number">8.</span> <span class="toc-text">安装Python以及GPIO库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写代码"><span class="toc-number">9.</span> <span class="toc-text">写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">10.</span> <span class="toc-text">源代码下载</span></a></li></ol>
 		
 		</div>
 		
 		<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。<br><a id="more"></a></p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>树莓派一台。1代B,B+或者2015年刚出的2代都可以。我自己用的是2代，GPIO的管脚编号可能会稍微有些差异，相应的需要注意或修改的地方我会在文中说明。另外，今后教程的硬件部分不再特意提到树莓派了。 </li>
 <li>LED发光管(可以理解成小灯泡)一只，什么颜色都可以，一般卖电子零件的商店肯定有卖。或者去淘宝买。几块钱就可以买到一把。 </li>
 <li>母头杜邦线两条，就是电线，带插头的是公头，带插座的是母头。我们这个实验用两端都是母头的杜邦线。 </li>
 <li><img src="01.jpg" alt="硬件图"></li>
 </ul>
-<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"></p>
 <h3 id="原理说明">原理说明</h3><p>LED灯有一长一短两根针脚，如果将较长的一根连上电源正极，较短的一根脸上电源负极造成电位差就可以点亮LED灯。<br>但如果两个针脚同时都是负极（低电平）或者都是正极（高电平）则不会产生电位差也就不会被点亮。<br>将较短的一根连上树莓派的GND（也就是负极）端，较长的一根不要直接连上树莓派的5V或者3.3V（两者都可理解为正极或高电平，以后统称高低电平，不再另行解释），而是连接到一个GPIO针脚上。<br>然后我们可以通过程序控制GPIO口的电位高低状态即可控制LED的亮（GPIO口设置为高电平）或灭（GPIO口设置为低电平）。</p>
 <h3 id="树莓派GPIO针脚说明（适合1代Mode_B+或者2代Mode_B）">树莓派GPIO针脚说明（适合1代Mode B+或者2代Mode B）</h3><p>先看一下实物图：<br><img src="PI.jpg" alt="实物图"><br>右上角有左右两排共40根针脚，并不是所有的针脚都是GPIO针脚。详情参考下图：<br><img src="GPIO.jpg" alt="树莓派GPIO针脚说明"><br>注意这两张图的上下左右顺序已经对齐了，实际连线的时候不要看错方向接错针脚。否则有损坏树莓派的可能。</p>
 <h3 id="硬件连接">硬件连接</h3><p><img src="connect.png" alt="原理图"></p>
@@ -144,7 +144,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/树莓派动手做系列/">树莓派动手做系列</a>
+  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
   </div>
 
 </div>
@@ -153,7 +153,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/" data-title="树莓派动手做01-使用GPIO接口控制发光二极管 | Mango Love Carrot" data-tsina="null" class="share clearfix">
+	  <div data-url="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/" data-title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁 | Mango Love Carrot" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -187,7 +187,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/04/20/raspi-study01/" data-title="树莓派动手做01-使用GPIO接口控制发光二极管" data-url="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/"></div>
+	<div class="ds-thread" data-thread-key="2015/04/20/raspi-study01/" data-title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁" data-url="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/"></div>
 </section>
 
 
@@ -197,7 +197,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象读者"><span class="toc-number">1.</span> <span class="toc-text">对象读者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">3.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">4.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#树莓派GPIO针脚说明（适合1代Mode_B+或者2代Mode_B）"><span class="toc-number">5.</span> <span class="toc-text">树莓派GPIO针脚说明（适合1代Mode B+或者2代Mode B）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">6.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择开发语言"><span class="toc-number">7.</span> <span class="toc-text">选择开发语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Python以及GPIO库"><span class="toc-number">8.</span> <span class="toc-text">安装Python以及GPIO库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写代码"><span class="toc-number">9.</span> <span class="toc-text">写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">10.</span> <span class="toc-text">源代码下载</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#对象读者"><span class="toc-number">1.</span> <span class="toc-text">对象读者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">2.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">3.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">4.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#树莓派GPIO针脚说明（适合1代Mode_B+或者2代Mode_B）"><span class="toc-number">5.</span> <span class="toc-text">树莓派GPIO针脚说明（适合1代Mode B+或者2代Mode B）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">6.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#选择开发语言"><span class="toc-number">7.</span> <span class="toc-text">选择开发语言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Python以及GPIO库"><span class="toc-number">8.</span> <span class="toc-text">安装Python以及GPIO库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写代码"><span class="toc-number">9.</span> <span class="toc-text">写代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">10.</span> <span class="toc-text">源代码下载</span></a></li></ol>
  
   </div>
 
@@ -223,7 +223,7 @@
 		  
 		
 		  
-			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>1</sup></a></li>
+			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>2</sup></a></li>
 		  
 		
 		  
@@ -240,7 +240,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+				<li><a href="/tags/树莓派GPIO入门系列/" title="树莓派GPIO入门系列">树莓派GPIO入门系列<sup>2</sup></a></li>
 			
 		
 			
@@ -248,15 +248,15 @@
 			
 		
 			
-				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
+				<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/lighttpd/" title="lighttpd">lighttpd<sup>1</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/树莓派动手做系列/" title="树莓派动手做系列">树莓派动手做系列<sup>1</sup></a></li>
 			
 		
 			
@@ -308,7 +308,7 @@
 			
 		
 			
-				<li><a href="/tags/lighttpd/" title="lighttpd">lighttpd<sup>1</sup></a></li>
+				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
 			
 		
 		</ul>
