@@ -82,7 +82,7 @@
     <link href="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/"/>
     <id>http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/</id>
     <published>2015-04-20T07:26:10.000Z</published>
-    <updated>2015-04-26T13:58:43.000Z</updated>
+    <updated>2015-04-28T07:19:52.000Z</updated>
     <content type="html"><![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。<br><a id="more"></a></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>树莓派一台。1代B,B+或者2015年刚出的2代都可以。我自己用的是2代，GPIO的管脚编号可能会稍微有些差异，相应的需要注意或修改的地方我会在文中说明。另外，今后教程的硬件部分不再特意提到树莓派了。 </li>
@@ -110,7 +110,7 @@
 </li>
 </ol>
 <h3 id="写代码">写代码</h3><p>代码里有详细的注释，代码很简单。<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#!/usr/bin/env python</span><span class="preprocessor"></span><br><span class="line"># encoding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"><span class="keyword">import</span> RPi.GPIO</span></span><br><span class="line"><span class="preprocessor"><span class="keyword">import</span> time</span><span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 指定GPIO口的选定模式为GPIO引脚编号模式（而非主板编号模式）</span></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 指定GPIO14（就是LED长针连接的GPIO针脚）的模式为输出模式</span><span class="preprocessor"></span><br><span class="line"># 如果上面GPIO口的选定模式指定为主板模式的话，这里就应该指定8号而不是14号。</span></span><br><span class="line">RPi.GPIO.setup(<span class="number">14</span>, RPi.GPIO.OUT)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 循环10次</span></span><br><span class="line"><span class="keyword">for</span> i in range(<span class="number">0</span>, <span class="number">10</span>):<span class="preprocessor"></span><br><span class="line">	# 让GPIO14输出高电平（LED灯亮）</span></span><br><span class="line">	RPi.GPIO.output(<span class="number">14</span>, <span class="literal">True</span>)<span class="preprocessor"></span><br><span class="line">	# 持续一段时间</span></span><br><span class="line">	time.sleep(<span class="number">0.5</span>)<span class="preprocessor"></span><br><span class="line">	# 让GPIO14输出低电平（LED灯灭）</span></span><br><span class="line">	RPi.GPIO.output(<span class="number">14</span>, <span class="literal">False</span>)<span class="preprocessor"></span><br><span class="line">	# 持续一段时间</span></span><br><span class="line">	time.sleep(<span class="number">0.5</span>)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 最后清理GPIO口（不做也可以，建议每次程序结束时清理一下，好习惯）</span></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure></p>
-<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码">点击下载</a></p>
+<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
 ]]></content>
     <summary type="html">
     <![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。<br>]]>
@@ -119,7 +119,7 @@
     
       <category term="树莓派动手做系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE%E5%8A%A8%E6%89%8B%E5%81%9A%E7%B3%BB%E5%88%97/"/>
     
-      <category term="技术" scheme="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
     
   </entry>
   

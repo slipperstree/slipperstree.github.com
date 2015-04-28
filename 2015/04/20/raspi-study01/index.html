@@ -130,7 +130,7 @@
 </li>
 </ol>
 <h3 id="写代码">写代码</h3><p>代码里有详细的注释，代码很简单。<br><figure class="highlight monkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#!/usr/bin/env python</span><span class="preprocessor"></span><br><span class="line"># encoding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"><span class="keyword">import</span> RPi.GPIO</span></span><br><span class="line"><span class="preprocessor"><span class="keyword">import</span> time</span><span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 指定GPIO口的选定模式为GPIO引脚编号模式（而非主板编号模式）</span></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 指定GPIO14（就是LED长针连接的GPIO针脚）的模式为输出模式</span><span class="preprocessor"></span><br><span class="line"># 如果上面GPIO口的选定模式指定为主板模式的话，这里就应该指定8号而不是14号。</span></span><br><span class="line">RPi.GPIO.setup(<span class="number">14</span>, RPi.GPIO.OUT)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 循环10次</span></span><br><span class="line"><span class="keyword">for</span> i in range(<span class="number">0</span>, <span class="number">10</span>):<span class="preprocessor"></span><br><span class="line">	# 让GPIO14输出高电平（LED灯亮）</span></span><br><span class="line">	RPi.GPIO.output(<span class="number">14</span>, <span class="literal">True</span>)<span class="preprocessor"></span><br><span class="line">	# 持续一段时间</span></span><br><span class="line">	time.sleep(<span class="number">0.5</span>)<span class="preprocessor"></span><br><span class="line">	# 让GPIO14输出低电平（LED灯灭）</span></span><br><span class="line">	RPi.GPIO.output(<span class="number">14</span>, <span class="literal">False</span>)<span class="preprocessor"></span><br><span class="line">	# 持续一段时间</span></span><br><span class="line">	time.sleep(<span class="number">0.5</span>)<span class="preprocessor"></span><br><span class="line"></span><br><span class="line"># 最后清理GPIO口（不做也可以，建议每次程序结束时清理一下，好习惯）</span></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure></p>
-<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码">点击下载</a></p>
+<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -138,7 +138,7 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/技术/">技术</a>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
 </div>
 
 
@@ -215,11 +215,15 @@
 		  
 		
 		  
-			<li><a href="/categories/技术/" title="技术">技术<sup>5</sup></a></li>
+			<li><a href="/categories/技术/" title="技术">技术<sup>4</sup></a></li>
 		  
 		
 		  
 			<li><a href="/categories/文艺青年/" title="文艺青年">文艺青年<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>1</sup></a></li>
 		  
 		
 		  
