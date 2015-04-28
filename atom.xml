@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-04-28T14:31:18.000Z</updated>
+  <updated>2015-04-28T14:34:15.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,9 +19,9 @@
     <link href="http://blog.mangolovecarrot.net/2015/04/28/raspi-study02/"/>
     <id>http://blog.mangolovecarrot.net/2015/04/28/raspi-study02/</id>
     <published>2015-04-28T12:12:01.000Z</published>
-    <updated>2015-04-28T14:31:18.000Z</updated>
-    <content type="html"><![CDATA[<p><a href="../../../../2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">上一篇</a>我们通过控制GPIO口输出高低电平来控制一只发光二极管的亮灭。这次我们来控制发光二极管的亮度。最后做出呼吸灯的效果。<br><a id="more"></a></p>
-<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="GPIO口控制亮度制作呼吸灯"></p>
+    <updated>2015-04-28T14:34:15.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="../../../../2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">上一篇</a>我们通过控制GPIO口输出高低电平来控制一只发光二极管的亮灭。这次我们来控制发光二极管的亮度。最后做出呼吸灯的效果。</p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="GPIO口控制亮度制作呼吸灯"><br><a id="more"></a></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>树莓派一台。</li>
 <li>LED发光管</li>
@@ -33,7 +33,8 @@
 <h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><a href="../../../../2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">上一篇</a>我们通过控制GPIO口输出高低电平来控制一只发光二极管的亮灭。这次我们来控制发光二极管的亮度。最后做出呼吸灯的效果。<br>]]>
+    <![CDATA[<p><a href="../../../../2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">上一篇</a>我们通过控制GPIO口输出高低电平来控制一只发光二极管的亮灭。这次我们来控制发光二极管的亮度。最后做出呼吸灯的效果。</p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="GPIO口控制亮度制作呼吸灯"><br>]]>
     
     </summary>
     
@@ -111,9 +112,9 @@
     <link href="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/"/>
     <id>http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/</id>
     <published>2015-04-20T07:26:10.000Z</published>
-    <updated>2015-04-28T12:30:51.000Z</updated>
-    <content type="html"><![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。<br><a id="more"></a></p>
-<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"></p>
+    <updated>2015-04-28T14:34:39.000Z</updated>
+    <content type="html"><![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。</p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"><br><a id="more"></a></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>树莓派一台。1代B,B+或者2015年刚出的2代都可以。我自己用的是2代，GPIO的管脚编号可能会稍微有些差异，相应的需要注意或修改的地方我会在文中说明。另外，今后教程的硬件部分不再特意提到树莓派了。 </li>
 <li>LED发光管(可以理解成小灯泡)一只，什么颜色都可以，一般卖电子零件的商店肯定有卖。或者去淘宝买。几块钱就可以买到一把。 </li>
@@ -142,7 +143,8 @@
 <h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>友情提示，如果你不明白这段话的意思，建议先接触一些更基础的知识。<br>]]>
+    <![CDATA[<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。</p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"><br>]]>
     
     </summary>
     
