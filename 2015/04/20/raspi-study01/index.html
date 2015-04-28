@@ -11,14 +11,12 @@
     
 
     
-    <meta name="description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。
-最终效果">
+    <meta name="description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">
 <meta property="og:url" content="http://blog.mangolovecarrot.net/2015/04/20/raspi-study01/index.html">
 <meta property="og:site_name" content="Mango Love Carrot">
-<meta property="og:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。
-最终效果">
+<meta property="og:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。">
 <meta property="og:image" content="ani.gif">
 <meta property="og:image" content="01.jpg">
 <meta property="og:image" content="PI.jpg">
@@ -26,8 +24,7 @@
 <meta property="og:image" content="connect.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">
-<meta name="twitter:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。
-最终效果">
+<meta name="twitter:description" content="对象读者我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。">
 
     
     <link rel="alternative" href="/atom.xml" title="Mango Love Carrot" type="application/atom+xml">
@@ -106,8 +103,8 @@
 		
 		</div>
 		
-		<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。</p>
-<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"><br><a id="more"></a></p>
+		<h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br><a id="more"></a></p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="控制你的LED发光管按一定时间间隔闪烁"></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>树莓派一台。1代B,B+或者2015年刚出的2代都可以。我自己用的是2代，GPIO的管脚编号可能会稍微有些差异，相应的需要注意或修改的地方我会在文中说明。另外，今后教程的硬件部分不再特意提到树莓派了。 </li>
 <li>LED发光管(可以理解成小灯泡)一只，什么颜色都可以，一般卖电子零件的商店肯定有卖。或者去淘宝买。几块钱就可以买到一把。 </li>
