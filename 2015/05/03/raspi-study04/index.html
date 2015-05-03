@@ -4,22 +4,25 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>从同一台终端分别向Gitcafe不同帐号Push的方法 | Mango Love Carrot</title>
+    <title>树莓派GPIO入门04-使用按钮 | Mango Love Carrot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="mango">
     
 
     
-    <meta name="description" content="需求拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）">
+    <meta name="description" content="上一篇这次我们用3个按钮来控制彩色LED灯分别发出红，绿，蓝光并可以同时按下不同按钮以显示混合颜色的光。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="从同一台终端分别向Gitcafe不同帐号Push的方法">
-<meta property="og:url" content="http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/index.html">
+<meta property="og:title" content="树莓派GPIO入门04-使用按钮">
+<meta property="og:url" content="http://blog.mangolovecarrot.net/2015/05/03/raspi-study04/index.html">
 <meta property="og:site_name" content="Mango Love Carrot">
-<meta property="og:description" content="需求拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）">
+<meta property="og:description" content="上一篇这次我们用3个按钮来控制彩色LED灯分别发出红，绿，蓝光并可以同时按下不同按钮以显示混合颜色的光。">
+<meta property="og:image" content="ani.gif">
+<meta property="og:image" content="01.jpg">
+<meta property="og:image" content="connect.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="从同一台终端分别向Gitcafe不同帐号Push的方法">
-<meta name="twitter:description" content="需求拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）">
+<meta name="twitter:title" content="树莓派GPIO入门04-使用按钮">
+<meta name="twitter:description" content="上一篇这次我们用3个按钮来控制彩色LED灯分别发出红，绿，蓝光并可以同时按下不同按钮以显示混合颜色的光。">
 
     
     <link rel="alternative" href="/atom.xml" title="Mango Love Carrot" type="application/atom+xml">
@@ -90,14 +93,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/" title="从同一台终端分别向Gitcafe不同帐号Push的方法" itemprop="url">从同一台终端分别向Gitcafe不同帐号Push的方法</a>
+      <a href="/2015/05/03/raspi-study04/" title="树莓派GPIO入门04-使用按钮" itemprop="url">树莓派GPIO入门04-使用按钮</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
 		
   <p class="article-time">
-    <time datetime="2015-04-21T19:21:55.000Z" itemprop="datePublished"> 发表于 Apr 22 2015</time>
+    <time datetime="2015-05-03T12:38:36.000Z" itemprop="datePublished"> 发表于 May 3 2015</time>
     
   </p>
 </header>
@@ -106,19 +109,21 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#需求"><span class="toc-number">1.</span> <span class="toc-text">需求</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#操作"><span class="toc-number">2.</span> <span class="toc-text">操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题"><span class="toc-number">3.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析"><span class="toc-number">4.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决"><span class="toc-number">5.</span> <span class="toc-text">解决</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">1.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">3.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">4.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码"><span class="toc-number">5.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">6.</span> <span class="toc-text">源代码下载</span></a></li></ol>
 		
 		</div>
 		
-		<h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）<br><a id="more"></a></p>
-<h1 id="操作">操作</h1><p>申请了多个gitcafe的id，且每一个id都开设了gitcafe pages进行deploy的时候希望通过ssh密钥验证的方式，所以在每个id的gitcafe的设置里都需要设定ssh公钥。可能是出于安全的考虑，在gitcafe里即使是不同的id也不允许使用相同的公钥所以我为每一个id都生成了一对专用的公钥和私钥（文件名不同，均放置在~/.ssh/下面）</p>
-<h1 id="问题">问题</h1><p>当我利用hexo进行deploy的时候，只有其中一个站点能成功deploy，其他几个均报错提示用户AAA没有push到BBB账户的权限！</p>
-<blockquote>
-<p>Error: PERMISSION DENIED: User AAA can’t write to BBB/BBB.</p>
-</blockquote>
-<h1 id="分析">分析</h1><p>虽然为每个账户都生成了独立的私钥密钥，但是ssh连接的时候，ssh客户端并不知道针对不同用户id应该使用哪个私钥。那么就需要在每一次deploy之前明确告诉接下来的ssh连接要使用的私钥。</p>
-<h1 id="解决">解决</h1><p>ssh-agent可以在其生命周期内使用指定的密钥文件。在hexo deploy之前指定，deploy结束后退出ssh-agent即可。（退出以后再进入需要重新指定）<br>新建一个sh文件，代码如下。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="shebang">#! /bin/bash</span><br><span class="line"></span></span><br><span class="line"><span class="comment"># 启动ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定接下来要使用的私钥</span></span><br><span class="line">ssh-add ~/.ssh/id_rsa_<span class="keyword">for</span>_BBB</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做你想做的工作，我这里是使用hexo向gitcafe部署博客文件。（hexo的ssh连接信息已经实现配置好了，这部分不是本文重点，省略）</span></span><br><span class="line">hexo d</span><br><span class="line"></span><br><span class="line"><span class="comment"># 做完你要做的工作以后记得退出ssh-agent</span></span><br><span class="line"><span class="built_in">eval</span> `ssh-agent -k`</span><br></pre></td></tr></table></figure>
+		<p><a href="../../../../2015/04/29/raspi-study03/" title="树莓派GPIO入门03-GPIO控制RGB彩色LED灯">上一篇</a>这次我们用3个按钮来控制彩色LED灯分别发出红，绿，蓝光并可以同时按下不同按钮以显示混合颜色的光。<br><a id="more"></a></p>
+<h3 id="最终效果">最终效果</h3><p><img src="ani.gif" alt="树莓派GPIO入门04-使用按钮"></p>
+<h3 id="硬件">硬件</h3><ul>
+<li>跟上一节一样，彩色RGB二极管一只。</li>
+<li>杜邦线若干。</li>
+</ul>
+<p><img src="01.jpg" alt="硬件图"></p>
+<h3 id="原理说明">原理说明</h3><p>从树莓派上引GND（负极）到面包板上，3个按钮的一端均接到GND上。另一端接到树莓派GPIO口上。这3个GPIO口在程序里设置为输入模式，并且默认拉到高电平。当某个按钮被按下，即联通GND端到GPIO口上，此时从GPIO口取到的状态为低电平。程序侦测到低电平时就认为按钮被按下，从而可以做你想做的事情（点亮红/绿/蓝灯）。</p>
+<h3 id="硬件连接">硬件连接</h3><p><img src="connect.png" alt="硬件连接图"></p>
+<h3 id="代码">代码</h3><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python</span><br><span class="line"># encoding: utf-8</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> RPi.GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">R,G,B=15,18,14</span><br><span class="line"></span><br><span class="line"># 按钮输出针脚连接的GPIO口</span><br><span class="line">btnR, btnG, btnB=21,20,16</span><br><span class="line"></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.setup(R, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(G, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(B, RPi.GPIO.OUT)</span><br><span class="line"></span><br><span class="line"># 按钮连接的GPIO针脚的模式设置为信号输入模式，同时默认拉高GPIO口电平，</span><br><span class="line"># 当GND没有被接通时，GPIO口处于高电平状态，取的的值为1</span><br><span class="line"># 注意到这是一个可选项，如果不在程序里面设置，通常的做法是通过一个上拉电阻连接到VCC上使之默认保持高电平</span><br><span class="line">RPi.GPIO.setup(btnR, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)</span><br><span class="line">RPi.GPIO.setup(btnG, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)</span><br><span class="line">RPi.GPIO.setup(btnB, RPi.GPIO.IN, pull_up_down=RPi.GPIO.PUD_UP)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(R, True)</span><br><span class="line">	RPi.GPIO.output(G, True)</span><br><span class="line">	RPi.GPIO.output(B, True)</span><br><span class="line">	<span class="keyword">while</span> True:</span><br><span class="line">		time.sleep(0.01)</span><br><span class="line">		</span><br><span class="line">		# 检测红色按钮是否被按下，如果被按下(低电平)，则亮红灯(输出低电平)，否则关红灯</span><br><span class="line">		<span class="keyword">if</span> (RPi.GPIO.input(btnR) == 0):</span><br><span class="line">			RPi.GPIO.output(R, False)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			RPi.GPIO.output(R, True)</span><br><span class="line">		</span><br><span class="line">		# 检测绿色按钮是否被按下，如果被按下(低电平)，则亮红绿灯(输出低电平)，否则关绿灯</span><br><span class="line">		<span class="keyword">if</span> (RPi.GPIO.input(btnG) == 0):</span><br><span class="line">			RPi.GPIO.output(G, False)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			RPi.GPIO.output(G, True)</span><br><span class="line">		</span><br><span class="line">		# 检测蓝色按钮是否被按下，如果被按下(低电平)，则亮蓝灯(输出低电平)，否则关蓝灯</span><br><span class="line">		<span class="keyword">if</span> (RPi.GPIO.input(btnB) == 0):</span><br><span class="line">			RPi.GPIO.output(B, False)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			RPi.GPIO.output(B, True)</span><br><span class="line"></span><br><span class="line">except KeyboardInterrupt:</span><br><span class="line">	pass</span><br><span class="line"></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -126,13 +131,13 @@
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/技术/">技术</a>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
 </div>
 
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/git/">git</a><a href="/tags/hexo/">hexo</a><a href="/tags/ssh/">ssh</a>
+  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
   </div>
 
 </div>
@@ -141,7 +146,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/" data-title="从同一台终端分别向Gitcafe不同帐号Push的方法 | Mango Love Carrot" data-tsina="null" class="share clearfix">
+	  <div data-url="http://blog.mangolovecarrot.net/2015/05/03/raspi-study04/" data-title="树莓派GPIO入门04-使用按钮 | Mango Love Carrot" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -154,19 +159,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2015/04/27/cswg-jsdmq/" title="文摘-《江上的母亲》by 野夫">
-  <strong>上一篇：</strong><br/>
-  <span>
-  文摘-《江上的母亲》by 野夫</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2015/04/20/raspi-study01/"  title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">
+<a href="/2015/04/29/raspi-study03/"  title="树莓派GPIO入门03-GPIO控制RGB彩色LED灯">
  <strong>下一篇：</strong><br/> 
- <span>树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁
+ <span>树莓派GPIO入门03-GPIO控制RGB彩色LED灯
 </span>
 </a>
 </div>
@@ -175,7 +172,7 @@
 
 	
 <section id="comments" class="comment">
-	<div class="ds-thread" data-thread-key="2015/04/22/useMultiGitcafePagesWithSSHAgent/" data-title="从同一台终端分别向Gitcafe不同帐号Push的方法" data-url="http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/"></div>
+	<div class="ds-thread" data-thread-key="2015/05/03/raspi-study04/" data-title="树莓派GPIO入门04-使用按钮" data-url="http://blog.mangolovecarrot.net/2015/05/03/raspi-study04/"></div>
 </section>
 
 
@@ -185,7 +182,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
  
- <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#需求"><span class="toc-number">1.</span> <span class="toc-text">需求</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#操作"><span class="toc-number">2.</span> <span class="toc-text">操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题"><span class="toc-number">3.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析"><span class="toc-number">4.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决"><span class="toc-number">5.</span> <span class="toc-text">解决</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果"><span class="toc-number">1.</span> <span class="toc-text">最终效果</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">3.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">4.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码"><span class="toc-number">5.</span> <span class="toc-text">代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#源代码下载"><span class="toc-number">6.</span> <span class="toc-text">源代码下载</span></a></li></ol>
  
   </div>
 
