@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-05-03T13:18:42.000Z</updated>
+  <updated>2015-05-06T15:19:48.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -13,6 +13,37 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门05-驱动数码管显示数字]]></title>
+    <link href="http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/"/>
+    <id>http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/</id>
+    <published>2015-05-05T14:30:04.000Z</published>
+    <updated>2015-05-06T15:19:48.000Z</updated>
+    <content type="html"><![CDATA[<p>这次我们用树莓派的GPIO口驱动数码管来显示数字，进而制作一个简单的电子钟，通过上一节学习的按钮来切换显示时间和日期。<br><a id="more"></a></p>
+<h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门05-驱动数码管显示数字"></p>
+<h3 id="硬件">硬件</h3><ul>
+<li>数码管一只。因为需要显示日期时间所以需要能显示4个数字的数码管。淘宝买1块多钱一只。注意数码管有共阳和共阴的。我这里使用的是共阳的。至于区别，下面的原理说明里会详细解释。</li>
+<li>杜邦线若干。</li>
+<li>面包板一块。</li>
+<li>按钮1只。</li>
+</ul>
+<p><img src="01.jpg" alt="硬件图"></p>
+<h3 id="原理说明">原理说明</h3><p>TODO</p>
+<h3 id="硬件连接">硬件连接</h3><p><img src="connect.png" alt="硬件连接图"></p>
+<h3 id="代码">代码</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TODO</span><br></pre></td></tr></table></figure>
+<h3 id="源代码下载">源代码下载</h3><p><a href="prog.py" title="源代码下载">点击下载</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>这次我们用树莓派的GPIO口驱动数码管来显示数字，进而制作一个简单的电子钟，通过上一节学习的按钮来切换显示时间和日期。<br>]]>
+    
+    </summary>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[树莓派GPIO入门04-使用按钮]]></title>
