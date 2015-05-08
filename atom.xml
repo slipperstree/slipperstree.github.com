@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-05-08T01:00:48.000Z</updated>
+  <updated>2015-05-08T01:18:05.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/</id>
     <published>2015-05-05T14:30:04.000Z</published>
-    <updated>2015-05-08T01:00:48.000Z</updated>
+    <updated>2015-05-08T01:18:05.000Z</updated>
     <content type="html"><![CDATA[<p>这次我们用树莓派的GPIO口驱动数码管来显示数字，进而制作一个简单的电子钟，通过按钮来切换显示时间或日期。<br><a id="more"></a></p>
 <h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门05-驱动数码管显示数字"></p>
 <h3 id="硬件">硬件</h3><ul>
