@@ -3,8 +3,28 @@
 
     
   <url>
+    <loc>http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/</loc>
+    <lastmod>2015-05-17T15:42:52.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门06-跟数字湿温度计DHT11通信</title>
+        <pubTime>2015-05-17T14:27:04.000Z</pubTime>
+        
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/</loc>
-    <lastmod>2015-05-12T14:45:47.000Z</lastmod>
+    <lastmod>2015-05-17T15:05:40.000Z</lastmod>
     <data>
         <display>
         <title>树莓派GPIO入门05-驱动数码管显示数字</title>
@@ -172,6 +192,23 @@
 
     
   <url>
+    <loc>http://blog.mangolovecarrot.net/2015/03/24/chinease/</loc>
+    <lastmod>2015-04-20T04:43:08.000Z</lastmod>
+    <data>
+        <display>
+        <title>《 中国人的撕扯人生：一边是上流，一边是逐流 》</title>
+        <pubTime>2015-03-24T06:03:48.000Z</pubTime>
+        
+        <tag>网摘 </tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://blog.mangolovecarrot.net/2014/09/11/yhxmyzn42/</loc>
     <lastmod>2015-04-20T04:43:08.000Z</lastmod>
     <data>
@@ -278,23 +315,6 @@
              
               <breadCrumb title="Hexo" url="http://blog.mangolovecarrot.net/categories/Hexo/"/>
           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://blog.mangolovecarrot.net/2015/03/24/chinease/</loc>
-    <lastmod>2015-04-20T04:43:08.000Z</lastmod>
-    <data>
-        <display>
-        <title>《 中国人的撕扯人生：一边是上流，一边是逐流 》</title>
-        <pubTime>2015-03-24T06:03:48.000Z</pubTime>
-        
-        <tag>网摘 </tag>
-         
-         
-           
         </display>
     </data>
     </url>
