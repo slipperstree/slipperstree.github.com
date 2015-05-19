@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-05-19T17:45:03.000Z</updated>
+  <updated>2015-05-19T17:45:26.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/</id>
     <published>2015-05-17T14:27:04.000Z</published>
-    <updated>2015-05-19T17:45:03.000Z</updated>
+    <updated>2015-05-19T17:45:26.000Z</updated>
     <content type="html"><![CDATA[<p>本文我们利用树莓派的GPIO口来跟数字湿温度计模块DHT11进行通信取得温度和湿度数据并显示在数码管上，通过按钮来切换显示温度或湿度。<br><a id="more"></a></p>
 <h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门06-跟数字湿温度计DHT11通信"></p>
 <h3 id="硬件">硬件</h3><ul>
@@ -29,7 +29,7 @@
 <li>按钮1只</li>
 <li>数字湿温度计DHT11模块。（我们这个教程里用到的所有电子元件均可在淘宝购买到）<br><img src="hardware.jpg" alt="硬件图"></li>
 </ul>
-<h3 id="原理说明">原理说明</h3><p>原始的DHT11模块有4根引脚，长成这个样子：<br><img src="DHT11_org.png" alt="原始DHT11模块"><br>由图可以看出4根引脚里除了VCC，GND，DATA以外，还有一个引脚是N/A，也就是不使用。（不使用引出来干嘛？好看吗？不解）<br>本文使用的是又被封装了一次的模块，去掉了无用的引脚。其他3个引脚保留。功能完全一样，所以如果你手头上的DHT11是有4根引脚的请忽略N/A针脚，其他的跟我使用的这种完全通用。3个针脚分别连接到3.3v电源，GND和任意GPIO口上。根据数据手册（文末提供下载）的说明，总线（DATA引脚）在空闲状态需要保持高电平状态，所以我们除了将DATA引脚接到一个GPIO口上，还要通过一个4.7K（经实测2K左右的就够了）的电阻将DATA引脚并联到VCC上。这个电阻也称上拉电阻，电阻就是一般的电阻，只是在这里起的作用是上拉电平的作用所以称之为上拉电阻。<br>与DHT11通信时，发送和接收信息都在一根DATA口上，这种只用1根总线的数据传输方式成为单总线模式。<br>向DHT11发送数据时，GPIO口需要设置为OUTPUT模式，从DHT11接收数据时GPIO口需要切换成INPUT模式。<br>具体通信的时序如下：</p>
+<h3 id="原理说明">原理说明</h3><p>原始的DHT11模块有4根引脚，长成这个样子：<br><img src="DHT11_org.png" alt="原始DHT11模块"><br>由图可以看出4根引脚里除了VCC，GND，DATA以外，还有一个引脚是N/A，也就是不使用。（不使用引出来干嘛？好看吗？不解）<br>本文使用的是又被封装了一次的模块，去掉了无用的引脚。其他3个引脚保留。功能完全一样，所以如果你手头上的DHT11是有4根引脚的请忽略N/A针脚，其他的跟我使用的这种完全通用。3个针脚分别连接到3.3v电源，GND和任意GPIO口上。根据数据手册（文末提供下载）的说明，总线（DATA引脚）在空闲状态需要保持高电平状态，所以我们除了将DATA引脚接到一个GPIO口上，还要通过一个4.7K（经实测2K左右的就够了）的电阻将DATA引脚并联到VCC上。这个电阻也称上拉电阻，电阻就是一般的电阻，只是在这里起的作用是上拉电平的作用所以称之为上拉电阻。<br>与DHT11通信时，发送和接收信息都在一根DATA口上，这种只用1根总线的数据传输方式称为单总线模式。<br>向DHT11发送数据时，GPIO口需要设置为OUTPUT模式，从DHT11接收数据时GPIO口需要切换成INPUT模式。<br>具体通信的时序如下：</p>
 <ol>
 <li>由于有上拉电阻存在，总线（DATA）空闲状态为高电平。</li>
 <li>树莓派GPIO口设置为OUTPUT模式。</li>
