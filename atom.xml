@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-05-20T18:47:02.000Z</updated>
+  <updated>2015-05-20T19:13:59.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,8 +19,8 @@
     <link href="http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/</id>
     <published>2015-05-21T16:03:16.000Z</published>
-    <updated>2015-05-20T18:47:02.000Z</updated>
-    <content type="html"><![CDATA[<p>本文我们利用树莓派的GPIO口来跟数字湿温度计模块DHT11进行通信取得温度和湿度数据并显示在数码管上，通过按钮来切换显示温度或湿度。<br><a id="more"></a></p>
+    <updated>2015-05-20T19:13:59.000Z</updated>
+    <content type="html"><![CDATA[<p>本文我们用声音传感器来制作一个简易的声控灯。<br><a id="more"></a></p>
 <h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门07-利用声音传感器制作声控灯"></p>
 <h3 id="硬件">硬件</h3><ul>
 <li>面包板</li>
@@ -40,7 +40,7 @@
 <h3 id="资源下载">资源下载</h3><p><a href="prog.py" title="源码下载">点击下载源码</a></p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p>本文我们利用树莓派的GPIO口来跟数字湿温度计模块DHT11进行通信取得温度和湿度数据并显示在数码管上，通过按钮来切换显示温度或湿度。<br>]]>
+    <![CDATA[<p>本文我们用声音传感器来制作一个简易的声控灯。<br>]]>
     
     </summary>
     
