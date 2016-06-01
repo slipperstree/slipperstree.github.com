@@ -3,14 +3,16 @@
 
     
   <url>
-    <loc>http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/</loc>
-    <lastmod>2015-05-22T09:35:07.000Z</lastmod>
+    <loc>http://blog.mangolovecarrot.net/2016/01/30/raspi-study1101/</loc>
+    <lastmod>2016-06-01T17:11:55.000Z</lastmod>
     <data>
         <display>
-        <title>树莓派GPIO入门07-利用声音传感器制作声控灯</title>
-        <pubTime>2015-05-21T16:03:16.000Z</pubTime>
+        <title>树莓派GPIO入门11-驱动液晶屏幕（一）</title>
+        <pubTime>2016-01-30T08:03:19.000Z</pubTime>
         
         <tag>树莓派GPIO入门系列 </tag>
+         
+        <tag>液晶屏 </tag>
          
          
            
@@ -24,12 +26,110 @@
     
   <url>
     <loc>http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/</loc>
-    <lastmod>2015-05-19T17:45:26.000Z</lastmod>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
     <data>
         <display>
         <title>树莓派GPIO入门06-跟数字湿温度计DHT11通信</title>
         <pubTime>2015-05-17T14:27:04.000Z</pubTime>
         
+        <tag>传感器 </tag>
+         
+        <tag>数码管 </tag>
+         
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blog.mangolovecarrot.net/2015/06/08/raspi-study0802/</loc>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门08-使用74HC595芯片驱动数码管（二）</title>
+        <pubTime>2015-06-08T12:44:50.000Z</pubTime>
+        
+        <tag>数字芯片 </tag>
+         
+        <tag>数码管 </tag>
+         
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blog.mangolovecarrot.net/2015/06/03/raspi-study0801/</loc>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门08-使用74HC595芯片驱动数码管（一）</title>
+        <pubTime>2015-06-03T13:36:58.000Z</pubTime>
+        
+        <tag>数字芯片 </tag>
+         
+        <tag>数码管 </tag>
+         
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/</loc>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门07-利用声音传感器制作声控灯</title>
+        <pubTime>2015-05-21T16:03:16.000Z</pubTime>
+        
+        <tag>传感器 </tag>
+         
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blog.mangolovecarrot.net/2015/06/13/raspi-study0901/</loc>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管</title>
+        <pubTime>2015-06-13T07:42:53.000Z</pubTime>
+        
+        <tag>数字芯片 </tag>
+         
+        <tag>数码管 </tag>
+         
         <tag>树莓派GPIO入门系列 </tag>
          
          
@@ -44,12 +144,38 @@
     
   <url>
     <loc>http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/</loc>
-    <lastmod>2015-05-17T15:05:40.000Z</lastmod>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
     <data>
         <display>
         <title>树莓派GPIO入门05-驱动数码管显示数字</title>
         <pubTime>2015-05-05T14:30:04.000Z</pubTime>
         
+        <tag>数码管 </tag>
+         
+        <tag>树莓派GPIO入门系列 </tag>
+         
+         
+           
+             
+              <breadCrumb title="树莓派" url="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/</loc>
+    <lastmod>2015-05-23T09:32:44.000Z</lastmod>
+    <data>
+        <display>
+        <title>树莓派GPIO入门10-使用TLC5940芯片输出多路PWM</title>
+        <pubTime>2016-01-24T05:30:14.000Z</pubTime>
+        
+        <tag>PWM </tag>
+         
+        <tag>数字芯片 </tag>
+         
         <tag>树莓派GPIO入门系列 </tag>
          
          
@@ -142,26 +268,6 @@
     </url>
 
     
-  <url>
-    <loc>http://blog.mangolovecarrot.net/2015/04/27/cswg-jsdmq/</loc>
-    <lastmod>2015-04-26T15:42:57.000Z</lastmod>
-    <data>
-        <display>
-        <title>文摘-《江上的母亲》by 野夫</title>
-        <pubTime>2015-04-26T15:33:16.000Z</pubTime>
-        
-        <tag>野夫 </tag>
-         
-         
-           
-             
-              <breadCrumb title="读书" url="http://blog.mangolovecarrot.net/categories/%E8%AF%BB%E4%B9%A6/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
     
   <url>
     <loc>http://blog.mangolovecarrot.net/2015/04/22/useMultiGitcafePagesWithSSHAgent/</loc>
@@ -206,23 +312,6 @@
              
               <breadCrumb title="技术" url="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://blog.mangolovecarrot.net/2015/03/24/chinease/</loc>
-    <lastmod>2015-04-20T04:43:08.000Z</lastmod>
-    <data>
-        <display>
-        <title>《 中国人的撕扯人生：一边是上流，一边是逐流 》</title>
-        <pubTime>2015-03-24T06:03:48.000Z</pubTime>
-        
-        <tag>网摘 </tag>
-         
-         
-           
         </display>
     </data>
     </url>
@@ -288,26 +377,6 @@
            
              
               <breadCrumb title="技术" url="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://blog.mangolovecarrot.net/2014/08/18/guoxue200/</loc>
-    <lastmod>2015-04-20T04:43:08.000Z</lastmod>
-    <data>
-        <display>
-        <title>国学常识200题</title>
-        <pubTime>2014-08-18T11:55:48.000Z</pubTime>
-        
-        <tag>国学 </tag>
-         
-         
-           
-             
-              <breadCrumb title="文艺青年" url="http://blog.mangolovecarrot.net/categories/%E6%96%87%E8%89%BA%E9%9D%92%E5%B9%B4/"/>
           
         </display>
     </data>

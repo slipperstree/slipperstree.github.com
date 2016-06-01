@@ -1,0 +1,729 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>树莓派GPIO入门10-使用TLC5940芯片输出多路PWM | Mango Love Carrot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="mango">
+    
+
+    
+    <meta name="description" content="在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM">
+<meta property="og:url" content="http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/index.html">
+<meta property="og:site_name" content="Mango Love Carrot">
+<meta property="og:description" content="在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。">
+<meta property="og:image" content="http://www.photo138.com/0/MS/ZC02400_2.jpg">
+<meta property="og:image" content="http://image.geek-workshop.com/forum/201404/11/105523kwtnhnhw0fvznhnx.jpg">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM">
+<meta name="twitter:description" content="在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Mango Love Carrot" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/Carrot.png">
+    <link rel="apple-touch-icon-precomposed" href="/img/Carrot.png">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+	
+	
+		<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "//hm.baidu.com/hm.js?06def1d033e0398f6bc6a19820065f44";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+		</script>
+	
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.png" alt="Mango Love Carrot" title="Mango Love Carrot"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Mango Love Carrot">Mango Love Carrot</a></h1>
+				<h2 class="blog-motto">芒果爱吃胡萝卜</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">存档</a></li>
+					
+						<li><a href="/about">关于</a></li>
+					
+					<li>
+ 					
+						<form class="search">
+							<label>Search</label>
+						<input type="text" id="ts-search-input" name="q" size="30" placeholder="搜索"><br>
+						</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/01/24/raspi-study1001/" title="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM" itemprop="url">树莓派GPIO入门10-使用TLC5940芯片输出多路PWM</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2016-01-24T05:30:14.000Z" itemprop="datePublished"> 发表于 Jan 24 2016</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果TODO"><span class="toc-number">1.</span> <span class="toc-text">最终效果TODO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">3.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">4.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码（Python）"><span class="toc-number">5.</span> <span class="toc-text">代码（Python）</span></a></li></ol>
+		
+		</div>
+		
+		<p>在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。<br>本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。<br>在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。</p>
+<a id="more"></a>
+<h3 id="最终效果TODO">最终效果TODO</h3><p>视频演示</p>
+<h3 id="硬件">硬件</h3><ul>
+<li>TLC5940芯片 X 1<br><img src="http://www.photo138.com/0/MS/ZC02400_2.jpg" alt="TLC5940芯片"></li>
+<li>LED X 3</li>
+<li>2-3k电阻一只</li>
+</ul>
+<h3 id="原理说明">原理说明</h3><p>简单的说，TLC5940是一个拥有16路输出的LED驱动芯片，每一路输出支持4096级！亮度调节。<br>老规矩，看一下它的引脚图：<br><img src="http://image.geek-workshop.com/forum/201404/11/105523kwtnhnhw0fvznhnx.jpg" alt="TLC5940的引脚图"><br>跟本文无关的内容或设置在此不做说明，请自己查询datasheet：</p>
+<table>
+<thead>
+<tr>
+<th>引脚</th>
+<th>功能                        </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OUT0-15</td>
+<td>16路PWM信号输出（负极）</td>
+</tr>
+<tr>
+<td>VPRG</td>
+<td>指定工作模式，接GND是我们需要的PWM模式</td>
+</tr>
+<tr>
+<td>SIN</td>
+<td>串行移位输入</td>
+</tr>
+<tr>
+<td>SCLK</td>
+<td>串行移位寄存器时钟（上升沿有效）          </td>
+</tr>
+<tr>
+<td>XLAT</td>
+<td>从移位寄存器写入GS寄存器（下文介绍）时钟（上升沿有效）</td>
+</tr>
+<tr>
+<td>BLANK</td>
+<td>当设为高电平时，关闭所有输出，GS计数器（下文介绍）也将重置</td>
+</tr>
+<tr>
+<td>IREF</td>
+<td>跟GND之间连接一个电阻，阻值决定了输出电流的最大值</td>
+</tr>
+<tr>
+<td>GSCLK</td>
+<td>GS时钟输入（下文介绍）</td>
+</tr>
+<tr>
+<td>SOUT</td>
+<td>串行输出，级联多块芯片时使用</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>先将BLANK设置为H，关闭所有输出。</li>
+<li>输入各组亮度信息。跟我们之前学过的芯片一样，这款芯片同样是通过移位寄存器来输入数据的。<br>移位寄存器用于传送12bit X 16组PWM数值GSn(n=0-15)，共192bit。每组数据的值范围是0-4095。<br>传送顺序是倒序的：GS15，GS14。。。GS0。先传输的是OUT15的12位数据，其次是OUT14的12位数据。。。最后是OUT0的12位数据。<br>GSn决定了OUTn的PWM调宽。（GSn / 4095 = 0% - 100%）</li>
+<li>192位数据全部传送完毕后制造XLAT的上升沿，将移位寄存器里的数据写入GS寄存器。</li>
+<li>BLANK设置为L，打开所有输出</li>
+<li>准备工作完毕，为了让TLC5940芯片正常工作，还需要向GSCLK输送时钟信号。<br>啥是时钟信号？简单的说就是高低电平不停交替的信号，也称作方波信号。<br>TLC5940会根据这个时钟信号进行从0-4095的计数（高低电平每交替一次数一次），一边计数一边检查各GSn的设定值，一旦到达GSn的值，则切换OUTn的电平一直计数到4095为止，再从0开始重新计数。从0计数到4095就是一个高低电平的切换周期。所以我们给5940提供的时钟频率越快，最后输出的PWM频率就越快。最后输出的PWM的频率 = 时钟信号的频率 / 4095。<br>比如时钟频率是8M，则最后从各OUT口输出的PWM频率是8MHz / 4095 = 1.953KHz。<br>根据TLC5940的官方文档，GSCLK可支持最高30MHz的时钟频率，也就是最高可以输出7.3KHz的PWM信号。如果是控制LED的亮度，那么让人眼感觉不到闪烁的最低频率应该是50Hz以上，所以我们应该至少给GSCLK提供不低于50 X 4095 = 200KHz的方波。树莓派Python的GPIO库翻转IO口的速度不高，实测速度只能达到60KHz，导致最后输出的PWM频率只有14Hz，会有明显的闪烁感。但我们主要是为了说明原理，明白原理了可以用别的方法来实现功能，比如使用c语言的wiringPi库的话效率会高不少，甚至可以使用外部的单片机或其他电路来产生高频率的时钟信号提供给TLC5940，这个作者也在探索中。以后有空再更新。</li>
+</ol>
+<h3 id="硬件连接">硬件连接</h3><table>
+<thead>
+<tr>
+<th>模块1</th>
+<th>引脚</th>
+<th>模块2</th>
+<th>引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TLC5940</td>
+<td>VPRG</td>
+<td>树莓派</td>
+<td>GPIO17</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SIN</td>
+<td>树莓派</td>
+<td>GPIO13</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SCLK</td>
+<td>树莓派</td>
+<td>GPIO19</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>XLAT</td>
+<td>树莓派</td>
+<td>GPIO27</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>BLANK</td>
+<td>树莓派</td>
+<td>GPIO23</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>IREF</td>
+<td>树莓派</td>
+<td>GND(中间串联一个2-3k的电阻)</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SOUT</td>
+<td>树莓派</td>
+<td>GPIO4</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT0</td>
+<td>LED0</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT1</td>
+<td>LED1</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT2</td>
+<td>LED2</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>VCC</td>
+<td>树莓派</td>
+<td>5V</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>GND</td>
+<td>树莓派</td>
+<td>GND</td>
+</tr>
+<tr>
+<td>LED0,1,2</td>
+<td>正极</td>
+<td>树莓派</td>
+<td>5V</td>
+</tr>
+</tbody>
+</table>
+<h3 id="代码（Python）">代码（Python）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> RPi.GPIO <span class="keyword">as</span> GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">VPRG=<span class="number">17</span></span><br><span class="line">SIN=<span class="number">13</span></span><br><span class="line">SCLK=<span class="number">19</span></span><br><span class="line">XLAT=<span class="number">27</span></span><br><span class="line">BLANK=<span class="number">23</span></span><br><span class="line">DCPRG=<span class="number">18</span></span><br><span class="line">GSCLK=<span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 传输GSData(0-4095)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setGSData</span><span class="params">(data)</span>:</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "S-----------setByte---------------:", hex(data)</span></span><br><span class="line">	<span class="keyword">for</span> bit <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">12</span>):</span><br><span class="line">		<span class="comment"># 传入的数字从高位到低位依次判断是否为1，若为1则设置高电平，否则设置低电平</span></span><br><span class="line">		<span class="comment"># 判断的方法是先向左移位，把要判断的位移动到最高位然后跟0x800（1000 0000 0000）相与，</span></span><br><span class="line">		<span class="comment"># 如果结果仍然是0x80（1000 0000 0000）就表示最高位是1，否则最高位就是0</span></span><br><span class="line">		<span class="keyword">if</span> ((data&lt;&lt;bit) &amp; <span class="number">0x800</span> == <span class="number">0x800</span>):</span><br><span class="line">			setBitData(<span class="keyword">True</span>)</span><br><span class="line">			<span class="comment"># print "1",</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			setBitData(<span class="keyword">False</span>)</span><br><span class="line">			<span class="comment"># print "0",</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "E-----------setByte---------------"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	GPIO.output(SCLK, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(SIN, data)</span><br><span class="line">	GPIO.output(SCLK, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出GSCLK时钟信号</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runGSCLK</span><span class="params">()</span>:</span></span><br><span class="line">	i=<span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">		i+=<span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> i&gt;=<span class="number">4096</span>:</span><br><span class="line">			<span class="comment"># 注意，每次计数到4095时需要手动重置一次芯片的计数器</span></span><br><span class="line">			GPIO.output(BLANK, <span class="keyword">True</span>)</span><br><span class="line">			<span class="comment">#time.sleep(0.001);</span></span><br><span class="line">			GPIO.output(BLANK, <span class="keyword">False</span>)</span><br><span class="line">			i=<span class="number">0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			GPIO.output(GSCLK, <span class="keyword">True</span>)</span><br><span class="line">			GPIO.output(GSCLK, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	GPIO.setmode(GPIO.BCM)</span><br><span class="line">	GPIO.setup(VPRG, GPIO.OUT)</span><br><span class="line">	GPIO.setup(SIN, GPIO.OUT)</span><br><span class="line">	GPIO.setup(SCLK, GPIO.OUT)</span><br><span class="line">	GPIO.setup(XLAT, GPIO.OUT)</span><br><span class="line">	GPIO.setup(BLANK, GPIO.OUT)</span><br><span class="line">	GPIO.setup(DCPRG, GPIO.OUT)</span><br><span class="line">	GPIO.setup(GSCLK, GPIO.OUT)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># VPRG设置为L，使其工作在GS mode</span></span><br><span class="line">	GPIO.output(VPRG, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># BLANK设置为H，关闭所有输出</span></span><br><span class="line">	GPIO.output(BLANK, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	GPIO.output(DCPRG, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 传送12bit X 16组PWM数值GSn(n=0-15)，共192bit</span></span><br><span class="line">	<span class="comment"># 每组数据的值范围是0-4095</span></span><br><span class="line">	<span class="comment"># 因为是通过移位寄存器传输，所以传送顺序是倒序的：GS15，GS14。。。GS0</span></span><br><span class="line">	<span class="comment"># GSn决定了OUTn的PWM调宽。（GSn / 4095 = 0% - 100%）</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS15 本文不使用15-3号输出，设为0</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS14</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS13</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS12</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS11</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS10</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS9</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS8</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS7</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS6</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS5</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS4</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS3</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment"># print "GS2"</span></span><br><span class="line">	setGSData(<span class="number">4095</span>) <span class="comment"># GS2</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># print "GS1"</span></span><br><span class="line">	setGSData(<span class="number">2500</span>) <span class="comment"># GS1</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># print "GS0"</span></span><br><span class="line">	setGSData(<span class="number">1000</span>) <span class="comment"># GS0</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 送完GS数据后，创造XLAT的上升沿，将移位寄存器的数据一次性送入GS寄存器</span></span><br><span class="line">	GPIO.output(XLAT, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(XLAT, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># BLANK设置为L，打开所有输出</span></span><br><span class="line">	<span class="comment"># GPIO.output(BLANK, False)</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 准备工作完毕，下面向GSCLK输送时钟信号（高低电平交互的方波信号）</span></span><br><span class="line">	<span class="comment"># TLC5940会根据这个时钟信号进行从0-4095的计数，一边计数一边检查各GSn的设定值，一旦到达GSn的值，则切换OUTn的电平</span></span><br><span class="line">	<span class="comment"># 一直计数到4095为止，再从0开始重新计数。从0计数到4095就是一个高低电平的切换周期。</span></span><br><span class="line">	<span class="comment"># 所以我们给5940提供的时钟频率越快，最后输出的PWM频率就越快</span></span><br><span class="line">	<span class="comment"># 最后输出的PWM的频率 = 时钟信号的频率 / 4095</span></span><br><span class="line">	<span class="comment"># 比如时钟频率是8M，则最后从各OUT口输出的PWM频率是8MHz / 4095 = 1.953KHz</span></span><br><span class="line">	<span class="comment"># 根据TLC5940的官方文档，GSCLK可支持最高30MHz的时钟频率，也就是最高可以输出7.3KHz的PWM信号。</span></span><br><span class="line">	<span class="comment"># 如果是控制LED的亮度，那么让人眼感觉不到闪烁的最低频率应该是50Hz以上，</span></span><br><span class="line">	<span class="comment"># 所以我们应该至少给GSCLK提供不低于50 X 4095 = 200KHz的方波。</span></span><br><span class="line">	<span class="comment"># 树莓派Python的GPIO库翻转IO口的速度不高，实测速度只能达到60KHz，</span></span><br><span class="line">	<span class="comment"># 导致最后输出的PWM频率只有14Hz，会有明显的闪烁感</span></span><br><span class="line">	runGSCLK()</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理GPIO口</span></span><br><span class="line">GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/PWM/">PWM</a><a href="/tags/数字芯片/">数字芯片</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/" data-title="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM | Mango Love Carrot" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/01/30/raspi-study1101/" title="树莓派GPIO入门11-驱动液晶屏幕（一）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  树莓派GPIO入门11-驱动液晶屏幕（一）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/06/13/raspi-study0901/"  title="树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管">
+ <strong>下一篇：</strong><br/> 
+ <span>树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section id="comments" class="comment">
+	<div class="ds-thread" data-thread-key="2016/01/24/raspi-study1001/" data-title="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM" data-url="http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/"></div>
+</section>
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#最终效果TODO"><span class="toc-number">1.</span> <span class="toc-text">最终效果TODO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件"><span class="toc-number">2.</span> <span class="toc-text">硬件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原理说明"><span class="toc-number">3.</span> <span class="toc-text">原理说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#硬件连接"><span class="toc-number">4.</span> <span class="toc-text">硬件连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码（Python）"><span class="toc-number">5.</span> <span class="toc-text">代码（Python）</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/Hexo/" title="Hexo">Hexo<sup>1</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/技术/" title="技术">技术<sup>4</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/读书/" title="读书">读书<sup>1</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/树莓派GPIO入门系列/" title="树莓派GPIO入门系列">树莓派GPIO入门系列<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数码管/" title="数码管">数码管<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数字芯片/" title="数字芯片">数字芯片<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/传感器/" title="传感器">传感器<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/hexo/" title="hexo">hexo<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/PWM/" title="PWM">PWM<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/lighttpd/" title="lighttpd">lighttpd<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/ssh/" title="ssh">ssh<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/SSH/" title="SSH">SSH<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/液晶屏/" title="液晶屏">液晶屏<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/树莓派/" title="树莓派">树莓派<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/搞笑/" title="搞笑">搞笑<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/道格拉斯/" title="道格拉斯">道格拉斯<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/书评/" title="书评">书评<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/webpy/" title="webpy">webpy<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/python/" title="python">python<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/webserver/" title="webserver">webserver<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/LINUX/" title="LINUX">LINUX<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="http://chenyuge.com" target="_blank" title="恩，宝贝女儿的小站">Chenyuge&#39;s Blog</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.google.com.hk/search?safe=off&q=What+is+the+answer+to+life%2C+the+universe%2C+and+everything" target="_blank" title="生命，宇宙以及一切的答案">生命，宇宙以及一切的答案</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+<div class="doubanshow">
+<p class="asidetitle">豆瓣秀</p>
+<div>
+<script type="text/javascript" src="http://www.douban.com/service/badge/tuoxieshu/?show=collection&amp;n=12&amp;columns=3&amp;hidelogo=yes&amp;hideself=yes&amp;cat=book|movie" ></script>
+</div>
+</div>
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> 永远年轻， <br/>
+			永远热泪盈眶。</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		<a href="https://github.com/slipperstree" target="_blank" class="icon-github" title="github"></a>
+		
+		
+		
+		
+		
+		
+		<a href="https://www.douban.com/people/tuoxieshu" target="_blank" class="icon-douban" title="豆瓣"></a>
+		
+		
+		
+		
+		<a href="mailto:slipperstree@gmail.com" target="_blank" class="icon-email" title="Email Me"></a>
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="mango">mango</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#nothing"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"mangolovecarrot"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<script>
+var option = {
+  engineKey: 'eccfee7d48be2180e6e6'
+};
+(function(w,d,t,u,n,s,e){
+  s = d.createElement(t);
+  s.src = u;
+  s.async = 1;
+  w[n] = function(r){
+    w[n].opts = r;
+  };
+  e = d.getElementsByTagName(t)[0];
+  e.parentNode.insertBefore(s, e);
+})(window,document,'script','//tinysou-cdn.b0.upaiyun.com/ts.js','_ts');
+_ts(option);
+</script>
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

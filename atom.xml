@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2015-05-22T09:35:07.000Z</updated>
+  <updated>2016-06-01T17:11:55.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -15,11 +15,906 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[树莓派GPIO入门11-驱动液晶屏幕（一）]]></title>
+    <link href="http://blog.mangolovecarrot.net/2016/01/30/raspi-study1101/"/>
+    <id>http://blog.mangolovecarrot.net/2016/01/30/raspi-study1101/</id>
+    <published>2016-01-30T08:03:19.000Z</published>
+    <updated>2016-06-01T17:11:55.000Z</updated>
+    <content type="html"><![CDATA[<p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>并分几个篇幅分别讲述如何使其显示色块，英文数字，汉字以及图片。<br>本文是系列的第一篇，目标是点亮屏幕并显示指定色块。</p>
+<a id="more"></a>
+<h3 id="最终效果">最终效果</h3><p><img src="lcd.jpg" alt="最终效果"></p>
+<h3 id="硬件">硬件</h3><ul>
+<li>1.44英寸 spi接口 128x128液晶屏幕 X 1（淘宝10-20元）<br><img src="lcdfront.jpg" alt="正面"><br><img src="lcdback.jpg" alt="背面"></li>
+</ul>
+<h3 id="先上代码看效果">先上代码看效果</h3><p>这次直接上代码，大家自己复制代码保存为py文件。文件名无所谓。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> RPi.GPIO <span class="keyword">as</span> GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">cs=<span class="number">23</span>		<span class="comment"># 片选</span></span><br><span class="line">rs=<span class="number">17</span>		<span class="comment"># 数据 / 命令 切换</span></span><br><span class="line">sda=<span class="number">13</span>		<span class="comment"># 数据</span></span><br><span class="line">scl=<span class="number">19</span>		<span class="comment"># 时钟</span></span><br><span class="line">reset=<span class="number">27</span>	<span class="comment"># 复位</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 传输byte</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setByteData</span><span class="params">(data)</span>:</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "S-----------setByte---------------:", hex(data)</span></span><br><span class="line">	<span class="keyword">for</span> bit <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">8</span>):</span><br><span class="line">		<span class="comment"># 传入的数字从高位到低位依次判断是否为1，若为1则设置高电平，否则设置低电平</span></span><br><span class="line">		<span class="comment"># 判断的方法是先向左移位，把要判断的位移动到最高位然后跟0x80（1000 0000）相与，</span></span><br><span class="line">		<span class="comment"># 如果结果仍然是0x80（1000 0000）就表示最高位是1，否则最高位就是0</span></span><br><span class="line">		<span class="keyword">if</span> ((data&lt;&lt;bit) &amp; <span class="number">0x80</span> == <span class="number">0x80</span>):</span><br><span class="line">			setBitData(<span class="keyword">True</span>)</span><br><span class="line">			<span class="comment"># print "1",</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			setBitData(<span class="keyword">False</span>)</span><br><span class="line">			<span class="comment"># print "0",</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "E-----------setByte---------------"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	GPIO.output(scl, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(sda, data)</span><br><span class="line">	GPIO.output(scl, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_command</span><span class="params">(cmd)</span>:</span></span><br><span class="line">	GPIO.output(cs, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(rs, <span class="keyword">False</span>)</span><br><span class="line">	setByteData(cmd)</span><br><span class="line">	GPIO.output(cs, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_data</span><span class="params">(data)</span>:</span></span><br><span class="line">	GPIO.output(cs, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(rs, <span class="keyword">True</span>)</span><br><span class="line">	setByteData(data)</span><br><span class="line">	GPIO.output(cs, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_data_16bit</span><span class="params">(dataH, dataL)</span>:</span></span><br><span class="line">	write_data(dataH)</span><br><span class="line">	write_data(dataL)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lcd_reset</span><span class="params">()</span>:</span></span><br><span class="line">    GPIO.output(reset, <span class="keyword">False</span>)</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line">    GPIO.output(reset, <span class="keyword">True</span>)</span><br><span class="line">    time.sleep(<span class="number">0.1</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">lcd_init</span><span class="params">()</span>:</span></span><br><span class="line">	lcd_reset()</span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0x11</span>) <span class="comment"># Exit Sleep</span></span><br><span class="line">	time.sleep(<span class="number">0.02</span>)</span><br><span class="line">	write_command(<span class="number">0x26</span>) <span class="comment"># Set Default Gamma</span></span><br><span class="line">	write_data(<span class="number">0x04</span>)</span><br><span class="line">	write_command(<span class="number">0xB1</span>)<span class="comment"># Set Frame Rate</span></span><br><span class="line">	write_data(<span class="number">0x0e</span>)</span><br><span class="line">	write_data(<span class="number">0x10</span>)</span><br><span class="line">	write_command(<span class="number">0xC0</span>) <span class="comment"># Set VRH1[4:0] &amp; VC[2:0] for VCI1 &amp; GVDD</span></span><br><span class="line">	write_data(<span class="number">0x08</span>)</span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_command(<span class="number">0xC1</span>) <span class="comment"># Set BT[2:0] for AVDD &amp; VCL &amp; VGH &amp; VGL</span></span><br><span class="line">	write_data(<span class="number">0x05</span>)</span><br><span class="line">	write_command(<span class="number">0xC5</span>) <span class="comment"># Set VMH[6:0] &amp; VML[6:0] for VOMH &amp; VCOML</span></span><br><span class="line">	write_data(<span class="number">0x38</span>)</span><br><span class="line">	write_data(<span class="number">0x40</span>)</span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0x3a</span>) <span class="comment"># Set Color Format</span></span><br><span class="line">	write_data(<span class="number">0x05</span>)</span><br><span class="line">	write_command(<span class="number">0x36</span>) <span class="comment"># RGB</span></span><br><span class="line">	write_data(<span class="number">0xc8</span>)</span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0x2A</span>) <span class="comment"># Set Column Address</span></span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x7F</span>)</span><br><span class="line">	write_command(<span class="number">0x2B</span>) <span class="comment"># Set Page Address</span></span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line">	write_data(<span class="number">0x7F</span>)</span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0xB4</span>) </span><br><span class="line">	write_data(<span class="number">0x00</span>)</span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0xf2</span>) <span class="comment"># Enable Gamma bit</span></span><br><span class="line">	write_data(<span class="number">0x01</span>)</span><br><span class="line">	write_command(<span class="number">0xE0</span>) </span><br><span class="line">	write_data(<span class="number">0x3f</span>)<span class="comment"># p1</span></span><br><span class="line">	write_data(<span class="number">0x22</span>)<span class="comment"># p2</span></span><br><span class="line">	write_data(<span class="number">0x20</span>)<span class="comment"># p3</span></span><br><span class="line">	write_data(<span class="number">0x30</span>)<span class="comment"># p4</span></span><br><span class="line">	write_data(<span class="number">0x29</span>)<span class="comment"># p5</span></span><br><span class="line">	write_data(<span class="number">0x0c</span>)<span class="comment"># p6</span></span><br><span class="line">	write_data(<span class="number">0x4e</span>)<span class="comment"># p7</span></span><br><span class="line">	write_data(<span class="number">0xb7</span>)<span class="comment"># p8</span></span><br><span class="line">	write_data(<span class="number">0x3c</span>)<span class="comment"># p9</span></span><br><span class="line">	write_data(<span class="number">0x19</span>)<span class="comment"># p10</span></span><br><span class="line">	write_data(<span class="number">0x22</span>)<span class="comment"># p11</span></span><br><span class="line">	write_data(<span class="number">0x1e</span>)<span class="comment"># p12</span></span><br><span class="line">	write_data(<span class="number">0x02</span>)<span class="comment"># p13</span></span><br><span class="line">	write_data(<span class="number">0x01</span>)<span class="comment"># p14</span></span><br><span class="line">	write_data(<span class="number">0x00</span>)<span class="comment"># p15</span></span><br><span class="line">	write_command(<span class="number">0xE1</span>) </span><br><span class="line">	write_data(<span class="number">0x00</span>)<span class="comment"># p1</span></span><br><span class="line">	write_data(<span class="number">0x1b</span>)<span class="comment"># p2</span></span><br><span class="line">	write_data(<span class="number">0x1f</span>)<span class="comment"># p3</span></span><br><span class="line">	write_data(<span class="number">0x0f</span>)<span class="comment"># p4</span></span><br><span class="line">	write_data(<span class="number">0x16</span>)<span class="comment"># p5</span></span><br><span class="line">	write_data(<span class="number">0x13</span>)<span class="comment"># p6</span></span><br><span class="line">	write_data(<span class="number">0x31</span>)<span class="comment"># p7</span></span><br><span class="line">	write_data(<span class="number">0x84</span>)<span class="comment"># p8</span></span><br><span class="line">	write_data(<span class="number">0x43</span>)<span class="comment"># p9</span></span><br><span class="line">	write_data(<span class="number">0x06</span>)<span class="comment"># p10</span></span><br><span class="line">	write_data(<span class="number">0x1d</span>)<span class="comment"># p11</span></span><br><span class="line">	write_data(<span class="number">0x21</span>)<span class="comment"># p12</span></span><br><span class="line">	write_data(<span class="number">0x3d</span>)<span class="comment"># p13</span></span><br><span class="line">	write_data(<span class="number">0x3e</span>)<span class="comment"># p14</span></span><br><span class="line">	write_data(<span class="number">0x3f</span>)<span class="comment"># p15</span></span><br><span class="line"></span><br><span class="line">	write_command(<span class="number">0x29</span>) <span class="comment">#  Display On</span></span><br><span class="line">	write_command(<span class="number">0x2C</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_single_color</span><span class="params">(DH,DL)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">			write_data_16bit(DH,DL)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	GPIO.setmode(GPIO.BCM)</span><br><span class="line">	GPIO.setup(cs, GPIO.OUT)</span><br><span class="line">	GPIO.setup(rs, GPIO.OUT)</span><br><span class="line">	GPIO.setup(sda, GPIO.OUT)</span><br><span class="line">	GPIO.setup(scl, GPIO.OUT)</span><br><span class="line">	GPIO.setup(reset, GPIO.OUT)</span><br><span class="line">	</span><br><span class="line">	lcd_init()</span><br><span class="line">	write_command(<span class="number">0x2C</span>)</span><br><span class="line"></span><br><span class="line">	show_single_color(<span class="number">0xf8</span>,<span class="number">0x00</span>) <span class="comment"># 红色背景</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">		<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理GPIO口</span></span><br><span class="line">GPIO.cleanup()</span><br></pre></td></tr></table></figure></p>
+<p>然后，按下表连接液晶屏和树莓派。（连接完以后屏幕应该是白屏状态）</p>
+<table>
+<thead>
+<tr>
+<th>液晶屏</th>
+<th>树莓派                        </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LCD</td>
+<td>3.3V(不可以是5V！！)</td>
+</tr>
+<tr>
+<td>SCK</td>
+<td>GPIO19</td>
+</tr>
+<tr>
+<td>SDA</td>
+<td>GPIO13</td>
+</tr>
+<tr>
+<td>AO</td>
+<td>GPIO17</td>
+</tr>
+<tr>
+<td>RESET</td>
+<td>GPIO27</td>
+</tr>
+<tr>
+<td>CS</td>
+<td>GPIO23</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>GND</td>
+</tr>
+<tr>
+<td>VCC</td>
+<td>3.3V(不可以是5V！！)</td>
+</tr>
+</tbody>
+</table>
+<p>然后，执行！<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">python</span> prog.<span class="keyword">py</span></span><br></pre></td></tr></table></figure></p>
+<p>不出意外，你应该能看到屏幕被慢慢地扫描刷新成红屏了！！！<br><img src="lcd_red.jpg" alt="红屏"></p>
+<h3 id="原理说明">原理说明</h3><p>想要跟硬件通信，给硬件发送指令，首先要搞清楚硬件的通信协议。<br>对于屏幕来说，其通信协议是由屏幕的主控IC芯片决定的，不同的主控IC芯片有不同的通信协议，也就是发送指令的方法。<br>不过，即使是不同的屏幕，也有可能使用同一款（或同系列）主控IC。<br>所以拿到一块屏幕首先要搞清楚这块屏幕使用的是哪种主控IC，谷歌，百度都可以，最方便的是问卖家。。。<br>本文使用的屏幕的主控IC是ST7735S，文末提供数据手册下载。<br>简单来说，通过SDA数据引脚和SCLK时钟引脚串行输入（从第一篇学习过来的一定不陌生）不同的指令数据就可以控制屏幕的输出。<br>指令数据分成两种，指令种类数据和指令内容数据。每次发送指令都是先发送指令种类再发送指令内容。<br>有点拗口，比如说我告诉屏幕“接下来我要改变屏幕颜色啦”，接着你发送了一串数字，硬件接收到这串数字后会作为一个颜色值应用在屏幕上。如果你告诉屏幕“接下来我要改变屏幕的亮度啦”，接着你又发送了一串数字，这次硬件接收到这一串数字后会作为亮度值应用在屏幕上。这么说你再不明白我就。。。。<br>再回过头来看代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_command</span><span class="params">(cmd)</span>:</span></span><br><span class="line">	GPIO.output(cs, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(rs, <span class="keyword">False</span>)</span><br><span class="line">	setByteData(cmd)</span><br><span class="line">	GPIO.output(cs, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">write_data</span><span class="params">(data)</span>:</span></span><br><span class="line">	GPIO.output(cs, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(rs, <span class="keyword">True</span>)</span><br><span class="line">	setByteData(data)</span><br><span class="line">	GPIO.output(cs, <span class="keyword">True</span>)</span><br></pre></td></tr></table></figure></p>
+<p>上面这两个函数，一个用来发送指令种类，一个用来发送指令内容。区别仅仅在于rs引脚的电平高低不同。<br>另外，屏幕初始化函数lcd_init()里有一堆命令，天书一般，光是看就晕了。<br>别晕，这些代码大多只用执行一遍，最开始不必关心，照葫芦画瓢即可。<br>下面是你需要注意的关键指令：</p>
+<ul>
+<li>0x29：使得屏幕有效</li>
+<li>0x2C：准备发送指令<br>（TODO）</li>
+</ul>
+<h3 id="资源下载">资源下载</h3><p><a href="ST7735S_V1.1_20111121.pdf" title="下载">主控IC芯片ST7735S资料</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>并分几个篇幅分别讲述如何使其显示色块，英文数字，汉字以及图片。<br>本文是系列的第一篇，目标是点亮屏幕并显示指定色块。</p>]]>
+    
+    </summary>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="液晶屏" scheme="http://blog.mangolovecarrot.net/tags/%E6%B6%B2%E6%99%B6%E5%B1%8F/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门10-使用TLC5940芯片输出多路PWM]]></title>
+    <link href="http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/"/>
+    <id>http://blog.mangolovecarrot.net/2016/01/24/raspi-study1001/</id>
+    <published>2016-01-24T05:30:14.000Z</published>
+    <updated>2015-05-23T09:32:44.000Z</updated>
+    <content type="html"><![CDATA[<p>在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。<br>本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。<br>在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。</p>
+<a id="more"></a>
+<h3 id="最终效果TODO">最终效果TODO</h3><p>视频演示</p>
+<h3 id="硬件">硬件</h3><ul>
+<li>TLC5940芯片 X 1<br><img src="http://www.photo138.com/0/MS/ZC02400_2.jpg" alt="TLC5940芯片"></li>
+<li>LED X 3</li>
+<li>2-3k电阻一只</li>
+</ul>
+<h3 id="原理说明">原理说明</h3><p>简单的说，TLC5940是一个拥有16路输出的LED驱动芯片，每一路输出支持4096级！亮度调节。<br>老规矩，看一下它的引脚图：<br><img src="http://image.geek-workshop.com/forum/201404/11/105523kwtnhnhw0fvznhnx.jpg" alt="TLC5940的引脚图"><br>跟本文无关的内容或设置在此不做说明，请自己查询datasheet：</p>
+<table>
+<thead>
+<tr>
+<th>引脚</th>
+<th>功能                        </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OUT0-15</td>
+<td>16路PWM信号输出（负极）</td>
+</tr>
+<tr>
+<td>VPRG</td>
+<td>指定工作模式，接GND是我们需要的PWM模式</td>
+</tr>
+<tr>
+<td>SIN</td>
+<td>串行移位输入</td>
+</tr>
+<tr>
+<td>SCLK</td>
+<td>串行移位寄存器时钟（上升沿有效）          </td>
+</tr>
+<tr>
+<td>XLAT</td>
+<td>从移位寄存器写入GS寄存器（下文介绍）时钟（上升沿有效）</td>
+</tr>
+<tr>
+<td>BLANK</td>
+<td>当设为高电平时，关闭所有输出，GS计数器（下文介绍）也将重置</td>
+</tr>
+<tr>
+<td>IREF</td>
+<td>跟GND之间连接一个电阻，阻值决定了输出电流的最大值</td>
+</tr>
+<tr>
+<td>GSCLK</td>
+<td>GS时钟输入（下文介绍）</td>
+</tr>
+<tr>
+<td>SOUT</td>
+<td>串行输出，级联多块芯片时使用</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>先将BLANK设置为H，关闭所有输出。</li>
+<li>输入各组亮度信息。跟我们之前学过的芯片一样，这款芯片同样是通过移位寄存器来输入数据的。<br>移位寄存器用于传送12bit X 16组PWM数值GSn(n=0-15)，共192bit。每组数据的值范围是0-4095。<br>传送顺序是倒序的：GS15，GS14。。。GS0。先传输的是OUT15的12位数据，其次是OUT14的12位数据。。。最后是OUT0的12位数据。<br>GSn决定了OUTn的PWM调宽。（GSn / 4095 = 0% - 100%）</li>
+<li>192位数据全部传送完毕后制造XLAT的上升沿，将移位寄存器里的数据写入GS寄存器。</li>
+<li>BLANK设置为L，打开所有输出</li>
+<li>准备工作完毕，为了让TLC5940芯片正常工作，还需要向GSCLK输送时钟信号。<br>啥是时钟信号？简单的说就是高低电平不停交替的信号，也称作方波信号。<br>TLC5940会根据这个时钟信号进行从0-4095的计数（高低电平每交替一次数一次），一边计数一边检查各GSn的设定值，一旦到达GSn的值，则切换OUTn的电平一直计数到4095为止，再从0开始重新计数。从0计数到4095就是一个高低电平的切换周期。所以我们给5940提供的时钟频率越快，最后输出的PWM频率就越快。最后输出的PWM的频率 = 时钟信号的频率 / 4095。<br>比如时钟频率是8M，则最后从各OUT口输出的PWM频率是8MHz / 4095 = 1.953KHz。<br>根据TLC5940的官方文档，GSCLK可支持最高30MHz的时钟频率，也就是最高可以输出7.3KHz的PWM信号。如果是控制LED的亮度，那么让人眼感觉不到闪烁的最低频率应该是50Hz以上，所以我们应该至少给GSCLK提供不低于50 X 4095 = 200KHz的方波。树莓派Python的GPIO库翻转IO口的速度不高，实测速度只能达到60KHz，导致最后输出的PWM频率只有14Hz，会有明显的闪烁感。但我们主要是为了说明原理，明白原理了可以用别的方法来实现功能，比如使用c语言的wiringPi库的话效率会高不少，甚至可以使用外部的单片机或其他电路来产生高频率的时钟信号提供给TLC5940，这个作者也在探索中。以后有空再更新。</li>
+</ol>
+<h3 id="硬件连接">硬件连接</h3><table>
+<thead>
+<tr>
+<th>模块1</th>
+<th>引脚</th>
+<th>模块2</th>
+<th>引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TLC5940</td>
+<td>VPRG</td>
+<td>树莓派</td>
+<td>GPIO17</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SIN</td>
+<td>树莓派</td>
+<td>GPIO13</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SCLK</td>
+<td>树莓派</td>
+<td>GPIO19</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>XLAT</td>
+<td>树莓派</td>
+<td>GPIO27</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>BLANK</td>
+<td>树莓派</td>
+<td>GPIO23</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>IREF</td>
+<td>树莓派</td>
+<td>GND(中间串联一个2-3k的电阻)</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>SOUT</td>
+<td>树莓派</td>
+<td>GPIO4</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT0</td>
+<td>LED0</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT1</td>
+<td>LED1</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>OUT2</td>
+<td>LED2</td>
+<td>负极</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>VCC</td>
+<td>树莓派</td>
+<td>5V</td>
+</tr>
+<tr>
+<td>TLC5940</td>
+<td>GND</td>
+<td>树莓派</td>
+<td>GND</td>
+</tr>
+<tr>
+<td>LED0,1,2</td>
+<td>正极</td>
+<td>树莓派</td>
+<td>5V</td>
+</tr>
+</tbody>
+</table>
+<h3 id="代码（Python）">代码（Python）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> RPi.GPIO <span class="keyword">as</span> GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">VPRG=<span class="number">17</span></span><br><span class="line">SIN=<span class="number">13</span></span><br><span class="line">SCLK=<span class="number">19</span></span><br><span class="line">XLAT=<span class="number">27</span></span><br><span class="line">BLANK=<span class="number">23</span></span><br><span class="line">DCPRG=<span class="number">18</span></span><br><span class="line">GSCLK=<span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 传输GSData(0-4095)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setGSData</span><span class="params">(data)</span>:</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "S-----------setByte---------------:", hex(data)</span></span><br><span class="line">	<span class="keyword">for</span> bit <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">12</span>):</span><br><span class="line">		<span class="comment"># 传入的数字从高位到低位依次判断是否为1，若为1则设置高电平，否则设置低电平</span></span><br><span class="line">		<span class="comment"># 判断的方法是先向左移位，把要判断的位移动到最高位然后跟0x800（1000 0000 0000）相与，</span></span><br><span class="line">		<span class="comment"># 如果结果仍然是0x80（1000 0000 0000）就表示最高位是1，否则最高位就是0</span></span><br><span class="line">		<span class="keyword">if</span> ((data&lt;&lt;bit) &amp; <span class="number">0x800</span> == <span class="number">0x800</span>):</span><br><span class="line">			setBitData(<span class="keyword">True</span>)</span><br><span class="line">			<span class="comment"># print "1",</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			setBitData(<span class="keyword">False</span>)</span><br><span class="line">			<span class="comment"># print "0",</span></span><br><span class="line">	<span class="comment"># print ""</span></span><br><span class="line">	<span class="comment"># print "E-----------setByte---------------"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	GPIO.output(SCLK, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(SIN, data)</span><br><span class="line">	GPIO.output(SCLK, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出GSCLK时钟信号</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">runGSCLK</span><span class="params">()</span>:</span></span><br><span class="line">	i=<span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>):</span><br><span class="line">		i+=<span class="number">1</span></span><br><span class="line">		<span class="keyword">if</span> i&gt;=<span class="number">4096</span>:</span><br><span class="line">			<span class="comment"># 注意，每次计数到4095时需要手动重置一次芯片的计数器</span></span><br><span class="line">			GPIO.output(BLANK, <span class="keyword">True</span>)</span><br><span class="line">			<span class="comment">#time.sleep(0.001);</span></span><br><span class="line">			GPIO.output(BLANK, <span class="keyword">False</span>)</span><br><span class="line">			i=<span class="number">0</span></span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			GPIO.output(GSCLK, <span class="keyword">True</span>)</span><br><span class="line">			GPIO.output(GSCLK, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	GPIO.setmode(GPIO.BCM)</span><br><span class="line">	GPIO.setup(VPRG, GPIO.OUT)</span><br><span class="line">	GPIO.setup(SIN, GPIO.OUT)</span><br><span class="line">	GPIO.setup(SCLK, GPIO.OUT)</span><br><span class="line">	GPIO.setup(XLAT, GPIO.OUT)</span><br><span class="line">	GPIO.setup(BLANK, GPIO.OUT)</span><br><span class="line">	GPIO.setup(DCPRG, GPIO.OUT)</span><br><span class="line">	GPIO.setup(GSCLK, GPIO.OUT)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># VPRG设置为L，使其工作在GS mode</span></span><br><span class="line">	GPIO.output(VPRG, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># BLANK设置为H，关闭所有输出</span></span><br><span class="line">	GPIO.output(BLANK, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	GPIO.output(DCPRG, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 传送12bit X 16组PWM数值GSn(n=0-15)，共192bit</span></span><br><span class="line">	<span class="comment"># 每组数据的值范围是0-4095</span></span><br><span class="line">	<span class="comment"># 因为是通过移位寄存器传输，所以传送顺序是倒序的：GS15，GS14。。。GS0</span></span><br><span class="line">	<span class="comment"># GSn决定了OUTn的PWM调宽。（GSn / 4095 = 0% - 100%）</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS15 本文不使用15-3号输出，设为0</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS14</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS13</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS12</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS11</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS10</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS9</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS8</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS7</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS6</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS5</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS4</span></span><br><span class="line">	setGSData(<span class="number">0</span>) <span class="comment"># GS3</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment"># print "GS2"</span></span><br><span class="line">	setGSData(<span class="number">4095</span>) <span class="comment"># GS2</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># print "GS1"</span></span><br><span class="line">	setGSData(<span class="number">2500</span>) <span class="comment"># GS1</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># print "GS0"</span></span><br><span class="line">	setGSData(<span class="number">1000</span>) <span class="comment"># GS0</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 送完GS数据后，创造XLAT的上升沿，将移位寄存器的数据一次性送入GS寄存器</span></span><br><span class="line">	GPIO.output(XLAT, <span class="keyword">False</span>)</span><br><span class="line">	GPIO.output(XLAT, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># BLANK设置为L，打开所有输出</span></span><br><span class="line">	<span class="comment"># GPIO.output(BLANK, False)</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 准备工作完毕，下面向GSCLK输送时钟信号（高低电平交互的方波信号）</span></span><br><span class="line">	<span class="comment"># TLC5940会根据这个时钟信号进行从0-4095的计数，一边计数一边检查各GSn的设定值，一旦到达GSn的值，则切换OUTn的电平</span></span><br><span class="line">	<span class="comment"># 一直计数到4095为止，再从0开始重新计数。从0计数到4095就是一个高低电平的切换周期。</span></span><br><span class="line">	<span class="comment"># 所以我们给5940提供的时钟频率越快，最后输出的PWM频率就越快</span></span><br><span class="line">	<span class="comment"># 最后输出的PWM的频率 = 时钟信号的频率 / 4095</span></span><br><span class="line">	<span class="comment"># 比如时钟频率是8M，则最后从各OUT口输出的PWM频率是8MHz / 4095 = 1.953KHz</span></span><br><span class="line">	<span class="comment"># 根据TLC5940的官方文档，GSCLK可支持最高30MHz的时钟频率，也就是最高可以输出7.3KHz的PWM信号。</span></span><br><span class="line">	<span class="comment"># 如果是控制LED的亮度，那么让人眼感觉不到闪烁的最低频率应该是50Hz以上，</span></span><br><span class="line">	<span class="comment"># 所以我们应该至少给GSCLK提供不低于50 X 4095 = 200KHz的方波。</span></span><br><span class="line">	<span class="comment"># 树莓派Python的GPIO库翻转IO口的速度不高，实测速度只能达到60KHz，</span></span><br><span class="line">	<span class="comment"># 导致最后输出的PWM频率只有14Hz，会有明显的闪烁感</span></span><br><span class="line">	runGSCLK()</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理GPIO口</span></span><br><span class="line">GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。<br>本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。<br>在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。</p>]]>
+    
+    </summary>
+    
+      <category term="PWM" scheme="http://blog.mangolovecarrot.net/tags/PWM/"/>
+    
+      <category term="数字芯片" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E5%AD%97%E8%8A%AF%E7%89%87/"/>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管]]></title>
+    <link href="http://blog.mangolovecarrot.net/2015/06/13/raspi-study0901/"/>
+    <id>http://blog.mangolovecarrot.net/2015/06/13/raspi-study0901/</id>
+    <published>2015-06-13T07:42:53.000Z</published>
+    <updated>2015-05-23T09:32:44.000Z</updated>
+    <content type="html"><![CDATA[<p>前面几篇我们学习了如何利用一片或多片级联的74HC595芯片来驱动显示数码管的方法。最开始我们提出的两个问题：</p>
+<ol>
+<li>占用IO口过多</li>
+<li>做动态扫描时占用CPU资源太多导致显示不稳定</li>
+</ol>
+<p>第一个问题已经利用级联的74HC595解决了。（不管驱动几只数码管，只用3个IO即可）<br>但第二个问题依然存在，树莓派仍然需要不停地访问IO口进行动态扫描。<br>好，既然动态扫描占用CPU资源太多，那这活儿咱包出去让别人干不就行了？这就是本文主角MAX7219的特长，动态扫描这活儿MAX7219全包了，干的还比咱自己干得还好，一片MAX7219可最多支持显示8位8段数码管，还支持各种设置如亮度设置扫描位数设置等。而我们只用告诉它显示的内容就行了。</p>
+<a id="more"></a>
+<h3 id="最终效果">最终效果</h3><p>视频演示</p>
+<iframe height="498" width="510" src="http://player.youku.com/embed/XMTI2MTU2OTc3Ng==" frameborder="0" allowfullscreen></iframe>
+
+<h3 id="硬件">硬件</h3><ul>
+<li>MAX7219显示芯片 X 1（2到3元一个）<br><img src="max7219.jpg" alt="MAX7219"></li>
+<li>共阴（共阳不可以）4位数码管 X 2</li>
+<li>10k电阻一只</li>
+<li>10uF电容一只</li>
+<li>0.1uF电容一只<br><img src="hardware.jpg" alt="硬件图"></li>
+</ul>
+<h3 id="原理说明_未完TODO">原理说明 未完TODO</h3><p>注：下面这些图都是从MAX7219官方资料里截取出来的，官方资料文末提供下载</p>
+<ul>
+<li>先看一下MAX7219的引脚图：<br>  <img src="01.png" alt="MAX7219的引脚图"><br>MAX7219一共有24根引脚，这里面有一些跟74HC595的引脚功能类似的引脚如下：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>MAX7219</th>
+<th>74HC595</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DIN</td>
+<td>DS</td>
+<td>串行输入</td>
+</tr>
+<tr>
+<td>SEG A-G,DP</td>
+<td>Q0-Q7</td>
+<td>数码管段数据输出</td>
+</tr>
+<tr>
+<td>CLK</td>
+<td>SHCP</td>
+<td>串行移位寄存器时钟</td>
+</tr>
+<tr>
+<td>LOAD</td>
+<td>STCP</td>
+<td>内部寄存器锁存时钟</td>
+</tr>
+<tr>
+<td>DOUT</td>
+<td>Q7S</td>
+<td>串行输出，级联多块芯片时使用</td>
+</tr>
+</tbody>
+</table>
+<p>可以看出，MAX7219跟74HC595一样也是通过DIN引脚串行输入数据，在CLK引脚的上升沿移入移位寄存器，在LOAD引脚的上升沿将位移寄存器的数据复制到内部的各种寄存器里。不同的是:</p>
+<ol>
+<li>74HC595的移位寄存器是8位的，而MAX7219的移位寄存器是16位的，每次串行输入数据需要连续输入16位数据。</li>
+<li>74HC595内部只有1个8位的锁存器，功能很简单，只是原样输出到8根输出引脚。而MAX7219内部有好几个不同功能的寄存器。后面我会逐个说明。</li>
+</ol>
+<ul>
+<li><p>我们再看一下官方文档里关于各引脚的功能说明：<br>  <img src="02.png" alt="MAX7219各引脚的功能说明"><br>  上面提过的不再赘述，说一下MAX7219特有的引脚。</p>
+<ol>
+<li>DIG0-DIG7这8个引脚作为位选端，分别连到8位数码管的共阴极，MAX7219在做动态扫描时会依次向共阴极DIG0-DIG7输出低电平，所以MAX7219不能驱动共阳极的数码管。其实也不是绝对不能，将位选端和段选端逆接就可以了，不过这样做的话，有3个弊端：<ul>
+<li>不能使用MAX7219内部的译码功能，需要自己编写数字的字形码。增加了代码的复杂度。</li>
+<li>需要以段单位来传输数据，而不能以位单位来传输数据。（即每次传输的是各位数码管的某一段的数据，而不是某位数码管各段的数据。第一次传所有数码管的A段数据，第二次传所有数码管的B段数据一直到8段数据全部传完）无疑进一步增加了代码的复杂度。</li>
+<li>无法限制扫描位数，只能所有8位数码管同时扫描。（变成了限制扫描段数，如可以只显示所有数码管的A-C段。。。）</li>
+</ul>
+</li>
+<li>ISET通过一只电阻连上VCC，通过调整这只电阻的阻值可以调整通过这只电阻的电流I，而最后输出到数码管上的最大电流就是这个电流I的100倍。如果这只电阻太小，导致输出到数码管的电流过大会烧坏数码管，所以官方文档里推荐这只电阻最小应该设置为9.7K欧，我手头上只有10K的电阻也是一样，只要别低于这个阻值就可以了。根据这个原理我们也可以接一个可调电阻在ISET上，可以随时调整数码管亮度。这种调整亮度的方法是通过模拟信号调制。MAX7219也支持通过数字信号来设置亮度（有16级亮度可调）。</li>
+</ol>
+</li>
+<li><p>MAX7219内部的各模块的示意图：<br>  <img src="03.png" alt="MAX7219内部的各模块的示意图"><br>  最下面是一个16位的移位寄存器D0-D15，跟74HC595一样，通过DIN引脚串行输入数据，在CLK引脚的上升沿移入移位寄存器。<br>  D8-D11这4位数据用来指定内部寄存器地址。D0-D7是具体要传到寄存器里的数据。<br>  上面的图看上去有点复杂，其实简单地说就是我们每次要串行传输16位数据进去，然后在LOAD的上升沿，根据D8-D11指定的寄存器地址，将D0-D7存放在指定的寄存器里。这样多次传输数据就可以给所有的寄存器设值了。<br>  下面是MAX7219内部的寄存器一览：</p>
+<ul>
+<li>关断寄存器</li>
+<li>译码模式寄存器</li>
+<li>亮度寄存器</li>
+<li>扫描限值寄存器</li>
+<li><p>显示器测试寄存器</p>
+<p>每个寄存器都有自己特殊的功能，后面我们会逐一介绍。</p>
+</li>
+</ul>
+</li>
+<li><p>串行传输时的数据格式如下：<br>  <img src="04.png" alt="MAX7219串行数据格式"><br>  你可能注意到了这幅图的顺序跟模块示意图里移位寄存器的顺序是相反的。<br>  D15-D0这个反向的顺序是你写代码时串行传输数据时的顺序，先传D15的数据，再传D14,D13…D0，这样传输完成后。实际的数据顺序就变成了D0,D1,D2…D15。为了便于编码，除了模块示意图是按实际顺序记载的，后面所有数据格式的示意图都是倒序记载的。</p>
+</li>
+<li><p>各寄存器地址如下：<br>  <img src="05.png" alt="MAX7219寄存器地址"></p>
+</li>
+</ul>
+<ul>
+<li><p>关断寄存器的数据格式：<br>  <img src="06.png" alt="MAX7219关断寄存器的数据格式"></p>
+</li>
+<li><p>译码模式寄存器的数据格式：<br>  <img src="07.png" alt="MAX7219译码模式寄存器的数据格式"></p>
+</li>
+<li><p>译码模式下的原码和译码的对应表：<br>  <img src="08.png" alt="MAX7219译码模式下的原码和译码的对应表"></p>
+</li>
+<li><p>非译码模式下的数据和数码管各段的对应表：<br>  <img src="09.png" alt="MAX7219非译码模式下的数据和数码管各段的对应表"></p>
+</li>
+<li><p>亮度寄存器的数据格式：<br>  <img src="10.png" alt="MAX7219亮度寄存器的数据格式"></p>
+</li>
+<li><p>扫描限值寄存器的数据格式：<br>  <img src="11.png" alt="MAX7219扫描限值寄存器的数据格式"></p>
+</li>
+<li><p>显示器测试寄存器的数据格式：<br>  <img src="12.png" alt="MAX7219显示器测试寄存器的数据格式"></p>
+</li>
+</ul>
+<h3 id="硬件连接TODO">硬件连接TODO</h3><table>
+<thead>
+<tr>
+<th>模块1</th>
+<th>引脚</th>
+<th>模块2</th>
+<th>引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAX7219</td>
+<td>DIN</td>
+<td>树莓派</td>
+<td>GPIO13</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>LOAD</td>
+<td>树莓派</td>
+<td>GPIO26</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>CLK</td>
+<td>树莓派</td>
+<td>GPIO19</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>GNDX2</td>
+<td>树莓派</td>
+<td>GND</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>V+</td>
+<td>树莓派</td>
+<td>5V</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>ISET</td>
+<td>树莓派</td>
+<td>5V(需串联一只10k电阻)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG0</td>
+<td>数码管1</td>
+<td>DIG1(引脚12)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG1</td>
+<td>数码管1</td>
+<td>DIG2(引脚9)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG2</td>
+<td>数码管1</td>
+<td>DIG3(引脚8)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG3</td>
+<td>数码管1</td>
+<td>DIG4(引脚6)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG4</td>
+<td>数码管2</td>
+<td>DIG1(引脚12)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG5</td>
+<td>数码管2</td>
+<td>DIG2(引脚9)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG6</td>
+<td>数码管2</td>
+<td>DIG3(引脚8)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DIG7</td>
+<td>数码管2</td>
+<td>DIG4(引脚6)</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG DP</td>
+<td>数码管1/2</td>
+<td>DP</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG G</td>
+<td>数码管1/2</td>
+<td>G</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG F</td>
+<td>数码管1/2</td>
+<td>F</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG E</td>
+<td>数码管1/2</td>
+<td>E</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG D</td>
+<td>数码管1/2</td>
+<td>D</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG C</td>
+<td>数码管1/2</td>
+<td>C</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG B</td>
+<td>数码管1/2</td>
+<td>B</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>SEG A</td>
+<td>数码管1/2</td>
+<td>A</td>
+</tr>
+<tr>
+<td>MAX7219</td>
+<td>DOUT</td>
+<td>(级联用)</td>
+<td>(不使用)</td>
+</tr>
+<tr>
+<td>10/0.1uF电容</td>
+<td>正极</td>
+<td>MAX7219</td>
+<td>V+</td>
+</tr>
+<tr>
+<td>10/0.1uF电容</td>
+<td>负极</td>
+<td>MAX7219</td>
+<td>GND</td>
+</tr>
+</tbody>
+</table>
+<h3 id="代码（Python）">代码（Python）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> RPi.GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 串行数据输入</span></span><br><span class="line">DIN = <span class="number">13</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 时钟脉冲信号——上升沿有效</span></span><br><span class="line">LOAD = <span class="number">26</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打入信号————上升沿有效</span></span><br><span class="line">CLK = <span class="number">19</span></span><br><span class="line"></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.setup(DIN, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(LOAD, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(CLK, RPi.GPIO.OUT)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 传输一个8位数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setByte</span><span class="params">(byteData)</span>:</span></span><br><span class="line">	<span class="keyword">for</span> bit <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">8</span>):</span><br><span class="line">		<span class="comment"># 传入的数字从高位到低位依次判断是否为1，若为1则设置高电平，否则设置低电平</span></span><br><span class="line">		<span class="comment"># 判断的方法是先向左移位，把要判断的位移动到最高位然后跟0x80（1000 0000）相与，</span></span><br><span class="line">		<span class="comment"># 如果结果仍然是0x80（1000 0000）就表示最高位是1，否则最高位就是0</span></span><br><span class="line">		<span class="keyword">if</span> ((byteData&lt;&lt;bit) &amp; <span class="number">0x80</span> == <span class="number">0x80</span>):</span><br><span class="line">			setBitData(<span class="keyword">True</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			setBitData(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 译码模式设置</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setDecodeMode</span><span class="params">(mode = <span class="number">4</span>)</span>:</span></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 指令寄存器地址设置：0xX9</span></span><br><span class="line">	<span class="comment"># D15-D12:任意</span></span><br><span class="line">	<span class="comment"># D11,10,9,8: 1,0,0,1</span></span><br><span class="line">	setByte(<span class="number">0x09</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (mode == <span class="number">1</span>) :</span><br><span class="line">		<span class="comment"># 所有数码管均不使用译码功能</span></span><br><span class="line">		<span class="comment"># 指令代码: 0x00</span></span><br><span class="line">		setByte(<span class="number">0x00</span>)</span><br><span class="line">	<span class="keyword">elif</span> (mode == <span class="number">2</span>) :</span><br><span class="line">		<span class="comment"># 只对DIG0号数码管进行译码，其他数码管不使用译码功能</span></span><br><span class="line">		<span class="comment"># 指令代码: 0x01</span></span><br><span class="line">		setByte(<span class="number">0x01</span>)</span><br><span class="line">	<span class="keyword">elif</span> (mode == <span class="number">3</span>) :</span><br><span class="line">		<span class="comment"># 对DIG0-3号数码管进行译码，其他数码管不使用译码功能</span></span><br><span class="line">		<span class="comment"># 指令代码: 0x0F</span></span><br><span class="line">		setByte(<span class="number">0x0f</span>)</span><br><span class="line">	<span class="keyword">elif</span> (mode == <span class="number">4</span>) :</span><br><span class="line">		<span class="comment"># 数码管7－0全部采用译码模式</span></span><br><span class="line">		<span class="comment"># 指令代码: 0xFF</span></span><br><span class="line">		setByte(<span class="number">0xff</span>)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 亮度设置</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setIntensity</span><span class="params">(mode = <span class="number">8</span>)</span>:</span></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 指令寄存器地址设置：0xXA</span></span><br><span class="line">	<span class="comment"># D15-D12:任意</span></span><br><span class="line">	<span class="comment"># D11,10,9,8: 1,0,1,0</span></span><br><span class="line">	setByte(<span class="number">0x0A</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 亮度从0到15共16个等级，指令的D3－D0就是数字0－15的二进制编码</span></span><br><span class="line">	<span class="comment"># D7-D4:任意</span></span><br><span class="line">	setByte(mode)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 扫描显示位数设置(0-7)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setScanLimit</span><span class="params">(mode = <span class="number">7</span>)</span>:</span></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 指令寄存器地址设置：0xXB</span></span><br><span class="line">	<span class="comment"># D15-D12:任意</span></span><br><span class="line">	<span class="comment"># D11,10,9,8: 1,0,1,1</span></span><br><span class="line">	setByte(<span class="number">0x0B</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 扫描位数可设置0－7共8种选择，指令的D2－D0就是数字0－7的二进制编码</span></span><br><span class="line">	<span class="comment"># D7-D3:任意</span></span><br><span class="line">	<span class="comment"># D2-D0:0-7的3位二进制编码</span></span><br><span class="line">	setByte(mode)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关断模式设置</span></span><br><span class="line"><span class="comment"># mode: 1: 正常运行模式</span></span><br><span class="line"><span class="comment"># mode: 0: 关断模式</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setShutdownMode</span><span class="params">(mode = <span class="number">1</span>)</span>:</span></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 指令寄存器地址设置：0xXC</span></span><br><span class="line">	<span class="comment"># D15-D12:任意</span></span><br><span class="line">	<span class="comment"># D11,10,9,8: 1,1,0,0</span></span><br><span class="line">	setByte(<span class="number">0x0C</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 关断模式可设置0－1共2种选择，设置D0即可</span></span><br><span class="line">	<span class="comment"># D7-D1:任意</span></span><br><span class="line">	<span class="comment"># D0:1: 正常运行模式 0: 关断模式</span></span><br><span class="line">	setByte(mode)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 测试模式设置</span></span><br><span class="line"><span class="comment"># mode=0: 正常运行模式</span></span><br><span class="line"><span class="comment"># mode=1: 测试模式(全亮模式)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setDisplayTestMode</span><span class="params">(mode = <span class="number">0</span>)</span>:</span></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 指令寄存器地址设置：0xXF</span></span><br><span class="line">	<span class="comment"># D15-D12:任意</span></span><br><span class="line">	<span class="comment"># D11,10,9,8: 1,1,1,1</span></span><br><span class="line">	setByte(<span class="number">0x0f</span>)</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 测试模式可设置0－1共2种选择，设置D0即可</span></span><br><span class="line">	<span class="comment"># D7-D1:任意</span></span><br><span class="line">	<span class="comment"># D0:0: 正常运行模式 1: 测试模式(全亮模式)</span></span><br><span class="line">	setByte(mode)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定no(1-8)号数码管显示数字num(0-9)，第三个参数是显示不显示小数点（true/false）</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">showDigit</span><span class="params">(no, num, showDotPoint)</span>:</span></span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 设置指令寄存器地址：0xX1-0xX8</span></span><br><span class="line">	<span class="comment"># 格式：D15-D12:任意（我们这里设置0）</span></span><br><span class="line">	<span class="comment">#       D11-D8: 1-8的4位二进制编码：例：1（0,0,0,1）</span></span><br><span class="line">	setByte(no)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 设置显示内容</span></span><br><span class="line">	<span class="comment"># 格式：D7:显示小数点（1点亮）</span></span><br><span class="line">	<span class="comment">#       D6-D4:任意（我们这里设置0）</span></span><br><span class="line">	<span class="comment">#       D3-D0:数字0-9的4位二进制编码：例：2（0,0,1,0）</span></span><br><span class="line">	<span class="keyword">if</span> (showDotPoint):</span><br><span class="line">		<span class="comment"># 如果显示小数点则需要将数字的最高位（D7）设置为1(最高位跟1相或)</span></span><br><span class="line">		setByte(num | <span class="number">0x80</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		setByte(num)</span><br><span class="line"></span><br><span class="line">	RPi.GPIO.output(LOAD, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	RPi.GPIO.output(CLK, <span class="keyword">False</span>)</span><br><span class="line">	RPi.GPIO.output(DIN, data)</span><br><span class="line">	RPi.GPIO.output(CLK, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment"># 测试代码，亮度使用最低亮度，显示从0开始递增的数字。</span></span><br><span class="line">	setShutdownMode()</span><br><span class="line">	setDecodeMode()</span><br><span class="line">	setIntensity(<span class="number">0</span>)</span><br><span class="line">	setScanLimit()</span><br><span class="line">	setDisplayTestMode()</span><br><span class="line"></span><br><span class="line">	n=<span class="number">0</span></span><br><span class="line">	<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">		n=n+<span class="number">1</span></span><br><span class="line">		showDigit(<span class="number">8</span>, int(n)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">7</span>, int(n/<span class="number">10</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">6</span>, int(n/<span class="number">100</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">5</span>, int(n/<span class="number">1000</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">4</span>, int(n/<span class="number">10000</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">3</span>, int(n/<span class="number">100000</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">2</span>, int(n/<span class="number">1000000</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		showDigit(<span class="number">1</span>, int(n/<span class="number">10000000</span>)%<span class="number">10</span>, <span class="keyword">False</span>)</span><br><span class="line">		time.sleep(<span class="number">0.01</span>)</span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理GPIO口</span></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+<h3 id="资源下载">资源下载</h3><p><a href="prog.py" title="源码下载">源码</a><br><a href="MAX7219-MAX7221_cn.pdf" title="数据手册下载">MAX7219数据手册</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>前面几篇我们学习了如何利用一片或多片级联的74HC595芯片来驱动显示数码管的方法。最开始我们提出的两个问题：</p>
+<ol>
+<li>占用IO口过多</li>
+<li>做动态扫描时占用CPU资源太多导致显示不稳定</li>
+</ol>
+<p>第一个问题已经利用级联的74HC595解决了。（不管驱动几只数码管，只用3个IO即可）<br>但第二个问题依然存在，树莓派仍然需要不停地访问IO口进行动态扫描。<br>好，既然动态扫描占用CPU资源太多，那这活儿咱包出去让别人干不就行了？这就是本文主角MAX7219的特长，动态扫描这活儿MAX7219全包了，干的还比咱自己干得还好，一片MAX7219可最多支持显示8位8段数码管，还支持各种设置如亮度设置扫描位数设置等。而我们只用告诉它显示的内容就行了。</p>]]>
+    
+    </summary>
+    
+      <category term="数字芯片" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E5%AD%97%E8%8A%AF%E7%89%87/"/>
+    
+      <category term="数码管" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E7%A0%81%E7%AE%A1/"/>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门08-使用74HC595芯片驱动数码管（二）]]></title>
+    <link href="http://blog.mangolovecarrot.net/2015/06/08/raspi-study0802/"/>
+    <id>http://blog.mangolovecarrot.net/2015/06/08/raspi-study0802/</id>
+    <published>2015-06-08T12:44:50.000Z</published>
+    <updated>2015-05-23T09:32:44.000Z</updated>
+    <content type="html"><![CDATA[<p><a href="../../../../2015/06/03/raspi-study0801/">上一篇</a>我们学习了如何利用74HC595这块显示驱动芯片来驱动1位8段数码管的方法。并逐一讲解了该芯片各引脚的功能。细心的童鞋可能注意到了，上次我们有一个Q7S引脚没有用到。这一篇我们就用这个引脚来级联两块74HC595芯片同时驱动8个8段数码管。在两块74HC595芯片的配合下，同样只需要3个GPIO口就能驱动八只8段数码管。而如果直接用GPIO驱动则需要至少16个GPIO口，节省了13个GPIO！而且按照本文的方法，你还可以级联更多的74HC595芯片，每多级联一片就能多驱动8只数码管，而需要的IO口仍然只有3个！妈妈再也不用担心我的IO口不够用了。</p>
+<a id="more"></a>
+<h3 id="最终效果">最终效果</h3><p>视频演示</p>
+<iframe height="498" width="510" src="http://player.youku.com/embed/XMTI1NzE1MDQwOA==" frameborder="0" allowfullscreen></iframe>
+
+<h3 id="硬件">硬件</h3><ul>
+<li>74HC595显示芯片 X 2</li>
+<li>共阳（或共阴）4位数码管 X 2<br><img src="hardware.jpg" alt="硬件图 由于大面包板已经被我插满了，所以用另一块小面包板来安放第二片74HC595"></li>
+</ul>
+<h3 id="原理说明">原理说明</h3><ul>
+<li>我们已经知道，每次制造一次移位寄存器时钟引脚的上升沿，74HC595都会在这个上升沿将DS引脚上的数据存入内部的移位寄存器D0，同时D0原来的数据会顺移到D1，D1的数据位移到D2。。。D6的数据位移到D7。而D7的数据会被输出到引脚Q7S上，如果Q7S引脚没有被使用，那么这一位数据就被丢掉了。</li>
+<li>如果我们将Q7S引脚连接上另一块74HC595的DS引脚并保证两块芯片上的移位时钟的上升沿同时发生（将两块芯片的SHCP连在一起即可）的话，第一块74HC595的串行输出引脚Q7S就变成了第二块74HC595的串行输入数据源。Q7S上的数据会继续移位到第二块74HC595芯片的移位寄存器D0里（同样的，D0→D1→D2→…→D6→D7→Q7S）。</li>
+<li>16位数据全部这样串行传输完毕后，制造两块芯片的锁存时钟STCP的上升沿（跟SHCP一样，两块芯片的STCP连在一起即可）即可同时输出16位数据。</li>
+<li>利用上述级联原理加上前一篇学习的内容，我们可以这样静态驱动2只数码管：两只数码管的共阳(阴)极连接VCC(GND)，第一片595的Q0-Q7连到第一个数码管的A-G，Dp上，级联的第二片595的Q0-Q7连到第二只数码管的A-G,Dp上，然后用3根GPIO口驱动两片级联的74HC595芯片，连续串行输入两个数字的显示码共16位数据，然后同时制造锁存上升沿，将两个数字的显示码分别输出到两只数码管上即可。这样连接的话，N片级联的74HC595就能驱动N只数码管了。（咦，说好的驱动8位数码管的呢）</li>
+<li>上面的做法当然没问题，而且有一个优点是静态显示所以显示很稳定，有兴趣自己试着做一下。缺点是浪费芯片，价格倒不贵可是连线复杂，占用电路板面积太多。本文采用动态扫描（原理参见本系列<a href="../../../../2015/05/05/raspi-study05/">第5篇</a>）的方式来使用两块级联的74HC595芯片驱动8位数码管。原理也很简单，稍微调整一下硬件的连接方式和传输数据的方式即可。</li>
+<li>依然是两块74HC595级联，第一块595的输出引脚连到所有数码管的段引脚上（8只数码管的A-G,Dp引脚连在一起）,第二块595的输出引脚Q0-Q7分别连上8只数码管的共阳(阴)极上。第一块芯片的输出决定了数码管上显示什么数字。而8只数码管中哪一只会被点亮则取决于第二块芯片哪只数码管的共阳(阴)端是高(低)电平。</li>
+<li>由于在我的硬件连接里，级联的第二块74HC595是负责位选的，所以应该先发送8位位选信号，再发送8位段选信号，在连续发完了16位数据以后，第一块74HC595的移位寄存器里保存着8位的段选信息，而在第二块74HC595的移位寄存器里保存着8位的位选信息。由于两片芯片的STCP是连在同一个GPIO口的，这个时候如果制造一次STCP的上升沿，两块595的位移寄存器里的数据会同时保存到自己的锁存器里，由于我的使能端OE连在GND始终有效，锁存器里的数据就直接输出到了芯片的输出引脚上。第二块芯片的8根输出引脚连接的是8位数码管的共阳端。只有输出高电平的引脚连接的数码管才会被点亮。</li>
+<li>当然如果你喜欢，你也可以让8个数码管全部同时点亮，你只要让第二块595输出11111111就行了。不过显示的数字都是一样的。想显示不同的数字就要进行动态扫描，每次输出一个数字的显示码跟一个位选码，快速循环切换显示即可。</li>
+</ul>
+<p>跟上一篇一样，我也做了一个动画帮助你理解级联的过程。这个动画一开始已经是传输完前8位位选数据的状态了，动画里的位选数据是1000000，点亮第一个数码管，显示的内容由后8位段选数据决定，动画里是数字5。<br><img src="74hc595s.gif" alt="74HC595"></p>
+<h3 id="硬件连接">硬件连接</h3><table>
+<thead>
+<tr>
+<th>模块1</th>
+<th>引脚</th>
+<th>模块2</th>
+<th>引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>74HC595_1</td>
+<td>Q0</td>
+<td>数码管1/2</td>
+<td>DP</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q1</td>
+<td>数码管1/2</td>
+<td>G</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q2</td>
+<td>数码管1/2</td>
+<td>F</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q3</td>
+<td>数码管1/2</td>
+<td>E</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q4</td>
+<td>数码管1/2</td>
+<td>D</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q5</td>
+<td>数码管1/2</td>
+<td>C</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q6</td>
+<td>数码管1/2</td>
+<td>B</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q7</td>
+<td>数码管1/2</td>
+<td>A</td>
+</tr>
+<tr>
+<td>74HC595_1</td>
+<td>Q7S</td>
+<td>74HC595_2</td>
+<td>DS</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q0</td>
+<td>数码管1</td>
+<td>DIG1的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q1</td>
+<td>数码管1</td>
+<td>DIG2的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q2</td>
+<td>数码管1</td>
+<td>DIG3的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q3</td>
+<td>数码管1</td>
+<td>DIG4的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q4</td>
+<td>数码管2</td>
+<td>DIG1的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q5</td>
+<td>数码管2</td>
+<td>DIG2的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q6</td>
+<td>数码管2</td>
+<td>DIG3的共阳极</td>
+</tr>
+<tr>
+<td>74HC595_2</td>
+<td>Q7</td>
+<td>数码管2</td>
+<td>DIG4的共阳极</td>
+</tr>
+<tr>
+<td>树莓派</td>
+<td>GPIO13</td>
+<td>74HC595_1</td>
+<td>DS</td>
+</tr>
+<tr>
+<td>树莓派</td>
+<td>GPIO19</td>
+<td>74HC595_1/2</td>
+<td>SHCP</td>
+</tr>
+<tr>
+<td>树莓派</td>
+<td>GPIO26</td>
+<td>74HC595_1/2</td>
+<td>SHTP</td>
+</tr>
+<tr>
+<td>树莓派</td>
+<td>VCC</td>
+<td>74HC595_1/2</td>
+<td>VCC,MR</td>
+</tr>
+<tr>
+<td>树莓派</td>
+<td>GND</td>
+<td>74HC595_1/2</td>
+<td>GND,OE</td>
+</tr>
+</tbody>
+</table>
+<h3 id="代码（Python）">代码（Python）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> RPi.GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 串行数据输入引脚连接的GPIO口</span></span><br><span class="line">DS = <span class="number">13</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 移位寄存器时钟控制引脚连接的GPIO口——上升沿有效</span></span><br><span class="line">SHCP = <span class="number">19</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据锁存器时钟控制引脚连接的GPIO口——上升沿有效</span></span><br><span class="line">STCP = <span class="number">26</span></span><br><span class="line"></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.setup(DS, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(STCP, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(SHCP, RPi.GPIO.OUT)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.output(STCP, <span class="keyword">False</span>)</span><br><span class="line">RPi.GPIO.output(SHCP, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过串行数据引脚向74HC595的传送一位数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	<span class="comment"># 准备好要传送的数据</span></span><br><span class="line">	RPi.GPIO.output(DS, data)</span><br><span class="line">	<span class="comment"># 制造一次移位寄存器时钟引脚的上升沿（先拉低电平再拉高电平）</span></span><br><span class="line">	<span class="comment"># 74HC595会在这个上升沿将DS引脚上的数据存入移位寄存器D0</span></span><br><span class="line">	<span class="comment"># 同时D0原来的数据会顺移到D1，D1的数据位移到D2。。。D6的数据位移到D7</span></span><br><span class="line">	<span class="comment"># 而D7的数据已经没有地方储存了，这一位数据会被输出到引脚Q7S上</span></span><br><span class="line">	<span class="comment"># 如果Q7S引脚没有被使用，那么这一位的数据就被丢掉了。</span></span><br><span class="line">	<span class="comment"># 而如果将Q7S引脚连接到另一块74HC595上的DS引脚，</span></span><br><span class="line">	<span class="comment"># 那么这一位数据就会继续位移到第二块595芯片的位移寄存器里去。</span></span><br><span class="line">	<span class="comment"># 这就是多块595芯片级联的原理。</span></span><br><span class="line">	RPi.GPIO.output(SHCP, <span class="keyword">False</span>)</span><br><span class="line">	RPi.GPIO.output(SHCP, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定第dig位(1-8)数码管显示数字num(0-9)，参数showDotPoint是显示不显示小数点（true/false）</span></span><br><span class="line"><span class="comment"># 由于我使用的数码管是共阳数码管，所以设置为低电平的段才会被点亮</span></span><br><span class="line"><span class="comment"># 如果你用的是共阴数码管，那么要将下面的True和False全部颠倒过来，或者统一在前面加上not</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">showDigit</span><span class="params">(dig, num, showDotPoint)</span>:</span></span><br><span class="line"></span><br><span class="line">	<span class="comment"># 由于在我的硬件连接里，级联的第二块74HC595是负责位选的，</span></span><br><span class="line">	<span class="comment"># 所以应该先发送8位位选信号，再发送8位段选信号，在连续发完了16位数据以后，</span></span><br><span class="line">	<span class="comment"># 第一块74HC595的移位寄存器里保存着8位的段选信息，而在第二块74HC595的移位寄存器里保存着8位的位选信息。</span></span><br><span class="line">	<span class="comment"># 由于两片芯片的STCP是连在同一个GPIO口的，这个时候如果制造一次STCP的上升沿，</span></span><br><span class="line">	<span class="comment"># 两块595的位移寄存器里的数据会同时保存到自己的锁存器里，由于我的使能端OE连在GND始终有效，锁存器里的数据就直接输出到了芯片的输出引脚上。</span></span><br><span class="line">	<span class="comment"># 第一块芯片的8根输出引脚连接的是所有数码管共用的abcdefg,dp引脚，决定了数码管上显示什么数字。而8只数码管中哪一只会被点亮则取决于哪只数码管的共阳端是高电平。</span></span><br><span class="line">	<span class="comment"># 第二块芯片的8根输出引脚连接的是8位数码管的共阳端。只有输出高电平的引脚连接的数码管会点亮。</span></span><br><span class="line">	<span class="comment"># 当然如果你喜欢，你也可以让8个数码管全部同时点亮，你只要让第二块595输出11111111就行了。不过显示的数字都是一样的。</span></span><br><span class="line">	<span class="comment"># 想显示不同的数字就要进行动态扫描，原理不再说明请参考本系列教程第5篇。</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">9</span>):</span><br><span class="line">		<span class="keyword">if</span> (x == dig):</span><br><span class="line">			setBitData(<span class="keyword">True</span>)</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			setBitData(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (num == <span class="number">0</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint) <span class="comment"># DP</span></span><br><span class="line">		setBitData(<span class="keyword">True</span>)  <span class="comment"># G</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># F</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># E</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># D</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># C</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># B</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># A</span></span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">1</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">2</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">3</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">4</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">5</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">6</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">7</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">8</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">9</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 移位寄存器的8位数据全部传输完毕后，制造一次锁存器时钟引脚的上升沿（先拉低电平再拉高电平）</span></span><br><span class="line">	<span class="comment"># 74HC595会在这个上升沿将移位寄存器里的8位数据复制到8位的锁存器中（锁存器里原来的数据将被替换）</span></span><br><span class="line">	<span class="comment"># 到这里为止，这8位数据还只是被保存在锁存器里，并没有输出到数码管上。</span></span><br><span class="line">	<span class="comment"># 决定锁存器里的数据是否输出是由“输出使能端口”OE决定的。当OE设置为低电平时，锁存器里数据才会被输出到Q0-Q7这8个输出引脚上。</span></span><br><span class="line">	<span class="comment"># 在我的硬件连接里，OE直接连接在了GND上，总是保持低电平，所以移位寄存器的数据一旦通过时钟上升沿进入锁存器，也就相当于输出到LED上了。</span></span><br><span class="line">	RPi.GPIO.output(STCP, <span class="keyword">True</span>)</span><br><span class="line">	RPi.GPIO.output(STCP, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment"># 测试代码</span></span><br><span class="line">	<span class="keyword">while</span> (<span class="keyword">True</span>):</span><br><span class="line">		<span class="comment"># 8位数码管显示1-8，不显示小数点</span></span><br><span class="line">		<span class="keyword">for</span> dig <span class="keyword">in</span> range(<span class="number">1</span>,<span class="number">9</span>):</span><br><span class="line">			showDigit(dig, <span class="number">9</span>-dig, <span class="keyword">False</span>)</span><br><span class="line">			time.sleep(<span class="number">0.001</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后清理GPIO口</span></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+<h3 id="资源下载">资源下载</h3><p><a href="74hc595_02.py" title="源码下载">点击下载源码</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><a href="../../../../2015/06/03/raspi-study0801/">上一篇</a>我们学习了如何利用74HC595这块显示驱动芯片来驱动1位8段数码管的方法。并逐一讲解了该芯片各引脚的功能。细心的童鞋可能注意到了，上次我们有一个Q7S引脚没有用到。这一篇我们就用这个引脚来级联两块74HC595芯片同时驱动8个8段数码管。在两块74HC595芯片的配合下，同样只需要3个GPIO口就能驱动八只8段数码管。而如果直接用GPIO驱动则需要至少16个GPIO口，节省了13个GPIO！而且按照本文的方法，你还可以级联更多的74HC595芯片，每多级联一片就能多驱动8只数码管，而需要的IO口仍然只有3个！妈妈再也不用担心我的IO口不够用了。</p>]]>
+    
+    </summary>
+    
+      <category term="数字芯片" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E5%AD%97%E8%8A%AF%E7%89%87/"/>
+    
+      <category term="数码管" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E7%A0%81%E7%AE%A1/"/>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门08-使用74HC595芯片驱动数码管（一）]]></title>
+    <link href="http://blog.mangolovecarrot.net/2015/06/03/raspi-study0801/"/>
+    <id>http://blog.mangolovecarrot.net/2015/06/03/raspi-study0801/</id>
+    <published>2015-06-03T13:36:58.000Z</published>
+    <updated>2015-05-23T09:32:44.000Z</updated>
+    <content type="html"><![CDATA[<p>之前我们学习了<a href="../../../../2015/05/05/raspi-study05/" title="树莓派GPIO入门05-驱动数码管显示数字">如何驱动数码管显示数字</a>。<br>但是这种做法有两个缺点。</p>
+<ol>
+<li>需要占用大量IO口，在那篇文章里，我们为了驱动4位数码管一共使用了12个IO口。如果需要驱动8位数码管则至少需要16个IO口。</li>
+<li>系统资源占用过多。还是在那篇文章里，为了实现数码管的动态扫描显示，需要不停地高速操作IO口，这对单任务的单片机比如51单片机来说问题并不太大，因为单任务的单片机的执行时序是由晶振来决定的，动态扫描的时间间隔可以控制地非常精确，数码管的显示会很稳定，不会出现闪烁的现象。但对于运行着多任务的Linux操作系统的树莓派来说，对IO口的大量反复操作以及大量使用sleep语句会导致CPU占用过多，最后导致动态扫描的间隔时间不均匀，体现为数码管显示不稳定，有明显闪烁的现象。为了改善这个问题我在那篇文章的最后还尝试用c语言来代替python语言，可实际效果有限。<br>使用GPIO直接驱动数码管时，上面这两个问题是不可避免的。想解决这两个问题，我们需要借助外部芯片的帮助。<br>接下来我将用几个篇幅来介绍如何使用显示驱动芯片74HC595来驱动数码管的方法。同时我们也可以学习到串行数据传输的方法以及一些数字芯片通用的一些概念，比如时钟引脚，上升沿，锁存，移位寄存等。理解了这些通用的概念对学习使用其他芯片是很有帮助的。</li>
+</ol>
+<a id="more"></a>
+<h3 id="本文最终效果">本文最终效果</h3><p>在一块74HC595芯片的配合下，只需要3个GPIO就能驱动一只8段数码管。（直接用GPIO驱动需要至少8个GPIO口）<br>视频演示</p>
+<iframe height="498" width="510" src="http://player.youku.com/embed/XMTI1NTAxMTMyMA==" frameborder="0" allowfullscreen></iframe>
+
+<h3 id="硬件">硬件</h3><ul>
+<li>74HC595显示芯片一只（0.5元一只）<br><img src="74hc595.jpg" alt="74HC595"></li>
+<li>共阳（或共阴）数码管一只</li>
+<li>限流电阻一只，330欧就够了。<br><img src="hardware.jpg" alt="硬件图 TODO"></li>
+</ul>
+<h3 id="原理说明">原理说明</h3><p>先转一段百度百科上74HC595芯片的简介。</p>
+<blockquote>
+<p>74HC595具有8位移位寄存器和一个存储器，三态输出功能。 移位寄存器和存储器有相互独立的时钟。数据在SH_cp（移位寄存器时钟输入）的上升沿输入到移位寄存器中，在ST_cp（存储器时钟输入）的上升沿输入到存储寄存器中去。如果两个时钟连在一起，则移位寄存器总是比存储寄存器早一个脉冲。移位寄存器有一个串行移位输入（Ds），和一个串行输出（Q7’）,和一个异步的低电平复位，存储寄存器有一个并行8位的，具备三态的总线输出，当使能OE时（为低电平），存储寄存器的数据输出到总线。</p>
+</blockquote>
+<p>看不懂吧，没关系，我们先看一下芯片的引脚图：<br><img src="01.jpg" alt="74HC595引脚图"><br>分别解释一下：</p>
+<ul>
+<li>GND接地，VCC接5V电源，这个就不用说了。</li>
+<li>Q0-Q7这8根引脚是芯片的输出引脚，直接跟数码管的8段引脚相连。对应关系要看你怎么接线和写代码时传送数据的顺序了。</li>
+<li>DS是串行输入引脚，所谓串行就是使数据在一根信号线上按顺序一位一位地传输，就像一串糖葫芦。这个引脚我们接到树莓派任意一个GPIO口上（输出模式）。</li>
+<li>SHCP是移位寄存器的时钟引脚。听上去有点复杂，其实很简单。74HC595内部有一个8位的移位寄存器用来保存从DS引脚输入的数据。那么74HC595怎么知道什么时候该从DS引脚上取数据了呢？正是通过SHCP这个时钟引脚来实现的。只有在SHCP发生一次<em>上升沿</em>的时候，74HC595才会从DS引脚上取得当前的数据（高/低电平）并把取到的这一位数据保存到移位寄存器里。同样的，这个引脚也接到树莓派任意一个GPIO口上。当我们向芯片发送数据时，要先在DS引脚上准备好要传送的数据，然后制造一次SHCP引脚的上升沿（先拉低电平再拉高电平），74HC595会在这个上升沿将DS引脚上的数据存入移位寄存器D0，同时D0原来的数据会顺移到D1，D1的数据位移到D2。。。D6的数据位移到D7。而原先D7的数据已经没有地方储存了，这一位数据会被输出到引脚Q7S上。这个引脚的作用我们下一篇再说，本文暂时用不到这个引脚。（注意这里说的不是输出引脚Q0-Q7，而是指内部的8位移位寄存器里每一个“小房间”，芯片手册上并没有给这些小房间编号，这里为了说明方便进行了编号）</li>
+<li>STCP是芯片内部另外一个8位锁存寄存器的时钟引脚。当移位寄存器的8位数据全部传输完毕后，制造一次锁存器时钟引脚的上升沿（先拉低电平再拉高电平）。74HC595会在这个上升沿将移位寄存器里的8位数据复制到锁存器中（锁存器里原来的数据将被替换）。注意，到这里为止，这8位数据还只是被保存在锁存器里，并没有输出到数码管上。这个引脚同样连接到树莓派任意一个GPIO口上即可。</li>
+<li>OE是输出使能引脚，在其他芯片里也很常见。作用是控制锁存器里的数据是否最终输出到Q0-Q7输出引脚上。低电平时输出，高电平时不输出（既不是高电平，也不是低电平而是高阻态，不通电）。本例为了方便直接接在GND上使其一直保持低电平输出数据。</li>
+<li>MR是用来重置内部寄存器的引脚。低电平时重置内部寄存器(MemoryReset?)。本例为了方便直接连接在Vcc上一直保持高电平。</li>
+<li>Q7S引脚，串行输出引脚，本文不使用，下一篇再解释它的作用。</li>
+<li>关于锁存器。顾名思义就是将数据保存并锁定。一旦进入了锁存器，除非断电或重置数据（MR口设置为低电平），锁存器的数据不会再改变。好处是，当你需要更新数据时，将数据串行输入移位寄存器的过程中，锁存器里的数据不会有任何影响，也就不会有闪烁了。一直到移位寄存器8位数据准备完毕，再制造一次STCP的上升沿一次性更新锁存器的数据，更新输出。</li>
+</ul>
+<p>另外，我做了一个动画帮助你理解整个过程。<br><img src="74hc595.gif" alt="74HC595"></p>
+<h3 id="硬件连接">硬件连接</h3><table>
+<thead>
+<tr>
+<th>模块1</th>
+<th>引脚</th>
+<th>模块2</th>
+<th>引脚</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>74HC595</td>
+<td>Q0</td>
+<td>数码管</td>
+<td>DP</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q1</td>
+<td>数码管</td>
+<td>G</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q2</td>
+<td>数码管</td>
+<td>F</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q3</td>
+<td>数码管</td>
+<td>E</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q4</td>
+<td>数码管</td>
+<td>D</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q5</td>
+<td>数码管</td>
+<td>C</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q6</td>
+<td>数码管</td>
+<td>B</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>Q7</td>
+<td>数码管</td>
+<td>A</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>DS</td>
+<td>树莓派</td>
+<td>GPIO13</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>SHCP</td>
+<td>树莓派</td>
+<td>GPIO19</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>SHTP</td>
+<td>树莓派</td>
+<td>GPIO26</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>VCC,MR</td>
+<td>树莓派</td>
+<td>VCC</td>
+</tr>
+<tr>
+<td>74HC595</td>
+<td>GND,OE</td>
+<td>树莓派</td>
+<td>GND</td>
+</tr>
+<tr>
+<td>数码管</td>
+<td>1位共阳极</td>
+<td>树莓派</td>
+<td>VCC</td>
+</tr>
+</tbody>
+</table>
+<p>注意，共阳数码管的共阳极连接5V电源时要串联一只限流电阻防止数码管电流过大损坏电阻。<br>如果你用的是共阴极数码管就没关系了，74HC595输出的电流是控制好的可以直接连到阳极上。<br>我手头上没有单独的1位数码管，就用4位数码管代替了，本文只接通数码管DIG1的共阳极做演示。</p>
+<h3 id="代码（Python）">代码（Python）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> RPi.GPIO</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line"><span class="comment"># 串行数据输入引脚连接的GPIO口</span></span><br><span class="line">DS = <span class="number">13</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 移位寄存器时钟控制引脚连接的GPIO口——上升沿有效</span></span><br><span class="line">SHCP = <span class="number">19</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 数据锁存器时钟控制引脚连接的GPIO口——上升沿有效</span></span><br><span class="line">STCP = <span class="number">26</span></span><br><span class="line"></span><br><span class="line">RPi.GPIO.setmode(RPi.GPIO.BCM)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.setup(DS, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(STCP, RPi.GPIO.OUT)</span><br><span class="line">RPi.GPIO.setup(SHCP, RPi.GPIO.OUT)</span><br><span class="line"></span><br><span class="line">RPi.GPIO.output(STCP, <span class="keyword">False</span>)</span><br><span class="line">RPi.GPIO.output(SHCP, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过串行数据引脚向74HC595的传送一位数据</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">setBitData</span><span class="params">(data)</span>:</span></span><br><span class="line">	<span class="comment"># 准备好要传送的数据</span></span><br><span class="line">	RPi.GPIO.output(DS, data)</span><br><span class="line">	<span class="comment"># 制造一次移位寄存器时钟引脚的上升沿（先拉低电平再拉高电平）</span></span><br><span class="line">	<span class="comment"># 74HC595会在这个上升沿将DS引脚上的数据存入移位寄存器D0</span></span><br><span class="line">	<span class="comment"># 同时D0原来的数据会顺移到D1，D1的数据位移到D2。。。D6的数据位移到D7</span></span><br><span class="line">	<span class="comment"># 而D7的数据已经没有地方储存了，这一位数据会被输出到引脚Q7S上</span></span><br><span class="line">	RPi.GPIO.output(SHCP, <span class="keyword">False</span>)</span><br><span class="line">	RPi.GPIO.output(SHCP, <span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定数码管显示数字num(0-9)，第2个参数是显示不显示小数点（true/false）</span></span><br><span class="line"><span class="comment"># 由于我使用的数码管是共阳数码管，所以设置为低电平的段才会被点亮</span></span><br><span class="line"><span class="comment"># 如果你用的是共阴数码管，那么要将下面的True和False全部颠倒过来，或者统一在前面加上not</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">showDigit</span><span class="params">(num, showDotPoint)</span>:</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span> (num == <span class="number">0</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint) <span class="comment"># DP</span></span><br><span class="line">		setBitData(<span class="keyword">True</span>)  <span class="comment"># G</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># F</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># E</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># D</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># C</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># B</span></span><br><span class="line">		setBitData(<span class="keyword">False</span>) <span class="comment"># A</span></span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">1</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">2</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">3</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">4</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">5</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">6</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">7</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">8</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">	<span class="keyword">elif</span> (num == <span class="number">9</span>) :</span><br><span class="line">		setBitData(<span class="keyword">not</span> showDotPoint)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">True</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line">		setBitData(<span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 移位寄存器的8位数据全部传输完毕后，制造一次锁存器时钟引脚的上升沿（先拉低电平再拉高电平）</span></span><br><span class="line">	<span class="comment"># 74HC595会在这个上升沿将移位寄存器里的8位数据复制到8位的锁存器中（锁存器里原来的数据将被替换）</span></span><br><span class="line">	<span class="comment"># 到这里为止，这8位数据还只是被保存在锁存器里，并没有输出到数码管上。</span></span><br><span class="line">	<span class="comment"># 决定锁存器里的数据是否输出是由“输出使能端口”OE决定的。当OE设置为低电平时，锁存器里数据才会被输出到Q0-Q7这8个输出引脚上。</span></span><br><span class="line">	<span class="comment"># 在我的硬件连接里，OE直接连接在了GND上，总是保持低电平，所以移位寄存器的数据一旦通过时钟上升沿进入锁存器，也就相当于输出到LED上了。</span></span><br><span class="line">	RPi.GPIO.output(STCP, <span class="keyword">True</span>)</span><br><span class="line">	RPi.GPIO.output(STCP, <span class="keyword">False</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="comment"># 测试代码</span></span><br><span class="line">	<span class="comment"># 从0显示到9，不显示小数点</span></span><br><span class="line">	<span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">10</span>):</span><br><span class="line">		showDigit(x, <span class="keyword">False</span>)</span><br><span class="line">		time.sleep(<span class="number">0.2</span>)</span><br><span class="line"></span><br><span class="line">	<span class="comment"># 再从0显示到9，显示小数点</span></span><br><span class="line">	<span class="keyword">for</span> y <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">10</span>):</span><br><span class="line">		showDigit(y, <span class="keyword">True</span>)</span><br><span class="line">		time.sleep(<span class="number">0.2</span>)</span><br><span class="line">					</span><br><span class="line"><span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">	<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 最后清理GPIO口</span></span><br><span class="line"><span class="comment"># 清理了IO是将所有使用中的IO口释放，并全部设置为输入模式</span></span><br><span class="line"><span class="comment"># 你会发现最后设置的数据在清理了IO口以后还会继续正常显示</span></span><br><span class="line"><span class="comment"># 这是因为数据一旦存入锁存器，除非断电或重置数据（MR口设置为低电平），</span></span><br><span class="line"><span class="comment"># 否则最后设置的数据会一直保留在74HC595芯片中。也就是被“锁存”了。</span></span><br><span class="line">RPi.GPIO.cleanup()</span><br></pre></td></tr></table></figure>
+<h3 id="资源下载">资源下载</h3><p><a href="74hc595_01.py" title="源码下载">点击下载源码</a></p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p>之前我们学习了<a href="../../../../2015/05/05/raspi-study05/" title="树莓派GPIO入门05-驱动数码管显示数字">如何驱动数码管显示数字</a>。<br>但是这种做法有两个缺点。</p>
+<ol>
+<li>需要占用大量IO口，在那篇文章里，我们为了驱动4位数码管一共使用了12个IO口。如果需要驱动8位数码管则至少需要16个IO口。</li>
+<li>系统资源占用过多。还是在那篇文章里，为了实现数码管的动态扫描显示，需要不停地高速操作IO口，这对单任务的单片机比如51单片机来说问题并不太大，因为单任务的单片机的执行时序是由晶振来决定的，动态扫描的时间间隔可以控制地非常精确，数码管的显示会很稳定，不会出现闪烁的现象。但对于运行着多任务的Linux操作系统的树莓派来说，对IO口的大量反复操作以及大量使用sleep语句会导致CPU占用过多，最后导致动态扫描的间隔时间不均匀，体现为数码管显示不稳定，有明显闪烁的现象。为了改善这个问题我在那篇文章的最后还尝试用c语言来代替python语言，可实际效果有限。<br>使用GPIO直接驱动数码管时，上面这两个问题是不可避免的。想解决这两个问题，我们需要借助外部芯片的帮助。<br>接下来我将用几个篇幅来介绍如何使用显示驱动芯片74HC595来驱动数码管的方法。同时我们也可以学习到串行数据传输的方法以及一些数字芯片通用的一些概念，比如时钟引脚，上升沿，锁存，移位寄存等。理解了这些通用的概念对学习使用其他芯片是很有帮助的。</li>
+</ol>]]>
+    
+    </summary>
+    
+      <category term="数字芯片" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E5%AD%97%E8%8A%AF%E7%89%87/"/>
+    
+      <category term="数码管" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E7%A0%81%E7%AE%A1/"/>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[树莓派GPIO入门07-利用声音传感器制作声控灯]]></title>
     <link href="http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/22/raspi-study07/</id>
     <published>2015-05-21T16:03:16.000Z</published>
-    <updated>2015-05-22T09:35:07.000Z</updated>
+    <updated>2015-05-23T09:32:44.000Z</updated>
     <content type="html"><![CDATA[<p>本文我们用声音传感器来制作一个简易的声控灯。<br><a id="more"></a></p>
 <h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门07-利用声音传感器制作声控灯"><br>视频演示：</p>
 <iframe height="498" width="510" src="http://player.youku.com/embed/XOTYyMjQ4MTUy" frameborder="0" allowfullscreen></iframe>
@@ -46,6 +941,8 @@
     
     </summary>
     
+      <category term="传感器" scheme="http://blog.mangolovecarrot.net/tags/%E4%BC%A0%E6%84%9F%E5%99%A8/"/>
+    
       <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
     
       <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
@@ -57,9 +954,9 @@
     <link href="http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/17/raspi-study06/</id>
     <published>2015-05-17T14:27:04.000Z</published>
-    <updated>2015-05-19T17:45:26.000Z</updated>
+    <updated>2015-05-23T09:32:44.000Z</updated>
     <content type="html"><![CDATA[<p>本文我们利用树莓派的GPIO口来跟数字湿温度计模块DHT11进行通信取得温度和湿度数据并显示在数码管上，通过按钮来切换显示温度或湿度。<br><a id="more"></a></p>
-<h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门06-跟数字湿温度计DHT11通信"></p>
+<h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门06-跟数字湿温度计DHT11通信"><br>\</p>
 <h3 id="硬件">硬件</h3><ul>
 <li>数码管</li>
 <li>杜邦线</li>
@@ -88,6 +985,10 @@
     
     </summary>
     
+      <category term="传感器" scheme="http://blog.mangolovecarrot.net/tags/%E4%BC%A0%E6%84%9F%E5%99%A8/"/>
+    
+      <category term="数码管" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E7%A0%81%E7%AE%A1/"/>
+    
       <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
     
       <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
@@ -99,7 +1000,7 @@
     <link href="http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/"/>
     <id>http://blog.mangolovecarrot.net/2015/05/05/raspi-study05/</id>
     <published>2015-05-05T14:30:04.000Z</published>
-    <updated>2015-05-17T15:05:40.000Z</updated>
+    <updated>2015-05-23T09:32:44.000Z</updated>
     <content type="html"><![CDATA[<p>这次我们用树莓派的GPIO口驱动数码管来显示数字，进而制作一个简单的电子钟，通过按钮来切换显示时间或日期。<br><a id="more"></a></p>
 <h3 id="最终效果">最终效果</h3><p><img src="xg.jpg" alt="树莓派GPIO入门05-驱动数码管显示数字"></p>
 <h3 id="硬件">硬件</h3><ul>
@@ -165,6 +1066,8 @@
     <![CDATA[<p>这次我们用树莓派的GPIO口驱动数码管来显示数字，进而制作一个简单的电子钟，通过按钮来切换显示时间或日期。<br>]]>
     
     </summary>
+    
+      <category term="数码管" scheme="http://blog.mangolovecarrot.net/tags/%E6%95%B0%E7%A0%81%E7%AE%A1/"/>
     
       <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
     
@@ -258,38 +1161,6 @@
       <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
     
       <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[文摘-《江上的母亲》by 野夫]]></title>
-    <link href="http://blog.mangolovecarrot.net/2015/04/27/cswg-jsdmq/"/>
-    <id>http://blog.mangolovecarrot.net/2015/04/27/cswg-jsdmq/</id>
-    <published>2015-04-26T15:33:16.000Z</published>
-    <updated>2015-04-26T15:42:57.000Z</updated>
-    <content type="html"><![CDATA[<p>这是大陆被禁的野夫文集《尘世挽歌》里面的第一章。最后有全书pdf下载。</p>
-<h1 id="江上的母亲">江上的母亲</h1><h2 id="——母亲失踪十年祭">——母亲失踪十年祭</h2><h2 id="一">一</h2><p>这是一篇萦怀于心而又一直不敢动笔的文章。 是心中绷得太紧以至于怕轻轻一抚就砉然断裂的弦丝。 却又恍若巨石在喉, 耿耿于无数个不眠之夜, 在黑暗中撕心裂肺, 似乎只须默默一念, 便足以砸碎我寄命尘世这一点点虚妄的自足。<br>又是江南飞霜的时节了, 秋水生凉, 寒气渐沉。整整十年了，身寄北国的我仍是不敢重回那一段冰冷的水域, 不敢也不欲去想象我投江失踪的母亲, 至今仍暴尸于哪一片月光下……<br><a id="more"></a></p>
-<h2 id="二">二</h2><p>从母亲到晚年仍保持的决绝个性里，我相信她成为“右派”是一件必然的事。这样说并非基于纯粹的宿命观，而是指她诞生之初，血质里就被刻上了她父亲的烙印。她一生都在努力企图剪断她与那个“国军”将领的血缘联系，却终归徒劳无获。<br>我外祖母是江汉平原的大家闺秀，其父在民初留学扶桑八年，归国赴任甘肃省高法院长前，决定与天门望族刘家结为姻亲——那时的刘家三少爷[我外祖父]正成为黄埔八期的士官生开始了他的戎马生涯。在可能存在过的短暂幸福之后，作为战祸频仍年代的军人之妻，外祖母便带着我的母亲步入了她的孤独一生。<br>抗战爆发，外祖父侍卫蒋公撤退西南。刘家太爷故世，大宅日见凋敝。该地区又是日寇国军和共军拉锯争夺之地，无论哪一部短暂占领，徒具虚名的刘宅便成了搜刮粮饷的目标。外祖母带着我少年的母亲东躲西藏，饱受乱离之苦。最后因怕女儿受辱，外婆只好托乡里客商将我母亲带到湘西伯父家避祸。母亲在那识尽炎凉，像一个女仆般做工求学。 </p>
-<h2 id="三">三</h2><p>日本投降当年，母亲独自踏上还乡寻母的艰难路程，当她找到捡棉花纺线度日的外婆时，劫后重逢的泪水湿透了她们的褴褛衣裳。次年，乡人传言外祖父衣锦还乡，授衔少将驻节武汉。母亲来到省城寻父，等待她的却是晴天霹雳——外祖父不信他的妻女还能侥幸存活，已经重新娶妻生子了。而且他隐瞒了婚史因此不敢相认。<br>悲愤的母亲闯进了他父亲的一场盛大酒会，一时舆论大哗，外祖父回乡逼迫外婆离婚，从此父女反目，我母亲坚决改名换姓以示恩断义绝。<br>天道往还，1948年，节节败退的外祖父奉命移师恩施，赴任途中被伏击，流弹洞穿了他壮年的胸脯——而最后为他扶柩理丧的竟是我终身寡居的外婆。<br>武汉次年易帜，“革大”招生，母亲投考，结业后竟又鬼使神差地被分往恩施剿匪土改——踏上了她父亲送命的路程。在这条充满险恶的山路上，她与我父亲邂逅相逢。一个平原遗弃的将门孤女，一个山中破落的土司遗孑，在那个伟大动荡的时代，偶然而又必然的结合了并从此扎根深山。 </p>
-<h2 id="四">四</h2><p>外婆早已原谅了她的丈夫，母亲却永远在仇恨她的父亲。她无法在现实中去惩罚他，便极力在精神上去满足一种虚构的报复——改名换姓，不承认有此父亲，甚至不允许外婆去原谅。<br>然而这种背叛只能停留在自我泄愤的地步，因为这个政党一向在意个人的血统以研究其阶级属性。在她报考革命大学那天起，她就要面对无数张表格。她总是试图说明她是她父亲那个阶级的弃婴，她和她母亲属于苦难平民。然而表格却限制了她的声辩，同时还作为一张早有预谋的标签贴上了她的面庞。<br>上个世纪流行一个充满杀机的词叫“历史不清”，母亲被这个语词压迫得痛不欲生。当任何一个批判她的人诘问——你是不是军阀女儿，她就仿佛陷入一个悖论。她比别人还恨她的父亲，却又偏被他们视为同一个敌人。她觉得这个父亲不仅在生前遗弃了她，还在死后长久地陷害着她，她完全无力跳出这一血缘的魔沼。<br>1957年的母亲正当而立之年，这个来自遥远省城的女人，试图把她的教养植入那个土家山寨。其直率和刚烈却往往好心换来敌意，她对党的意见和她的出身被联系一起时，只能戴上右派的高帽接受工人的监督改造。20年后终于彻底<strong><strong>时，母亲已老去，所有曾经蒙受的屈辱和伤害不知向谁讨还。划处和</strong></strong>都是一张纸，她深感前者重如泰山而后者却轻于鸿毛 </p>
-<h2 id="五">五</h2><p>文革开始时，父亲作为矿长很快被打倒，母亲微薄的工资要维持全家的生活，那时她是小镇供销社可以双手打算盘的会计。外婆陪着失学的大姐重返平原插队务农，二姐当了矿工，父亲病危在武汉住院，十岁的我也肺结核穿孔而命若悬丝，我们家一分四处进入了生命中最艰危的岁月。攻击母亲的大字报依旧贴满门窗，频繁的抄家连缝纫机头也被拎走，母亲带着我忍辱负重地在小镇访医求药，她不能垮，她要拉扯着这个破碎的家一个不少地走进那渺茫的明天。<br>一次她带我到县城看病，回来时求熟人找了个便车，司机走出城后竟威逼我们从车厢下来，一生不低头的母亲为了我哀婉乞求，她看着扬尘而去的汽车悲愤难耐，又不愿让儿子看到一个母亲的窘迫和尴尬，只好将泪水默默吞下。她永远不理解人世间的恶竟至如此，人性何以被一个时代扭曲得如此不堪。<br>我小学毕业后，学校又以我有传染病为由不录我上初中，我开始了短暂的少年樵夫岁月。当我在夕阳下挑着柴火蹒跚而归时，多能远远看见下班后又来接我的母亲，那时她已见憔悴了，乱发在风中飘飞，有谁曾知她的高贵？两个姐姐都已失学，她再不能让我沉沦泥涂，她不得不去求文教站站长，终于使我得以入学。 </p>
-<h2 id="六">六</h2><p>母亲终于带着全家迎来了1978年。父亲升迁，她获<em>**</em>，大姐招工，我考上大学，外婆又回到我们身边。这时的母亲总算有了笑颜，她相信善良总有好报。即使那些迫害过他们的人也来我家走动，她依旧不假辞色。<br>1983年外婆辞世，85年父母离休，87年父亲患癌，89年我辞去警职，随后入狱，母亲又开始了她的忧患余生。<br>父亲总想等到儿子重见天日，因此而不得不承受每年动一至二次手术的巨大痛苦。他身上的器官被一点点割去，只有那求生的意志仍在顽强茁生。真正苦的更是母亲，她不断拖着她的衰朽残年，陪父亲去省城求医。父亲在病床上辗转，六十多岁的母亲却在病床下铺一张席子陪护着艰难的日日夜夜。只要稍能走动，母亲就要扶着父亲来探监，三人每每在铁门话别的悲惨画面，连狱警往往也感动含泪。每一次挥手仿佛就是永诀，两个为共和国效命一生的佝偻老人，却不得不在最后的日子里，因我而去不断面对高墙电网的屈辱。<br>我们在不能见面的岁月里保持着频繁通信，母亲总是还要在父亲的厚厚笺纸外另外再写几页。我在那时陷入了巨大的矛盾——既希望父子今生相见，又想要动员父亲放弃生命。他的挣扎太苦了，连带我的母亲而入万劫深渊。 </p>
-<h2 id="七">七</h2><p>1995年我回到山中的家时，只有母亲还在空空的房里收拾着断线碎布。那时父亲刚刚离去半年，他在楼顶奇迹般地种植的一棵花椒树，正盛开着无数只眼睛一如死不瞑目的悬望。<br>母亲依然如往昔我的飘流归来一样，为我炒好酸菜鸡杂。拿出一大坛药酒说你喝吧，这是你爸为你泡的劳伤药。她怎知儿子的伤原在心深处，却冀望一副古老的药方来疗慰。<br>为了求生，我不得不匆匆又出山。临行之际，母亲异样地拉着我的手说，你在武汉安顿好后，就接我过去吧，家里太空了，一个人竟觉得害怕。我突然发现母亲已经衰老了，她一生的坚强无畏似乎荡然无存，竟至一下虚弱得像一个害怕孤独的孩子。 </p>
-<h2 id="八">八</h2><p>我用朋友借的一点钱租了一所肮脏的房子，几件歪斜的家具也算撑起了一个家。母亲带着一个单开门的冰箱来了，我见上面许多修补的漆痕，心中无限酸楚——这就是两老一生节俭唯一值钱点的遗产了，无常的灾难耗尽了他们的一切，我又怎生才能报答。<br>母亲在阴暗的房里一点一点拆她的毛衣，漂洗那些弯曲的毛线，然后又一针一针为我编织出一条毛裤。她说这过去的纯羊毛，现在不好买了，你穿着会暖和些。<br>她拿出一大本装订好的信纸给我，说这是她这些年来写的她的家族的回忆，我看见密密麻麻的几十万字，几乎页页漫漶着泪痕。她的手颤颤巍巍，哽咽着说这就算是留给你们三姊弟的纪念了。<br>向来给我作饭的母亲突然不做了，每天要等着我回去做才吃。她又说这房子白天好阴冷，她感到恐惧。我带母亲到居委会去打麻将，她去了一次就再也不去了，她说她和那些老人没有话说。我知道清高的母亲一生不苟时俗，向来也不会娱乐。<br>我那时和几个朋友凑了点钱编书想卖，每天回去母亲就要问有钱赚吗，我说生意没有这么快，她就又感叹物价涨了，城里生活太贵，然后说她要病了就是我们的拖累，她真想找我的父亲去。我每天在这个冷漠的世界疲于奔命，我求朋友的妻子给她免费的药，她心脏开始不适，我说妈，一切都会好起来的。 </p>
-<h2 id="九">九</h2><p>陪我住了十几天后，母亲要求到大姐那里去住。大姐在同城的另一个区，在长江的边上有一套狭窄的居室。大姐有一个可爱的女儿，我想也许能给母亲多一些欢乐和安慰，就让大姐来接走了她。<br>我依旧在人海挣扎，在没有电话的时代也疏于问候。根本在于我忽略了母亲的所有暗示，我不知道那时她去意已决，她已在暗自料理后事，在与我们姐弟委婉话别。<br>1995年的深秋午后，大姐打电话给我朋友找到我说，母亲早上出门现在未回，他们四处找也未能找到，大姐的语气有些惊恐。我还说，不会有事的，你们再找找吧。傍晚大姐在电话那端痛哭——她找到母亲的遗书了。<br>我带着几个弟兄赶去，大姐交给我从被褥里翻出的母亲的两封信和一串钥匙，匙链上还挂着父亲当年给她的一个韭叶金戒指，我的心顿时如沉冰海。<br>母亲平静地写道——我知道我病了，我梦见我的母亲在叫我，我把你们的父亲送走了，又把平儿等回来了，我的使命终于完成了，我要找你们父亲去了。。。。。。请你们原谅我，我到长江上去了，不要找我，你们也找不到的。你们三姊妹要互相帮助，父母没能力给你们留下什么，我再不走还要拖累你们。。。。。。 </p>
-<h2 id="十">十</h2><p>我们连夜沿江寻找，多么希望母亲还徘徊在生死边上，给我们最后一线机会。<br>我们去公安局报案，他们说人失踪一月后再去备个案即可。我们去民政局求助，他们说没有寻人的职责。我们去电视台，他们说上级不允许播寻人启示，走失的太多了。我们自己复印招贴满街去贴，城管的跟着就撕，逮着还要罚款。整个国家没有一个救助机构可为我们分忧，我的母亲就这样走失在她的祖国。<br>码头工人见多识广，他们说武汉下游的阳逻镇是长江的回水处，水上死者都会在那里漂浮回旋，你可以去那找到你的母亲。<br>我只身来到那个码头赁居，先找当地派出所求助。他们客气地说，你看这墙上挂着多少寻人启示，我们根本顾不过来，这里每天都有浮尸。以前我们还每具100元请农民捞起来埋上，我们登记个特征。现在经费包干，我们也没闲钱管了，你自己租条小舟去找吧。<br>我只好请了个胆大的渔民每天划着他的扁舟，陪我在此江湾逡巡。江面上果然每天都有浮尸，我都得靠近查看是否我的母亲。有的被浪花卷到了沙滩上，在阳光下发胀腐烂，堆满了苍蝇，远远就散发出恶臭。我生怕错过我的母亲，总要一一去翻看。许多天了，渔民也厌了，码头工人感于我的孝情，劝我别找了，根据他们的经验，武汉下水的这时早该在此出现了，要没见到，一定是被沿江的船锚挂在水底了，又或者被漩流带出了江湾，那就永远找不到了。我最后还是又沿岸上溯找回武汉，母亲终于仍是一去无迹。而两个姐姐则同时找遍了所有的亲友寺庙，我们终于彻底绝望。 </p>
-<h2 id="十一">十一</h2><p>整整十年过去了，秋水长天，物换星移，我们姐弟的隐痛和歉疚却从未平复。我们在一起相聚时，基本也尽量回避这个话题，谁都知道心上的创口还在暗夜渗血。<br>两个平民姐姐多少还有些迷信，早几年听说哪个神人，总要去花钱请教母亲的下落，并按所谓的高人指点去再做徒劳的追寻。又或者听某位故旧传言，在某处曾见疑似母亲的老人，便又要去打听，然后牵出万千余痛。只有我相信母亲真的去了，她一生的刚烈决绝，一生对我们的挚爱，在那个艰难勉强的时刻，她绝对会选择尊严而从容的赴死。她要用她的自沉来唤起我重新上路，来给我一个无牵无挂的未来。<br>一个68岁的老人，在经历了她坎坷备尽的生涯后，毅然地走向了深秋的长江。那时水冷如刀，朝阳似血，真难以想象我柔肠寸断的老母，是怎样一步几回头地走向那亘古奔流的大河的，她最后的回眸可曾老泪纵横，可曾还在为她穷愁潦倒的儿女忧心如焚。她把她的神圣母爱撒满那生生不息的浩荡之水，然后再将自己的苍老骨肉委为鱼食，这需要怎样一种勇毅和慈悲啊。她艰难的一跃轰然划破默默秋江，那惨烈的涟漪却至今荡漾在我的心头。<br>1995年的冬天，我为母亲砌了一个小小的衣冠冢，边上同时安埋下外婆的骨殖和父亲的灰烬，然后我只身踏上了漫游的不归路。<br>1996年我责编了第一本书稿《垮掉的一代》，看到金斯堡纪念他母亲的长诗《祈祷》，他不断回旋的一个主题就是他母亲最后的遗书——<br>钥匙在窗台上，<br>钥匙在窗前的阳光里。<br>孩子，结婚吧，不要吸毒。<br>钥匙就在那阳光里……。<br>读到此时，我在北京紫竹院初春的月夜下大放悲声，仿佛沉积了一个世纪的泪水陡然奔泻，我似乎也看见了我母亲在阳光下为我留下的那把钥匙…… </p>
-<h1 id="《尘世挽歌》全书pdf下载">《尘世挽歌》全书pdf下载</h1><p><a href="尘世挽歌.pdf">点此下载</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>这是大陆被禁的野夫文集《尘世挽歌》里面的第一章。最后有全书pdf下载。</p>
-<h1 id="江上的母亲">江上的母亲</h1><h2 id="——母亲失踪十年祭">——母亲失踪十年祭</h2><h2 id="一">一</h2><p>这是一篇萦怀于心而又一直不敢动笔的文章。 是心中绷得太紧以至于怕轻轻一抚就砉然断裂的弦丝。 却又恍若巨石在喉, 耿耿于无数个不眠之夜, 在黑暗中撕心裂肺, 似乎只须默默一念, 便足以砸碎我寄命尘世这一点点虚妄的自足。<br>又是江南飞霜的时节了, 秋水生凉, 寒气渐沉。整整十年了，身寄北国的我仍是不敢重回那一段冰冷的水域, 不敢也不欲去想象我投江失踪的母亲, 至今仍暴尸于哪一片月光下……<br>]]>
-    
-    </summary>
-    
-      <category term="野夫" scheme="http://blog.mangolovecarrot.net/tags/%E9%87%8E%E5%A4%AB/"/>
-    
-      <category term="读书" scheme="http://blog.mangolovecarrot.net/categories/%E8%AF%BB%E4%B9%A6/"/>
     
   </entry>
   
@@ -404,74 +1275,6 @@
       <category term="树莓派" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
     
       <category term="技术" scheme="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[《 中国人的撕扯人生：一边是上流，一边是逐流 》]]></title>
-    <link href="http://blog.mangolovecarrot.net/2015/03/24/chinease/"/>
-    <id>http://blog.mangolovecarrot.net/2015/03/24/chinease/</id>
-    <published>2015-03-24T06:03:48.000Z</published>
-    <updated>2015-04-20T04:43:08.000Z</updated>
-    <content type="html"><![CDATA[<p>这篇文章写得很好。</p>
-<p>作者： 桂旭江</p>
-<p>这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
-<p>《舌尖上的中国》第二季描写了一对年轻夫妻，放弃了大城市的高薪工作，移居在云南的一个小镇，种菜、做饭、骑车、在月光下读书写字，恬静淡然的画面诗一般的美丽。我相信，这样的镜头会触动无数人的心灵，他们内心深处一定或多或少向往这样的生活。<br><a id="more"></a><br>但是，我更确信，没有几个人能够像他们一样把向往变成现实。在这个时代的洪流中，向上不易，放下更难。</p>
-<p>一、人总在出世、入世的撕扯中挣扎前行</p>
-<p>Anita，一位看上去柔弱娇丽的女子，十几年的职场打拼，己经实现的财富足以令她“美美容养养花，没事去趟温哥华”；己经获得过的影响全国行业规则的工作业绩，也足以令她此生骄傲。她曾经早早立愿35岁退休，做一个云游四方的老太婆。</p>
-<p>可是，她几乎从来没有闲过，从一条战壕跳进另一条战壕，基本是零时差。刚刚读完EMBA，就再一次把自己扔进创业的炼炉，成为一家名叫麻布袋的互联网金融公司的创始人，这家以农业为重点的P2P公司正在加速起跑的突破期，她像个性别不明的女汉子那样冲锋陷阵，顾不上花容失色，忘记了我本娇娥。己经记不清有多少个夜晚是盯着屏幕度过，有多少次会议控制不住地对着下属咆哮，又有多少次在享受喜悦的五分钟之后就开始下一轮焦虑。</p>
-<p>丰衣足食，情怀小资，又为什么要这样“自找苦吃”？</p>
-<p>我知道这没有答案，这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
-<p>撕扯他们的，一边是马云、马化腾、王健林们的创业故事，财富、梦想、活着就是要改变世界的热血燃烧。种种成功学铺天盖地，如果没有事业，人生的价值如何体现？而另一边又是星云大师、净空法师们的劝世恒言，人生本修行，万般皆身外，何必苦苦相争？</p>
-<p>一边是孩子，一边是位子。无数的文章在提醒：陪孩子一起成长吧，一生只有这一次。可是又有无数文章在提示，人生需要定位，更需要上位，想要老婆孩子热坑头，就腾出你的位置吧。</p>
-<p>一边是老人，一边是超人。你会在夜里梦到老人离你而去，惊醒过来，泪湿枕巾。你恨不得从此陪伴他们身边，陪伴他们最后的旅程。可是，擦干眼泪，对着梳妆台，你又想起今天要安排的一件件任务，你得做个超人，向上下证明你的能力。问候的电话，还是晚上再打吧。</p>
-<p>一边是上流，一边是逐流。你痛恨腐败、藐视权威、嘲讽马屁，你心里住着一位清高上流的你。但每当机会来临，你立即苦思可以利用的关系、向手握权力的人表达由衷的敬意，想方设法用最安全的办法把它“搞定”。你发现，此时上流的你，正在闭目养神，不闻不问。</p>
-<p>一边是同学会，一边是追悼会。同学会的真正意义并非“拆散一对是一对”，而是人生比较和刺激。当年并排坐的小伙伴，如今己经分出了三六九等，有的春风得意，有的落寞失意。好在比赛尚未结束，赶紧迎头赶上，下次一定要锦衣豪车，把那些钱多人贱的土豪比下去。只有到追悼会，才惊觉生命脆弱，万贯身家终究黄土一抔。活着的意义又在心中翻腾，还要这么拼吗？</p>
-<p>一边是在路上，一边是故乡。中国的职场人，最喜欢的歌曲一定包括《在路上》、《爱拼才会赢》、《飞得更高》，它们总能让“一颗不安分的心”澎湃沸腾。但下一曲，可能就是许巍的《故乡》或者李健的《心升明月》，有些伤感，有些迷茫，有些心生倦意。</p>
-<p>但是，故乡在哪里，何时能归去？</p>
-<p>二、比较让人们总是停不下脚步</p>
-<p>何生这几年总是向往归乡，他似乎已经厌倦身为一个企业高管的无奈，总是深情描绘他的理想生活：写歌、填曲、吟唱，了却一生的夙愿。</p>
-<p>去年年底，公司不景气，何生与老板没有谈妥待遇问题，待业了。再见他时，阴云遮不住地浮上眉眼。我说你小子光北京的房产就三四套，吃租金就比得上一家两口小白领，这回正好圆一圆文艺梦了，祝贺你啊！</p>
-<p>何生嘴角牵出一丝苦笑：文艺个屁，现在还不是时候。</p>
-<p>“那什么时候才是时候呢？”</p>
-<p>“我不知道，反正现在还不是时候。”</p>
-<p>一个多月后，何生成功应聘一家食品公司的副总。再见他时，神采奕奕，不过话说三句又开始埋怨担子重压力大。</p>
-<p>我本来还想嘲笑他几句，突然在他身上仿佛看到了自己，如果我是何生，真的能快乐地开始理想生活吗？该嘲笑的，又岂止是这个人。</p>
-<p>我一直想，不断刺激我们奔跑的动力到底在哪里？成功、财富？我们并不肯全盘认领；自我价值的实现？生命的意义？实在有些宏大飘渺。</p>
-<p>最赤裸的解剖其实是：人在摆脱温饱困扰之后，就开始寻找自我的证明，而证明的起点和终点是——比较。</p>
-<p>对于人这种群居动物来说，“比较”几乎是所有的不幸和幸福的源泉。从生到死，我们永远活在比较中，比成绩，比学历，比升迁，比车房，比谁的关系更硬，比谁的对象更靓，比谁的孩子更出息。俞敏洪就对他的同学说：如果什么都比不过，我就争取比你们活得久。</p>
-<p>比较的结果之一，是我们常常对未来产生莫名的恐惧，名义上是担心资产贬值、孩子教育、年老医疗，而本质上，是恐惧未来活得不如别人。</p>
-<p>比较的结果之二，是我们不能接受掉队，我们总觉得身边的脚步隆隆，不断有人超车而去，我们不敢停下，生怕成为吃灰的落伍者，生怕成为被嘲讽或者怜悯的弱者。</p>
-<p>比较的结果之三，是我们总在试图让别人尊重，不断要用成就来刷屏，向周围提示自己的存在。我们甚至己经想不起，到底想要成为什么样的人，所谓理想，原来全是想像成为别的人。</p>
-<p>比较的结果之四，便是这数不清的撕扯。我们越来越发现事业、工作、成就之外那些事物的美好和重要，却又忍受不住比较带来的刺激，于是一边奔跑，一边回头，总想着弥补些什么，总以为下一站就是终点。</p>
-<p>真的到了下一站，往往又变成新的起点。</p>
-<p>这也许是一个阶层历史性的阶段，之前或之后，可能都不会如此大规模地体验这种撕扯的狼狈。</p>
-<p>三、只有“90后”也许能逃脱撕扯的烦恼</p>
-<p>大体上，“50后”、“60后”这批人是不太纠结的，因为他们的词典当中本来就没有“放下”，他们像旋转的马达，不到断电，决不停息。</p>
-<p>恰恰是“70后”、“80后”的两代——“70后”人到中年，“80后”渐成砥柱，这个群体己经成为中产阶级的主体。相比“50后”、“60后”，他们更多倾向于认为工作不再是生活的必须，奋斗也不再是生命唯一的意义。</p>
-<p>但另一方面，他们又注定比不上更年轻一代洒脱，他们还做不到“喜欢就好，无所谓功名”。他们一方面是上一代的反对者，一方面又对下一代心存疑虑；他们可以赞赏“浪费生命、虚度光阴”，却很难身体力行。</p>
-<p>这出世与入世的撕扯，大概至少可以上溯两千年。一边是帝王将相、建功立业，一边是田园归隐、竹林禅意。中国文化早已约定了读书人不为相便学禅的路径，光宗耀祖、名垂青史是主旋律，而相忘山水也是一条退路。</p>
-<p>更重要的影响，其实来自西方。那些在奥斯卡或者戛纳闪耀的影片，无论场景如何离奇震撼，人性、亲情、爱是永远埋藏的主题；那些在黄金海岸或者夏威夷漫步的中国人，亲眼目睹了“外国人”是如何享受生活和生命。</p>
-<p>但是，他们与上一代的告别还不彻底，更多的“觉醒”，只在微信的朋友圈里感慨流传，稍不留神就变成廉价的心灵鸡汤。</p>
-<p>于是，我们一面向往成功，一面嘲笑成功；一面追逐金钱，一面耻于谈钱；一面向往自然与自由，一面深信自由的前提是财富；一面开导别人看开一些，一面告诫自己时不我待；一面向亲人抱歉，一面提刀上马；一面誓言早早退休，一面生怕门清庭闲……</p>
-<p>当这样的撕扯与纠结成为一代人的集体困扰，所折射的，至少是这个社会大转型的一个侧影，就像沉重的列车在急转弯处，发出巨大的摩擦声。</p>
-<p>吴晓波为他18岁的女儿写了一封信，大意是，只要你喜欢，就坚持去做，不要为别人活着，也无所谓成名成功。这封信有一个漂亮的标题，叫做《把生命浪费在美好的事物上》。</p>
-<p>这算是一个“60后”对“90后”最深情的祝福吧。</p>
-<p>也许，再过二十年，当他18岁的女儿成长为这个社会的中生代，那列车的摩擦声会远去，愿意奋斗的奋斗，愿意浪费的浪费；财富与唱歌一样，并无轻重之分。</p>
-<p>那将是一个远离贫穷的时代，富足是常态，金钱与成功就像GDP一样，不再是衡量生活价值的第一标杆。在这个时代里，上一代的撕扯变得陌生甚至有些可笑，他们并不太能理解，选择为什么那么的艰难，工作与生活本该是统一的整体，为什么变成难以调和的矛盾体。</p>
-<p>我并不确信这个时代是否会来到，但至少满怀期望。</p>
-<p>最后补充推荐一本书，对这篇文章有共鸣的人，有时间可以去看看，毛姆的《月亮与六便士》</p>
-<p>更多详情:<a href="http://www.zhihu.com/question/28045700/answer/39163953" target="_blank" rel="external">http://www.zhihu.com/question/28045700/answer/39163953</a></p>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>这篇文章写得很好。</p>
-<p>作者： 桂旭江</p>
-<p>这是一个群体的生存写照，一边是入世的成功，一边是出世的向往，人们在撕扯中挣扎着前行。</p>
-<p>《舌尖上的中国》第二季描写了一对年轻夫妻，放弃了大城市的高薪工作，移居在云南的一个小镇，种菜、做饭、骑车、在月光下读书写字，恬静淡然的画面诗一般的美丽。我相信，这样的镜头会触动无数人的心灵，他们内心深处一定或多或少向往这样的生活。<br>]]>
-    
-    </summary>
-    
-      <category term="网摘" scheme="http://blog.mangolovecarrot.net/tags/%E7%BD%91%E6%91%98/"/>
     
   </entry>
   
@@ -598,235 +1401,6 @@
       <category term="webpy" scheme="http://blog.mangolovecarrot.net/tags/webpy/"/>
     
       <category term="技术" scheme="http://blog.mangolovecarrot.net/categories/%E6%8A%80%E6%9C%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title><![CDATA[国学常识200题]]></title>
-    <link href="http://blog.mangolovecarrot.net/2014/08/18/guoxue200/"/>
-    <id>http://blog.mangolovecarrot.net/2014/08/18/guoxue200/</id>
-    <published>2014-08-18T11:55:48.000Z</published>
-    <updated>2015-04-20T04:43:08.000Z</updated>
-    <content type="html"><![CDATA[<p>国学常识200题（含答案）教给孩子！<br>2014-01-02 环球青少年家庭教育</p>
-<ol>
-<li>“但愿人长久，千里共婵娟”，其中婵娟指的是什么？ (A)<br>A.  月亮     B. 姻缘 </li>
-<li>王先生的QQ签名档最近改成了“庆祝弄璋之喜”，王先生近来的喜事是： (C)<br>A. 新婚   B. 搬家   C. 妻子生了个男孩 D. 考试通过 </li>
-<li>“爆竹声中一岁除，春风送暖入屠苏”，这里的“屠苏”指的是：(C)<br>A. 苏州   B. 房屋     C. 酒   D. 庄稼 </li>
-</ol>
-<a id="more"></a>
-<ol>
-<li>“拱手而立”表示对长者的尊敬，一般来说，男子行拱手礼时应该： (A)<br>A.  左手在外   B. 右手在外 </li>
-<li>我国的京剧脸谱色彩含义丰富，红色一般表示忠勇侠义，白色一般表示阴险奸诈，那么黑色一般表示： (A)<br>A.  忠耿正直   B. 刚愎自用 </li>
-<li>《三十六计》是体现我国古代卓越军事思想的一部兵书，下列不属于《三十六计》的是：(B)<br>A. 浑水摸鱼   B. 反戈一击   C. 笑里藏刀   D. 反客为主 </li>
-<li>“床前明月光”是李白的千古名句，其中 “床”指的是什么？(C)<br>A. 窗户     B. 卧具     C. 井上的围栏 </li>
-<li>1932年，清华大学招生试题中有一道对对子题，上联“孙行者”，下面下联中最合适的是： (A)<br>A. 胡适之   B. 周作人     C. 郁达夫   D. 唐三藏 </li>
-<li><p>“月上柳梢头，人约黄昏后”描写的是哪个传统节日？ (B)<br>A. 中秋节   B. 元宵节     C. 端午节 D.  七夕节 </p>
-</li>
-<li><p>我国古代有很多计量单位，比如诗句“黄河远上白云间，一片孤城万仞山”中的“仞”，一仞约相当于： (B)<br>A. 一个成年人的高度     B. 成年人一臂的长度 </p>
-</li>
-<li>下列哪一句诗描写的场景最适合采用水墨画来表现？ (C)<br>A. 落霞与孤鹜齐飞，秋水共长天一色<br>B.  返景入深林，复照青苔上<br>C.  孤舟蓑笠翁，独钓寒江雪<br>D.  接天莲叶无穷碧，映日荷花别样红 </li>
-<li>下列哪个成语典故与项羽有关？ (D)<br>A. 隔岸观火<br>B.  暗度陈仓<br>C.  背水一战<br>D. 破釜沉舟 </li>
-<li>《百家姓》中没有下面哪个姓？ (C)<br>A. 乌<br>B. 巫<br>C. 肖<br>D. 萧 </li>
-<li>“生旦净末丑”是京剧的行当，其中“净”是： (A)<br>A. 男角<br>B. 女角 </li>
-<li>我们常说的“十八般武艺”最初指的是什么？ (A)<br>A. 使用十八种兵器的技能<br>B.  十八种武术动作</li>
-<li>假如你的一首五绝诗被杂志社采用，按照正文部分每字5元来计算，你应得多少稿费？ (B)<br>A. 50元<br>B. 100元<br>C. 200元 </li>
-<li>下面哪个字常用作表示顺序的第五位？(A)<br>A. 戊<br>B.  戍<br>C.  戌 </li>
-<li>诸子百家中名家的特点是注重逻辑辩证，以下哪个典故能体现名家的这一特点？  (A)<br>A. “白马非马”<br>B.  “指鹿为马” </li>
-<li>古人的婚礼在什么时间举行？ C()<br>A. 早上<br>B. 中午<br>C.  傍晚 </li>
-<li>“近朱者赤，近墨者黑”所蕴含的道理和下列哪句话最相似？ (B)<br>A. 青出于蓝，而胜于蓝<br>B.  蓬生麻中，不扶而直<br>C. 公生明，偏生暗</li>
-<li>“天时不如地利，地利不如人和”出自：（A）<br>A. 《孟子》 B. 《庄子》</li>
-<li>我国书法艺术博大精深，请问“欧体”是指谁的字体？(B)<br>A. 欧阳修   B. 欧阳洵</li>
-<li>文学史上被称作“小李杜”的是杜牧和谁？(B)<br>A. 李贺     B. 李商隐</li>
-<li>“大禹治水”的故事家喻户晓，大禹治理的是哪个流域的洪水？(B)<br>A. 长江流域    B. 黄河流域</li>
-<li>古代宫殿大门前成对的石狮一般都是：(A)<br>A. 左雄右雌    B.  左雌右雄</li>
-<li>“结发”在古时是指结婚时：(C)<br>A.  丈夫把头发束起来     B. 妻子把头发束起来<br>C. 把夫妻头发束在一起</li>
-<li>“鄂尔多斯”在蒙古语中是什么意思？(C)<br>A. 大草原 B. 盛产羊毛的地方 C . 众多宫殿 D. 美丽的地方</li>
-<li>《西游记》中唐僧的原型是：(A)<br>A. 玄奘 B. 鉴真</li>
-<li>唐代诗人贾岛“二句三年得，一吟双泪流”的诗句是：(A)<br>A . 独行潭底影，数息树边身。 B. 鸟宿池边树，僧敲月下门。</li>
-<li>我国传统表示次序的“天干”共有几个字？(A)<br>A. 十个 B.  十二个</li>
-<li>被誉为“万国之园”的是：(B)<br>A. 颐和园 B.  圆明园</li>
-<li>“水”字属于下列哪种汉字构成方式？(A)<br>A. 象形字 B . 表意字</li>
-<li>现在我们常用“阳春白雪”和“下里巴人”指代高雅和通俗的文艺作品，请问这两个成语最初指的是什么？(C)<br>A. 文章 B. 画作 C. 乐曲</li>
-<li>京剧《贵妃醉酒》是根据哪部古代戏曲改编而成的？(B)<br>A. 《桃花扇》 B. 《长生殿》 C. 《牡丹亭》 D. 《南柯梦》</li>
-<li>道家思想在我国影响深远，请问历史中的哪一时期最接近道家所主张的无为而治？(A)<br>A . 文景之治 B. 光武中兴 C. 贞观之治 D. 开无盛世</li>
-<li>下面哪句话出自《孟子》？(D)<br>A. 水能载舟，亦能覆舟 B. 先天下之忧而忧，后天下之乐而乐<br>C. 民惟邦本，本固邦宁 D . 独乐乐，与人乐乐，熟乐？</li>
-<li>下列哪个不是北京的别称？(C)<br>A. 大都  B. 中都  C . 上都  D.  南京</li>
-<li>“讳疾忌医”典故中的君王是：(B)<br>A. 齐桓公    B. 蔡桓公</li>
-<li>“桃花潭水深千尺，不及汪伦送我情”诗中的“我”指的是谁？(B)<br>A. 杜甫    B . 李白</li>
-<li>我们熟悉的《百家姓》是按照什么方式排列的？(B)<br>A. 人口数量 B . 政治地位</li>
-<li>“一门父子三词客，千古文章八大家”这幅对联中提到的“三父子”是：(B)<br>A. 曹操. 曹丕. 曹植 B. 苏洵. 苏轼. 苏辙<br>C . 班彪. 班固. 班超</li>
-<li>孔子提倡中庸之道的理论基础是：(B)<br>A. 阴阳五行 B. 天人合一 C. 道法自然</li>
-<li>拍电影时常用的“杀青”来表示拍摄完成，“杀青”原指什么？(A)<br>A. 制作竹筒的一道工序 B. 加工新茶的一种方法</li>
-<li>下面哪个成语和曹操有关？(B)<br>A. 画饼充饥 B. 望梅止渴</li>
-<li>成语“白驹过隙”比喻：(B)<br>A. 速度飞快 B. 时光飞逝</li>
-<li>墨子的主要思想是“兼爱”，他所反对的“爱有差等”这一观点是哪家学派的？(A)<br>A . 儒家 B. 法家 C. 道家 D. 名家</li>
-<li>下列选项中与“亡羊补牢”意思最接近的是：(C)<br>A. 人无远虑，必有近忧 B. 祸兮，福之所倚，福兮，祝之所伏<br>C. 往者不可谏，来者犹可追 D. 失之东隅，收之桑榆</li>
-<li>王羲之对一种动物十分偏爱，并从它的体态姿势上领悟到书法执笔运笔的道理，这是什么动物？(B)<br>A. 鹤 B . 鹅 C. 鸡 D.  鱼</li>
-<li>“美”字最初的含义是：(B)<br>A. 羊大即为美  B. 戴着头饰站立的人<br>C. 土地里生长的花朵  D. 远方茂盛的森林</li>
-<li>孔子为自己的教学定睛“孔门四教”，具体指的是：(B)<br>A. 修身. 齐家. 治国. 平天下  B. 文. 行. 忠. 信</li>
-<li>以下两位谁曾经中过状元？(B)<br>A. 范仲淹   B) B. 文天祥</li>
-<li>俗语说“化干戈为玉帛”，干戈都是兵器，其中哪个指的是防御武器？(A)<br>A . 干   B. 戈</li>
-<li>《霸王别姬》是京剧中的名段，“虞姬”这一角色在京剧中属于：(B)<br>A. 花旦   B. 青衣</li>
-<li>《尚书》中的“尚”是什么意思？(A)<br>A. 上古 B. 崇尚 C.  官名</li>
-<li>“勿以恶小而为之，勿以善小而不为”语出《三国志》，这是谁说的？(C)<br>A. 诸葛亮  B. 曹操  C. 刘备  D. 周瑜</li>
-<li>如果在华佗去世后不及，曹操还想寻找一位名医为自己治病，他可以找下列的哪一位？(D)<br>A. 扁鹊  B. 孙思邈  C. 李时珍  D . 张仲景</li>
-<li>在我国风俗中，常常避讳73和84这两个岁数，因为这是两位历史人物去世的年龄，他们是：(A)<br>A. 孔子和孟子           B. 老子和庄子<br>C. 汉高祖和汉武帝       D. 周武王和周文王</li>
-<li>“一问三不知”出自《左传》，说的是哪“三不知”？(B)<br>A. 天文. 地理. 文学    B. 事情的开始. 经过. 结果<br>C . 孔子. 孟子. 老子   D. 自己的姓名. 籍贯. 生辰八字</li>
-<li>“不以物喜，不以己悲”出自哪篇目哪篇古文？）（B）<br>A. 《醉翁亭记》 B. 《岳阳楼记》</li>
-<li>“水则载舟，水则覆舟”是谁的名言？（B）<br>A. 老子     B. 荀子</li>
-<li>篆刻分为阴文印和阳文印，北京奥运会徽“中国印”是：（A）<br>A.  阴文印    B. 阳文印</li>
-<li>向别人介绍自己的弟弟妹妹应该用下面哪种称谓？（B）<br>A. 家弟家妹    B. 舍弟舍妹 . 息弟息妹</li>
-<li>“揭竿为旗，斩木为兵”形容的是哪一场起义？（B）<br>A. 赤眉起义 . 陈胜吴广起义    B. 绿林起义 . 黄巾起义</li>
-<li>下面哪位诗人是“初唐四杰”之一？（B）<br>A. 王维     B. 王勃</li>
-<li>古代战争中指挥军队撤退时要敲击：（B）<br>A. 鼓     B. 锣</li>
-<li>“词苑千载，群芳竞秀，盛开一枝女儿花”说的是哪位历史上的哪位才女？（C）<br>A. 朱淑真   B. 秦良玉   C . 李清照</li>
-<li>古人用“父母教，须敬听；父母责，须顺承”来劝谕人们要尊敬父母，这句话出自：（A）<br>A. 《弟子规》 B . 《三字经》  C. 《千字文》</li>
-<li>下列哪项不是端午节的习俗？（C）<br>A.  挂香包  B. 插艾蒿  C. 登高采菊 D . 喝雄黄酒</li>
-<li>“态生两靥之愁，娇袭一身之病”玉对黛玉的第一印象，其中“靥”是指：（A）<br>A. 酒窝  B. 眼睛 C . 嘴角 D . 腮帮</li>
-<li>“弱冠”指的是男子多少岁？（B）<br>A. 十五岁    B. 二十岁<br>71“入木三分”这个成语原本是用来形容什么的？（B）<br>A. 文章     B. 书法</li>
-<li>河姆渡遗址位于：（B）<br>A. 黄河流域     B. 长江流域</li>
-<li>《诗经》是我国第一部诗歌总集，《诗经》里面包括多少首诗？（B）<br>A. 三百首     B. 三百零五首</li>
-<li>《孙子兵法》的作者是：（A）<br>A. 孙武      B. 孙膑</li>
-<li>算盘是中国传统计算工具，利用算盘能进行开平方的运算吗？（A）<br>A. 能      B. 不能</li>
-<li>下面哪个成语与秦始皇有关？（A）<em>难道不是C吗?</em><br>A. 指鹿为马   B . 奇货可居    C . 图穷匕见</li>
-<li>唱念做打是中国戏曲表演的四种艺术手段，也是戏曲表演的四项基本功，其中“做”指的是：（C）<br>A. 面部表情 B. 舞蹈动作 C. 器械表演</li>
-<li>“海上升明白，天涯共此时”是谁的名句？（B）<br>A. 王勃    B. 张九龄</li>
-<li>李清照词中的“绿肥红瘦”描写的是什么季节的景色？（B）<br>A. 晚春      B. 仲夏</li>
-<li>成语“机不可失”出自张九龄之笔，它的下句是：（A）<br>A. 时不再来     B. 失不再来</li>
-<li>“熄火连三月，家书抵万金”古代书信通过邮驿传递。唐代管理这类工作的中央管理机构是：（A）<br>A. 尚书省   B. 中书省    C . 门下省</li>
-<li>陕西省一块著名的“无字碑”，它与哪位皇帝有关？（A）<br>A. 秦始皇     B. 武则天</li>
-<li>西湖的白堤的得名与哪位诗人有关？（B）<br>A. 白居易     B. 李白</li>
-<li>孟子说：“不以规矩，不成方圆”，这里“规矩”的意思是：（A）<br>A. 法律条文     B. 美德善行 . 圆规曲尺</li>
-<li>“一琴一鹤”所形容的是：（C）<br>A. 为政清简    B . 平安长春    C. 淡泊名利</li>
-<li>“夕阳无限好，只是近黄昏”是谁的诗句？（A）<br>A. 李商隐 B. 骆宾王</li>
-<li>《红楼梦》是我国古代著名的长篇小说之一，它的别名是：（A）<em>这里应该是石头记 -博主按</em><br>A. 《金陵记》   B . 《石头记》</li>
-<li>成语“一衣带水”中的“水”原指：（B）<br>A. 黄河   B. 长江   C . 淮河</li>
-<li>“问世间情为何物，直教生死相许”这句诗是谁写的？（B）<br>A.  元好问    B. 柳永   C . 晏殊</li>
-<li>孟子说：“君子有三乐”，下列哪项不在其“三乐”之列？（A）<br>A. 父母俱存，兄弟无故    B . 仰不愧于天，俯不作于人<br>C. 乡人无不称其善也D . 得天下英才而教育之</li>
-<li>中国历史上被誉为“药王“的是：（C）<br>A. 扁鹊   B. 华佗   C. 孙思邈   D. 李时珍</li>
-<li>张衡发明的地动仪上有几条龙？（A）<br>A. 八条     B. 二十二条</li>
-<li>都江堰和秦始皇陵哪个的修建年代更早？（A）<br>A. 都江堰     B. 秦始皇陵</li>
-<li>在古代人们尊称对方的妻子：（B）<br>A. 令爱      B. 令正</li>
-<li>从事贸易活动的人叫做“商人”，这跟历史上的商代有关吗？（A）<br>A. 有关     B . 无关</li>
-<li>水浒一百单八将中有几位女性？（B）<br>A. 两位     B. 三位</li>
-<li>苏轼在《念奴娇·赤壁怀古》中提到了“羽扇纶巾，谈笑间，樯橹灰飞烟灭”，“羽扇纶巾”形容的是下面哪位历史人物？（B）<br>A. 诸葛亮     B. 周瑜      C. 曹操</li>
-<li>按照戏曲界的行话，以下哪个表示最后一出？（B）<br>A. 压轴戏     B. 大轴戏</li>
-<li>成语“请君入瓮”，“请”的是谁？（B）<br>A. 来俊臣     B . 周兴</li>
-<li>琵琶本名“批把”，“批把”一词来源于什么？（B）<br>A. 制造琵琶的材料       B. 演奏琵琶的方式</li>
-<li>切脉是中医独创的诊法，中医把脉时摸的是：（B）<br>A. 静脉     B. 动脉</li>
-<li>周敦颐在《爱莲说》中把菊花形容为：（B）<br>A. 花之君子者      B. 花之隐逸者</li>
-<li>我国古代的很多事物都有自己的雅称，请问我们常说的“润笔”指的是什么？（A）<br>A. 文章书画稿费      B . 替人研磨墨汁     C. 为人作序</li>
-<li>“路漫漫其修远兮，吾将上下而求索”是谁的名言？（B）<br>A.  孔子      B . 屈原</li>
-<li>“杏林”指代的是：（B）<br>A. 教育界     B. 医学界</li>
-<li>神话故事“夸父逐日”出自哪部书？（A）<br>A. 《山海经》     B. 《世说新语》</li>
-<li>“顷刻间千秋事业，方寸地万里江山；三五步行遍天下，六七人百万雄兵”描写的是：（C）<br>A. 下棋     B. 战场     C . 戏台</li>
-<li>《二十四史》是我国古代二十四史的总称，其中只有一部是完全意义上的通史，它是：（B）<br>A. 《汉书》  B . 《史记》  C . 《三国志》   D . 《左传》</li>
-<li>根据中国传统建筑的特点，面对大院的门口，你的左手边是什么方向？（B）<em>前提是你得站在院外</em><br>A.  东   B. 西   C. 南    D . 北</li>
-<li>孔子弟子中擅长做生意的是谁？（C）<br>A. 子路    B. 子张    C. 子贡   D . 颜回</li>
-<li>元太祖铁木真是蒙古草原上的英雄，他被人们尊称为“成吉思汗”，“汗”的意思是大王，那么“成吉思汗”的意思是：（B）<br>A.  天空    B . 大海     C. 草原    D . 高山</li>
-<li>“塞翁失马”这一典故出自：（A）<br>A. 《淮南子》     B . 《庄子》</li>
-<li>中国古代最大的一部百科全书是：（A）<br>A. 《永乐大典》     B. 《四库全书》</li>
-<li>太极拳讲究“以柔克刚，以静制动，以弱胜强”这和下面哪位思想家的观点不谋而合？（A）<br>A. 老子    B . 孟子     C. 荀子     D. 孔子</li>
-<li>“洛阳纸贵”比喻作品风行一时，广为流传，这个成语与以下哪部著作有关？（A）<br>A. 左思的《三都赋》       B. 司马相如的《长六赋》<br>C . 班固的《两都赋》       D . 张衡的《二京赋》</li>
-<li>“红娘”今指代为爱情牵线搭桥的人，请问她最早出现在哪部文学作品中？（A）<br>A.  元稹的《莺莺传》       B. 王实甫的《西厢记》</li>
-<li>《三国演义》中的“三英战吕布”的“三英”指的是：（B）<br>A. 赵云，张飞，关羽        B. 刘备，关羽，张飞</li>
-<li>我们常用“社稷”来指代国家，其中“社”字代表的是：（A）<br>A.  土地之神        B . 五谷之神</li>
-<li>我国古代的文人雅士都喜欢研墨挥毫，请问下面哪种是正确的研磨方法？（B）<br>A.  先快后慢        B. 先慢后快</li>
-<li>唐代边塞诗人王昌龄的“但使龙城飞将在，不教胡马度阴山”中的“飞将”指的是谁？（D）<br>A. 张飞     B. 关羽     C. 卫青     D .  李广</li>
-<li>下列民间爱情故事起源年代最早的是：（B）<br>A. 《白蛇传》     B. 《梁山仙与祝英台》     C. 《唐伯虎点秋香》</li>
-<li>度量衡是我国古代使用的计量单位，其中“衡”是指的哪个方面的标准？（D）<br>A.  长度     B . 面积      C. 体积      D. 重量</li>
-<li>木版年画发源于四大名镇中的哪个名镇？（C）<br>A. 汉口镇     . 景德镇     . 朱仙镇     . 佛山镇</li>
-<li>下列哪部著作的成书时间最长？（A）<br>A. 《徐霞客游记》  B. 《说文解字》 C . 《天工开物》 D . 《梦溪笔谈》</li>
-<li>“疱丁解牛”形容做事得心应手，“疱丁”指的是什么？（B）<br>A. 一个年轻力壮的厨师        B. 一个名叫“丁”的厨师</li>
-<li>“少壮不努力，老大徒伤悲”出自：（A）<br>A. 《长歌行》      B . 《短歌行》</li>
-<li>下列哪个成语和“道听途说”词意更接近？（B）<br>A. 空穴来风        B . 三人成虎</li>
-<li>《红楼梦》的作者曹雪芹是家喻户晓的文学家，“雪芹”是他的：（C）<br>A. 名       B . 字        C. 号</li>
-<li>下面哪句话是孔子说的？（A）<br>A. 有朋自远方来，不亦乐乎！      B. 天下兴亡，匹夫有责</li>
-<li>在古代，人们将乐器分为“丝”. “竹”，分别指弹弦乐器和吹奏乐器，其中哪个是指吹奏乐器？（B）<br>A. 丝      B. 竹</li>
-<li>“在天愿做比翼鸟，在地愿为连理枝”这句诗描写的是谁的爱情故事？（B）<br>A. 牛郎和织女      B. 唐明皇和杨贵妃</li>
-<li>“信言不美，美言不信”体现出：（B）<br>A. 怀疑精神       B. 辩证法思想</li>
-<li>中国人常说“五福临门”，下面哪一项是属于“五福”的？（A）<br>A. 品德高尚       B. 子孙成群</li>
-<li>“文章千古事，得失寸心知”是谁的名句？（B）<br>A. 李白      B. 杜甫</li>
-<li>“生当作人杰，死亦为鬼雄，至今思项羽，不肯过江东。”是谁咏赞项羽的名句？（B）<br>A. 辛弃疾       B. 李清照</li>
-<li>为了孩子的学习环境而三迁居的是哪个历史故事？（A）<br>A.  孟母教子 B. 举案齐眉 C.  岳母刺字</li>
-<li>陛下是古时对君王的尊称，其中“陛”的意思是：（A）<br>A.  宫殿的台阶 B. 天的别称 三玉玺</li>
-<li>下面哪个剧种被称为“中国百戏之师”？（C）<br>A. 京剧 B. 黄梅戏 C. 昆曲 D. 越剧</li>
-<li>我国现在存最早的兵书是：（A）<br>A. 《孙子兵法》 B. 《孙膑兵法》</li>
-<li>唐诗“东边日出西边雨”的下一句是：（A）<br>A.  道是无晴还有晴 二B. 也无风雨也无晴</li>
-<li>“苦心人，无不负，卧薪尝胆，三千越申可吞吴”描写的是谁？（B）<br>A. 伍子胥 B. 勾践</li>
-<li>下面哪句诗的作者离开家的时间更长？（B）<br>A. 人归落雁后，思发在花前 B. 儿童相见不相识，笑问客从何处来</li>
-<li>《在水一方》的歌词来源于：（A）<br>A. 《诗经》 B. 《陌上桑》 C. 《楚辞》 D. 《孔雀东南飞》</li>
-<li>我们现在所能看到的《兰亭序》是王羲之的真迹吗？（B）<br>A. 是 B. 不是</li>
-<li>我国古代对于年龄有很多独特的称呼，其中满一百岁被称为：（A）<br>A. 期颐      B. 耄耋</li>
-<li>舞狮是我国优秀的民间艺术，有南狮和北狮之分，其中狮头以刘备. 关羽. 张飞等三国人物的戏曲脸谱来打造的是：（A）<br>A. 南狮      B. 北狮</li>
-<li>文人对各种植物有自己的偏爱，陶渊明喜爱菊花，北宋文豪苏东坡则说过：宁可食无肉，不可：（B）<br>A.  居无松  B. 居无竹  C. 居无梅  D. 居无菊</li>
-<li>唐朝文宗御封的“三绝”指的是李白的诗歌. 张旭的草书和：（A）<br>A. 裴旻的剑舞   B. 公孙大娘的舞蹈    D. 吴道子的画</li>
-<li>天干地支纪年始于汉代，请问这种纪年是以哪一天为起点的？（C）<br>A. 除夕   B. 正月初一   C. 立春   D. 春分</li>
-<li>王实甫在《西厢记》中写道：“淋漓襟袖啼红泪，比司马青衫更湿”，其中“司马青衫”指的是：（C）<br>A.  司马相如   B. 崔莺莺   C. 白居易   D.  杜甫</li>
-<li>“金戈铁马，气吞万里如虎“是谁的词句？（B）<br>A. 岳飞      B. 辛弃疾</li>
-<li>“会当凌绝顶，一览众山小”是杜甫的名句，诗人登上了哪座山发出了这样的感慨？（B）<br>A. 黄山     B. 泰山</li>
-<li>《齐民要术》是关于：（B）<br>A. 君主如何统治国家的著作   B. 农业生产和农事活动的著作</li>
-<li>孔子为什么“三月不知肉滋味”？（B）<br>A. 读到一本好书     B. 听到一段好乐曲</li>
-<li>“桃李满天下”的“桃李“指什么？（B）<br>A. 朋友       B. 学生</li>
-<li>《康熙字典》成书于哪个朝代？（B）<br>A. 秦朝 B. 清朝</li>
-<li>风筝最初是用来做什么的？（A）<br>A. 通报消息      B. 娱乐健身</li>
-<li>“鼎”的最初用途是：（C）<br>A. 祭祀用礼器   B. 地位象征物   C. 烹煮器具</li>
-<li>如果你想到图书馆借阅寓言性质的书，在下列书籍中应优先选择哪一本？（C）<br>A. 《史记》 B. 《论语》 C. 《庄子》</li>
-<li>“三更半夜”中的“三更”指的是几点？（B）<br>A. 21点至23点  B. 23点至凌晨1点  C. 凌晨1点至3点</li>
-<li>明朝永乐年间，从西洋归来的郑和船队带回了一只西方异域兽“麒麟”，就是现在我们所知的：（D）<br>A. 狮子  B. 金钱豹  C. 河马  D. 长颈鹿</li>
-<li>下列古代名曲哪一首是琵琶曲？（A）<br>A. 十面埋伏    B. 高山流水</li>
-<li>“老吾老以及人之老”是中华民族的传统美德，这句话是谁最早提出的？（B）<br>A. 孔子      B.  孟子</li>
-<li>成语“咫尺天涯”中“咫”. “尺”都是古代计量单位，其中“咫”和“尺”哪个更长？（B）<br>A. 咫       B.  尺</li>
-<li>草书. 行书. 楷书. 隶书四种字体当中哪一种是其余三种的起源？（D）<br>A. 草书   B. 行书   C. 楷书   D. 隶书</li>
-<li>吃年糕的习俗与下列哪位历史人物有关？（A）<br>A.  伍子胥    B. 范蠡   C.  屈原</li>
-<li>“大材小用古所叹，管仲. 萧何实流亚”是陆游的一句名诗，其中“大材小用”形容的是下面哪位人物？（B）<br>A. 韩愈   B. 辛弃疾   C. 庞统   D.  宋玉</li>
-<li>甲骨文最早是在哪种物品上发现的？（B）<br>A. 青铜器   B. 药材   C. 墓碑   D. 竹筒</li>
-<li>下列哪个成语典故说的是吕不讳的故事？（A）<br>A. 一字千金   B. 一诺千金   C. 一饭千金   D. 一掷千金</li>
-<li>以下哪个字不含“黑色”的意思？（D）<br>A. 玄    B. 皂    C. 青     D. 苍</li>
-<li>下面四句话中，意义与其它三句不同的是：（D）<br>A. 合抱之木生于毫末     B. 九层之台起于累土<br>C. 千里之行始于足下       D. 一日之行在于清晨</li>
-<li>《三国演义》中有关羽“单刀赴会”的故事，历史上也确有“单刀赴会”一事，赴会的是：（D）<br>A. 赵云   B. 张飞     C. 周瑜     D. 鲁肃</li>
-<li>以下哪位女性的名字被用来命名外太空环形山？（D）<br>A. 班昭   B. 蔡文姬  C. 王昭君  D. 李清照</li>
-<li>小王模仿古人填了一首词，写完后发现正文刚好100字，请问他用的是哪种词牌？（C）<br>A. 满庭芳   B. 雨霖铃     C. 念奴娇   D. 水龙吟</li>
-<li>以下几位历史人物谁在家排行老大？（C）<br>A. 孔子   B. 诸葛亮   C. 班固  D. 程顾</li>
-<li>“双簧”是我们一门独特的曲艺艺术，它得名于：（A）<br>A. 初演的两个人都姓黄    B. 表演者使用的乐器叫做簧<br>C. 表演者巧舌如簧</li>
-<li>在白族姑娘的头饰上，蕴含着一个完美熟悉的词语，它就是：（B）<br>A. 阴晴圆缺 B. 风花雪月  C. 梅兰竹菊  D. 春夏秋冬</li>
-<li>我国很早就有了穿木屐的相关史书记载，下面的鞋就是东晋时谢灵运发生的“谢公屐”，它当时的用途是：（C）<br>A. 舞鞋  B. 上朝穿的朝鞋   C. 登山鞋</li>
-<li>“及时当勉励，岁月不待人”是谁的名句？（B）<br>A. 苏轼；B. 陶渊明</li>
-<li>曹植七步成诗，相传历史上还有一位三步就能成诗的人，他是：（B）<br>A. 王安石； B. 寇准</li>
-<li>《论语》中认为“为仁之本”的是：（B）<br>A. 忠义； B. 孝悌</li>
-<li>“七月流火，九月授衣”，其中“七月流火”指的是：（B）<br>A. 天气炎热似火；B. 天气渐渐转凉；C. 流星异常出现。</li>
-<li>“实事求是”一词出自哪部典籍？（D）<br>A. 《左传》；B. 《战国策》；C. 《史记》；D. 《汉书》。</li>
-<li>“醉里挑灯看剑，梦回吹角连营”出自谁的作品？（C）<br>A. 陆游；B. 岳飞；C. 辛弃疾；D. 李清照。</li>
-<li>秦始皇统一中国后，将全国文字统一成了下面哪一种？（B）<br>一. 楷书；二. 小篆；三. 鸟虫文；四. 行书。</li>
-<li>“但愿人长久，千里共婵娟”，苏东坡借这首词表达了对谁的思念之情？（B）<br>A. 妻子； B. 兄弟； C. 朋友； D. 父亲。</li>
-<li>宣纸得名于它的：（C）<br>A. 用途； B. 材质； C. 产地； D. 使用人群。</li>
-<li>下面哪个是农历五月的别称？（C）<br>A. 杏月； B. 桃月  C. 榴月  D. 荷月。</li>
-<li>下列诗词名句出自男子之笔的是：（C）<br>A. 看朱成碧思纷纷，憔悴支离 为忆君；<br>B. 北风历兮肃冷冷，胡笳动兮边马鸣；<br>C. 人生若只如初见，何事秋风悲画扇；<br>D. 物是人非事事休，欲语泪先流。<br>190古代有很多姓氏都来源于官职，司马的职能是什么？（B）<br>A. 农耕； B. 军政； C. 养马； D. 水利。</li>
-<li>旗袍是具有中国特色的女性服饰。旗袍是：（A）<br>A. 左襟压右襟； B. 右襟压左襟。</li>
-<li>《三国演义》中刘备见到诸葛亮家悬挂了一幅对联，写的是：（A）<br>A. 淡泊以明志，宁静而致远；B. 鞠躬尽瘁，死而后已。</li>
-<li>清代的“八大山人”指的是：（A）<br>A. 一位画家； B. 八位画家。</li>
-<li>下列植物中，不应当出现在《岁寒三友图》中的是：（A）<br>A. 菊； B. 梅； C. 竹。</li>
-<li>. 古琴最初只有五根弦，代表着金. 木. 水. 火. 土。后来又增加了两根弦，这两根弦代表：（D）<br>A. 天. 地； B. 南. 北； C. 阴. 阳； D. 文. 武。</li>
-<li>下面哪个诗句描写的不是古琴？（B）<br>A. 欲把心事付瑶琴； B. 一弦一柱思华年；<br>C. 为我一挥手，如听万壑松； D. 寒苦不忍言，为君奏丝桐。</li>
-<li>“楚河”和“汉界”在今天的哪个省？（B）<br>A. 湖北； B河南； C河北； D湖南。</li>
-<li>个成语典故和棋文化有关？（C）<br>A势如破竹； B出奇制胜； C专心致志； D渭分明。</li>
-<li>峻丽，骨力劲健”形容的是历史上哪位书法家的字？（C）<br>A王羲之； B颜真卿； C柳公权； D吴道子。</li>
-<li>存最早用纸作画的作品是：（C）<br>A. 清明上河图》； B. 洛神赋图》；<br>C. 五牛图》； D. 历代帝王图》。</li>
-</ol>
-]]></content>
-    <summary type="html">
-    <![CDATA[<p>国学常识200题（含答案）教给孩子！<br>2014-01-02 环球青少年家庭教育</p>
-<ol>
-<li>“但愿人长久，千里共婵娟”，其中婵娟指的是什么？ (A)<br>A.  月亮     B. 姻缘 </li>
-<li>王先生的QQ签名档最近改成了“庆祝弄璋之喜”，王先生近来的喜事是： (C)<br>A. 新婚   B. 搬家   C. 妻子生了个男孩 D. 考试通过 </li>
-<li>“爆竹声中一岁除，春风送暖入屠苏”，这里的“屠苏”指的是：(C)<br>A. 苏州   B. 房屋     C. 酒   D. 庄稼 </li>
-</ol>]]>
-    
-    </summary>
-    
-      <category term="国学" scheme="http://blog.mangolovecarrot.net/tags/%E5%9B%BD%E5%AD%A6/"/>
-    
-      <category term="文艺青年" scheme="http://blog.mangolovecarrot.net/categories/%E6%96%87%E8%89%BA%E9%9D%92%E5%B9%B4/"/>
     
   </entry>
   

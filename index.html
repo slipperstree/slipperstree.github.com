@@ -92,6 +92,335 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2016/01/30/raspi-study1101/" title="树莓派GPIO入门11-驱动液晶屏幕（一）" itemprop="url">树莓派GPIO入门11-驱动液晶屏幕（一）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2016-01-30T08:03:19.000Z" itemprop="datePublished"> 发表于 Jan 30 2016</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>并分几个篇幅分别讲述如何使其显示色块，英文数字，汉字以及图片。<br>本文是系列的第一篇，目标是点亮屏幕并显示指定色块。</p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/01/30/raspi-study1101/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a><a href="/tags/液晶屏/">液晶屏</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/01/30/raspi-study1101/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/01/30/raspi-study1101/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/01/24/raspi-study1001/" title="树莓派GPIO入门10-使用TLC5940芯片输出多路PWM" itemprop="url">树莓派GPIO入门10-使用TLC5940芯片输出多路PWM</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2016-01-24T05:30:14.000Z" itemprop="datePublished"> 发表于 Jan 24 2016</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>在之前的章节，我们曾经用树莓派的IO口输出不同调宽的PWM信号来控制LED灯的亮度。<br>本文使用芯片TLC5940来输出多路PWM信号以同时控制多达16个LED的亮度。<br>在本文的基础上你可以发挥想象，制作出各种有趣的彩灯效果。</p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2016/01/24/raspi-study1001/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/PWM/">PWM</a><a href="/tags/数字芯片/">数字芯片</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2016/01/24/raspi-study1001/#comments" class="ds-thread-count comments-count-link" data-thread-key="2016/01/24/raspi-study1001/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/06/13/raspi-study0901/" title="树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管" itemprop="url">树莓派GPIO入门09-使用MAX7219芯片驱动8位数码管</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-06-13T07:42:53.000Z" itemprop="datePublished"> 发表于 Jun 13 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>前面几篇我们学习了如何利用一片或多片级联的74HC595芯片来驱动显示数码管的方法。最开始我们提出的两个问题：</p>
+<ol>
+<li>占用IO口过多</li>
+<li>做动态扫描时占用CPU资源太多导致显示不稳定</li>
+</ol>
+<p>第一个问题已经利用级联的74HC595解决了。（不管驱动几只数码管，只用3个IO即可）<br>但第二个问题依然存在，树莓派仍然需要不停地访问IO口进行动态扫描。<br>好，既然动态扫描占用CPU资源太多，那这活儿咱包出去让别人干不就行了？这就是本文主角MAX7219的特长，动态扫描这活儿MAX7219全包了，干的还比咱自己干得还好，一片MAX7219可最多支持显示8位8段数码管，还支持各种设置如亮度设置扫描位数设置等。而我们只用告诉它显示的内容就行了。</p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/06/13/raspi-study0901/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/数字芯片/">数字芯片</a><a href="/tags/数码管/">数码管</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/06/13/raspi-study0901/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/06/13/raspi-study0901/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/06/08/raspi-study0802/" title="树莓派GPIO入门08-使用74HC595芯片驱动数码管（二）" itemprop="url">树莓派GPIO入门08-使用74HC595芯片驱动数码管（二）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-06-08T12:44:50.000Z" itemprop="datePublished"> 发表于 Jun 8 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p><a href="../../../../2015/06/03/raspi-study0801/">上一篇</a>我们学习了如何利用74HC595这块显示驱动芯片来驱动1位8段数码管的方法。并逐一讲解了该芯片各引脚的功能。细心的童鞋可能注意到了，上次我们有一个Q7S引脚没有用到。这一篇我们就用这个引脚来级联两块74HC595芯片同时驱动8个8段数码管。在两块74HC595芯片的配合下，同样只需要3个GPIO口就能驱动八只8段数码管。而如果直接用GPIO驱动则需要至少16个GPIO口，节省了13个GPIO！而且按照本文的方法，你还可以级联更多的74HC595芯片，每多级联一片就能多驱动8只数码管，而需要的IO口仍然只有3个！妈妈再也不用担心我的IO口不够用了。</p>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/06/08/raspi-study0802/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/数字芯片/">数字芯片</a><a href="/tags/数码管/">数码管</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/06/08/raspi-study0802/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/06/08/raspi-study0802/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/06/03/raspi-study0801/" title="树莓派GPIO入门08-使用74HC595芯片驱动数码管（一）" itemprop="url">树莓派GPIO入门08-使用74HC595芯片驱动数码管（一）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
+		
+  <p class="article-time">
+    <time datetime="2015-06-03T13:36:58.000Z" itemprop="datePublished"> 发表于 Jun 3 2015</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <p>之前我们学习了<a href="../../../../2015/05/05/raspi-study05/" title="树莓派GPIO入门05-驱动数码管显示数字">如何驱动数码管显示数字</a>。<br>但是这种做法有两个缺点。</p>
+<ol>
+<li>需要占用大量IO口，在那篇文章里，我们为了驱动4位数码管一共使用了12个IO口。如果需要驱动8位数码管则至少需要16个IO口。</li>
+<li>系统资源占用过多。还是在那篇文章里，为了实现数码管的动态扫描显示，需要不停地高速操作IO口，这对单任务的单片机比如51单片机来说问题并不太大，因为单任务的单片机的执行时序是由晶振来决定的，动态扫描的时间间隔可以控制地非常精确，数码管的显示会很稳定，不会出现闪烁的现象。但对于运行着多任务的Linux操作系统的树莓派来说，对IO口的大量反复操作以及大量使用sleep语句会导致CPU占用过多，最后导致动态扫描的间隔时间不均匀，体现为数码管显示不稳定，有明显闪烁的现象。为了改善这个问题我在那篇文章的最后还尝试用c语言来代替python语言，可实际效果有限。<br>使用GPIO直接驱动数码管时，上面这两个问题是不可避免的。想解决这两个问题，我们需要借助外部芯片的帮助。<br>接下来我将用几个篇幅来介绍如何使用显示驱动芯片74HC595来驱动数码管的方法。同时我们也可以学习到串行数据传输的方法以及一些数字芯片通用的一些概念，比如时钟引脚，上升沿，锁存，移位寄存等。理解了这些通用的概念对学习使用其他芯片是很有帮助的。</li>
+</ol>
+        
+        
+        <p class="article-more-link">
+          
+            <a href="/2015/06/03/raspi-study0801/#more">Read More</a>
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/数字芯片/">数字芯片</a><a href="/tags/数码管/">数码管</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  </div>
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+	  	<span></span>
+		<a href="/2015/06/03/raspi-study0801/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/06/03/raspi-study0801/" data-count-type="comments">&nbsp;</a>
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2015/05/22/raspi-study07/" title="树莓派GPIO入门07-利用声音传感器制作声控灯" itemprop="url">树莓派GPIO入门07-利用声音传感器制作声控灯</a>
   </h1>
   <p class="article-author">By
@@ -125,7 +454,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  <span></span> <a href="/tags/传感器/">传感器</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
   </div>
 
 </div>
@@ -189,7 +518,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  <span></span> <a href="/tags/传感器/">传感器</a><a href="/tags/数码管/">数码管</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
   </div>
 
 </div>
@@ -253,7 +582,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
+  <span></span> <a href="/tags/数码管/">数码管</a><a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
   </div>
 
 </div>
@@ -406,327 +735,6 @@
 
 
 
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/04/28/raspi-study02/" title="树莓派GPIO入门02-GPIO控制LED亮度，制作呼吸灯效果" itemprop="url">树莓派GPIO入门02-GPIO控制LED亮度，制作呼吸灯效果</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
-		
-  <p class="article-time">
-    <time datetime="2015-04-28T12:12:01.000Z" itemprop="datePublished"> 发表于 Apr 28 2015</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p><a href="../../../../2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁">上一篇</a>我们通过控制GPIO口输出高低电平来控制一只发光二极管的亮灭。这次我们来控制发光二极管的亮度。最后做出呼吸灯的效果。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/04/28/raspi-study02/#more">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/04/28/raspi-study02/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/28/raspi-study02/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/04/27/cswg-jsdmq/" title="文摘-《江上的母亲》by 野夫" itemprop="url">文摘-《江上的母亲》by 野夫</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
-		
-  <p class="article-time">
-    <time datetime="2015-04-26T15:33:16.000Z" itemprop="datePublished"> 发表于 Apr 27 2015</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>这是大陆被禁的野夫文集《尘世挽歌》里面的第一章。最后有全书pdf下载。</p>
-<h1 id="江上的母亲">江上的母亲</h1><h2 id="——母亲失踪十年祭">——母亲失踪十年祭</h2><h2 id="一">一</h2><p>这是一篇萦怀于心而又一直不敢动笔的文章。 是心中绷得太紧以至于怕轻轻一抚就砉然断裂的弦丝。 却又恍若巨石在喉, 耿耿于无数个不眠之夜, 在黑暗中撕心裂肺, 似乎只须默默一念, 便足以砸碎我寄命尘世这一点点虚妄的自足。<br>又是江南飞霜的时节了, 秋水生凉, 寒气渐沉。整整十年了，身寄北国的我仍是不敢重回那一段冰冷的水域, 不敢也不欲去想象我投江失踪的母亲, 至今仍暴尸于哪一片月光下……<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/04/27/cswg-jsdmq/#more">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/读书/">读书</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/野夫/">野夫</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/04/27/cswg-jsdmq/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/27/cswg-jsdmq/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/" title="从同一台终端分别向Gitcafe不同帐号Push的方法" itemprop="url">从同一台终端分别向Gitcafe不同帐号Push的方法</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
-		
-  <p class="article-time">
-    <time datetime="2015-04-21T19:21:55.000Z" itemprop="datePublished"> 发表于 Apr 22 2015</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h1 id="需求">需求</h1><p>拥有多个不同内容的个人静态站点（均使用Hexo），各自拥有独立域名，希望托管在gitcafe上操作：gitcafe的每一个帐号可以开设一个静态页面的站点（gitcafe pages服务）<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/#more">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/技术/">技术</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/git/">git</a><a href="/tags/hexo/">hexo</a><a href="/tags/ssh/">ssh</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/04/22/useMultiGitcafePagesWithSSHAgent/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/22/useMultiGitcafePagesWithSSHAgent/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/04/20/raspi-study01/" title="树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁" itemprop="url">树莓派GPIO入门01-使用GPIO接口控制发光二极管闪烁</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
-		
-  <p class="article-time">
-    <time datetime="2015-04-20T07:26:10.000Z" itemprop="datePublished"> 发表于 Apr 20 2015</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <h3 id="对象读者">对象读者</h3><p>我假设你的树莓派已经连上你家里的路由(有线无线都行)。并且你已经可以在另外一台设备(台式机，笔记本，手机，平板电脑都可以) 上通过SSH软件登陆到你的树莓派了。当然你也可以直接在树莓派上通过HDMI连接显示器，通过USB键盘鼠标直接进行操作。不管怎样，你可以启动树莓派并进入树莓派的linux命令行界面。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/04/20/raspi-study01/#more">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/树莓派/">树莓派</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/树莓派GPIO入门系列/">树莓派GPIO入门系列</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/04/20/raspi-study01/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/04/20/raspi-study01/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
-   
-    
-    <article class="post-expand post" itemprop="articleBody"> 
-        <header class="article-info clearfix">
-  <h1 itemprop="name">
-    
-      <a href="/2015/03/27/pi-ssh-scan/" title="SSH暴力扫描的防范手段" itemprop="url">SSH暴力扫描的防范手段</a>
-  </h1>
-  <p class="article-author">By
-       
-		<a href="/about" title="mango" target="_blank" itemprop="author">mango</a>
-		
-  <p class="article-time">
-    <time datetime="2015-03-27T10:47:37.000Z" itemprop="datePublished"> 发表于 Mar 27 2015</time>
-    
-  </p>
-</header>
-    <div class="article-content">
-        
-        <p>之前买了块树莓派在家里搭了一台服务器玩，为了在外面方便访问，在路由器给小pi设置成了DMZ主机，并开启了SSH服务。一直用的很开心。<br>前几天偶然打开系统日志发现每天都有大量的SSH登录失败的log。<br>
-        
-        
-        <p class="article-more-link">
-          
-            <a href="/2015/03/27/pi-ssh-scan/#more">Read More</a>
-          
-       </p>
-    </div>
-    <footer class="article-footer clearfix">
-<div class="article-catetags">
-
-<div class="article-categories">
-  <span></span>
-  <a class="article-category-link" href="/categories/技术/">技术</a>
-</div>
-
-
-  <div class="article-tags">
-  
-  <span></span> <a href="/tags/LINUX/">LINUX</a><a href="/tags/SSH/">SSH</a><a href="/tags/树莓派/">树莓派</a>
-  </div>
-
-</div>
-
-
-
-
-<div class="comments-count">
-	
-	  	<span></span>
-		<a href="/2015/03/27/pi-ssh-scan/#comments" class="ds-thread-count comments-count-link" data-thread-key="2015/03/27/pi-ssh-scan/" data-count-type="comments">&nbsp;</a>
-	
-</div>
-
-</footer>
-
-
-    </article>
-
-
-
-
-
-
 
   <nav id="page-nav" class="clearfix">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next<span></span></a>
@@ -753,15 +761,11 @@
 		  
 		
 		  
-			<li><a href="/categories/文艺青年/" title="文艺青年">文艺青年<sup>1</sup></a></li>
+			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>12</sup></a></li>
 		  
 		
 		  
-			<li><a href="/categories/树莓派/" title="树莓派">树莓派<sup>7</sup></a></li>
-		  
-		
-		  
-			<li><a href="/categories/读书/" title="读书">读书<sup>2</sup></a></li>
+			<li><a href="/categories/读书/" title="读书">读书<sup>1</sup></a></li>
 		  
 		
 		</ul>
@@ -774,7 +778,19 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/树莓派GPIO入门系列/" title="树莓派GPIO入门系列">树莓派GPIO入门系列<sup>7</sup></a></li>
+				<li><a href="/tags/树莓派GPIO入门系列/" title="树莓派GPIO入门系列">树莓派GPIO入门系列<sup>12</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数码管/" title="数码管">数码管<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/数字芯片/" title="数字芯片">数字芯片<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/传感器/" title="传感器">传感器<sup>2</sup></a></li>
 			
 		
 			
@@ -783,6 +799,10 @@
 		
 			
 				<li><a href="/tags/git/" title="git">git<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/PWM/" title="PWM">PWM<sup>1</sup></a></li>
 			
 		
 			
@@ -798,7 +818,7 @@
 			
 		
 			
-				<li><a href="/tags/LINUX/" title="LINUX">LINUX<sup>1</sup></a></li>
+				<li><a href="/tags/液晶屏/" title="液晶屏">液晶屏<sup>1</sup></a></li>
 			
 		
 			
@@ -806,11 +826,7 @@
 			
 		
 			
-				<li><a href="/tags/网摘/" title="网摘">网摘<sup>1</sup></a></li>
-			
-		
-			
-				<li><a href="/tags/野夫/" title="野夫">野夫<sup>1</sup></a></li>
+				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
 			
 		
 			
@@ -834,15 +850,11 @@
 			
 		
 			
-				<li><a href="/tags/国学/" title="国学">国学<sup>1</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/webserver/" title="webserver">webserver<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/科幻/" title="科幻">科幻<sup>1</sup></a></li>
+				<li><a href="/tags/LINUX/" title="LINUX">LINUX<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -921,7 +933,7 @@
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2015 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
 		
 		<a href="/about" target="_blank" title="mango">mango</a>
 		
