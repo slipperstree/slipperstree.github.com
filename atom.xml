@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2016-06-01T18:10:39.000Z</updated>
+  <updated>2016-06-03T03:25:12.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://blog.mangolovecarrot.net/2016/01/30/raspi-study1101/"/>
     <id>http://blog.mangolovecarrot.net/2016/01/30/raspi-study1101/</id>
     <published>2016-01-30T08:03:19.000Z</published>
-    <updated>2016-06-01T18:10:39.000Z</updated>
+    <updated>2016-06-03T03:25:12.000Z</updated>
     <content type="html"><![CDATA[<p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>并分几个篇幅分别讲述如何使其显示色块，英文数字，汉字以及图片。<br>本文是系列的第一篇，目标是点亮屏幕并显示指定色块。</p>
 <a id="more"></a>
 <h3 id="最终效果">最终效果</h3><p><img src="lcd.jpg" alt="最终效果"></p>
@@ -80,10 +80,10 @@
 </ul>
 <p>下面的代码设定的范围是（0，0）-（127， 127），也就是全屏幕。<br><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">write_command</span>(0x2A) # Set Column <span class="tag">Address</span></span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x7F)</span><br><span class="line"><span class="function">write_command</span>(0x2B) # Set Page <span class="tag">Address</span></span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x00)</span><br><span class="line"><span class="function">write_data</span>(0x7F)</span><br></pre></td></tr></table></figure></p>
 <ul>
-<li>0x2C：在当前指针位置（X,Y坐标）绘制指定颜色的像素点<br>指令内容是2个字节的16位真彩色数据，常用颜色见下表。<br><img src="color.jpg" alt="16位真彩色表"><br>每次执行完一个像素点的绘色以后，硬件会根据设定好的开始坐标和结束坐标自动移动绘图指针到下一个位置，遇到边界自动换行。<br>下面的代码的意义是连续绘制127 X 127个像素点，并且颜色为红色（#0xF800）。<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">write_command(<span class="number">0x2C</span>)</span><br><span class="line">show_single_color(<span class="number">0xf8</span>,<span class="number">0x00</span>) <span class="comment"># 红色背景</span></span><br><span class="line"><span class="keyword">...</span></span><br><span class="line"><span class="keyword">...</span></span><br><span class="line">def show_single_color(DH,DL):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">			write_data_16bit(DH,DL)</span><br></pre></td></tr></table></figure>
+<li>0x2C：在当前指针位置（X,Y坐标）绘制指定颜色的像素点<br>指令内容是2个字节的16位真彩色数据，常用颜色见下表。<br><img src="color.jpg" alt="16位真彩色表"><br>每次执行完一个像素点的绘色以后，硬件会根据设定好的开始坐标和结束坐标自动移动绘图指针到下一个位置，遇到边界自动换行。<br>下面的代码的意义是连续绘制128 X 128个像素点，并且颜色为红色（#0xF800）。<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">write_command(<span class="number">0x2C</span>)</span><br><span class="line">show_single_color(<span class="number">0xf8</span>,<span class="number">0x00</span>) <span class="comment"># 红色背景</span></span><br><span class="line"><span class="keyword">...</span></span><br><span class="line"><span class="keyword">...</span></span><br><span class="line">def show_single_color(DH,DL):</span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">		<span class="keyword">for</span> j <span class="keyword">in</span> xrange(<span class="number">0</span>,<span class="number">128</span>):</span><br><span class="line">			write_data_16bit(DH,DL)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>这就是本文示例代码显示红屏的原理。<br>其实只要学会了这3个命令的使用，基本上啥都能显示了，无非是效率问题。<br>本节到此结束，下一节我们继续讨论。</p>
+<p>这就是本文示例代码显示红屏的原理。<br>其实只要学会了这3个命令的使用，基本上啥都能显示了，无非是效率问题。给大家留个作业，自己完成本文开头的最终效果彩带。<br>本节到此结束，下一节我们继续讨论。</p>
 <h3 id="资源下载">资源下载</h3><p><a href="ST7735S_V1.1_20111121.pdf" title="下载">主控IC芯片ST7735S资料</a></p>
 ]]></content>
     <summary type="html">
