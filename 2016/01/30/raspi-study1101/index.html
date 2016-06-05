@@ -180,11 +180,16 @@
 </li>
 </ul>
 <p>这就是本文示例代码显示红屏的原理。<br>其实只要学会了这3个命令的使用，基本上啥都能显示了，无非是效率问题。给大家留个作业，自己完成本文开头的最终效果彩带。<br>本节到此结束，下一节我们继续讨论。</p>
-<h3 id="关于颜色的补充说明">关于颜色的补充说明</h3><p>有人博主0xF800是什么鬼？红色难道不应该是0xFF0000吗？<br>这里就引出一个RGB颜色数据格式的问题，0xF800和0xFF0000都是红色，只是格式不一样。<br>我们常见的0xFF0000这种格式一共是24位，红绿蓝各用8位表示，所以红色就是FF,00,00。<br>而本文使用的格式是另一种叫RGB565的格式，这种格式一共只有16位，红绿蓝分别使用5位6位5位。<br><img src="rgb565.png" alt="RGB565"><br>根据上图，红色应该是11111000 00000000，也就是0xF800。<br>在网上没找到RGB565的颜色表，大家有时间自己找一下，或者写个函数转换一下。本文不做讨论。<br>下面只给出标准24位颜色代码表供参考，不能直接使用哦，要转换要转换要转换，说了三遍，很重要。<br><img src="color.jpg" alt="24位RGB颜色表"><br>其实，这款彩屏支持以下3种颜色格式</p>
+<h3 id="关于颜色的补充说明">关于颜色的补充说明</h3><p>有人问博主0xF800是什么鬼？红色难道不应该是0xFF0000吗？<br>这里就引出一个RGB颜色数据格式的问题，0xF800和0xFF0000都是红色，只是格式不一样。<br>我们常见的0xFF0000这种格式一共是24位，红绿蓝各用8位表示，所以红色就是FF,00,00。<br>而本文使用的是另一种叫RGB565的格式，这种格式一共只有16位，红绿蓝分别使用5位6位5位。<br><img src="rgb565.png" alt="RGB565"><br>根据上图，红色应该是11111000 00000000，也就是0xF800。<br>在网上没找到RGB565的颜色表，大家有时间自己找一下，或者写个函数转换一下。本文不做讨论。<br>下面只给出标准24位颜色代码表供参考，不能直接使用哦，要转换要转换要转换，说了三遍，很重要。<br><img src="color.jpg" alt="24位RGB颜色表"><br>其实，这款彩屏支持以下3种颜色格式</p>
 <ul>
-<li>4k Colors, RGB 4,4,4 3AH=“03h”</li>
-<li>65k Colors, RGB 5,6,5 3AH=“05h”（本文使用的格式）</li>
-<li>262k Colors, RGB 6,6,6 3AH=“06h”<br>设置代码如下<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">write_command</span><span class="params">(<span class="number">0</span>x3a)</span></span></span><br><span class="line"><span class="function"><span class="title">write_data</span><span class="params">(<span class="number">0</span>x05)</span></span></span><br></pre></td></tr></table></figure>
+<li><p>4k Colors, RGB 4,4,4<br>3AH=“03h”</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">write_command</span><span class="params">(<span class="number">0</span>x3a)</span></span></span><br><span class="line"><span class="function"><span class="title">write_data</span><span class="params">(<span class="number">0</span>x03)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>65k Colors, RGB 5,6,5<br>3AH=“05h”（本文使用的格式）</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">write_command</span><span class="params">(<span class="number">0</span>x3a)</span></span></span><br><span class="line"><span class="function"><span class="title">write_data</span><span class="params">(<span class="number">0</span>x05)</span></span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>262k Colors, RGB 6,6,6<br>3AH=“06h”</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">write_command</span><span class="params">(<span class="number">0</span>x3a)</span></span></span><br><span class="line"><span class="function"><span class="title">write_data</span><span class="params">(<span class="number">0</span>x06)</span></span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <p>详细内容请自己参考文档（9.8 Data Color Coding）。</p>
