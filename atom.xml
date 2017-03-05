@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2016-06-06T07:30:41.000Z</updated>
+  <updated>2017-03-05T10:04:20.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -13,6 +13,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[树莓派GPIO入门11-驱动液晶屏幕（二）]]></title>
+    <link href="http://blog.mangolovecarrot.net/2017/03/05/raspi-study1102/"/>
+    <id>http://blog.mangolovecarrot.net/2017/03/05/raspi-study1102/</id>
+    <published>2017-03-04T23:24:30.000Z</published>
+    <updated>2017-03-05T10:04:20.000Z</updated>
+    <content type="html"><![CDATA[<p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>本文是系列的第2篇，目标是在液晶屏上显示文字。</p>
+<a id="more"></a>
+<h3 id="最终效果">最终效果</h3><p><img src="lcd.jpg" alt="最终效果"></p>
+<h3 id="硬件">硬件</h3><ul>
+<li>1.44英寸 spi接口 128x128液晶屏幕 X 1（淘宝10-20元）<br><img src="lcdfront.jpg" alt="正面"><br><img src="lcdback.jpg" alt="背面"></li>
+</ul>
+<h3 id="先运行程序看效果">先运行程序看效果</h3><p>下载下面两个文件放在同一目录下。<br><a href="progHz.py" title="下载python程序">python程序</a><br><a href="HZK16.dat" title="下载点阵字库文件">点阵字库</a></p>
+<p>然后，执行！（参考上一篇的连接方法连接液晶屏和树莓派）<br><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="keyword">python</span> progHz.<span class="keyword">py</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="原理说明_TODO">原理说明 TODO</h3>]]></content>
+    <summary type="html">
+    <![CDATA[<p>本系列将驱动一块1.44”的128x128像素的彩色液晶屏幕。<br>本文是系列的第2篇，目标是在液晶屏上显示文字。</p>]]>
+    
+    </summary>
+    
+      <category term="树莓派GPIO入门系列" scheme="http://blog.mangolovecarrot.net/tags/%E6%A0%91%E8%8E%93%E6%B4%BEGPIO%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97/"/>
+    
+      <category term="液晶屏" scheme="http://blog.mangolovecarrot.net/tags/%E6%B6%B2%E6%99%B6%E5%B1%8F/"/>
+    
+      <category term="树莓派" scheme="http://blog.mangolovecarrot.net/categories/%E6%A0%91%E8%8E%93%E6%B4%BE/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[树莓派GPIO入门11-驱动液晶屏幕（一）]]></title>
