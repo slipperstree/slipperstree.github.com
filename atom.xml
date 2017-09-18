@@ -4,7 +4,7 @@
   <subtitle><![CDATA[芒果爱吃胡萝卜]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://blog.mangolovecarrot.net/"/>
-  <updated>2017-03-05T11:48:20.000Z</updated>
+  <updated>2017-09-18T15:05:01.000Z</updated>
   <id>http://blog.mangolovecarrot.net/</id>
   
   <author>
@@ -13,6 +13,53 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[ESP8266家族的小弟ESP01上手试玩(1)]]></title>
+    <link href="http://blog.mangolovecarrot.net/2017/09/18/esp01/"/>
+    <id>http://blog.mangolovecarrot.net/2017/09/18/esp01/</id>
+    <published>2017-09-18T14:37:22.000Z</published>
+    <updated>2017-09-18T15:05:01.000Z</updated>
+    <content type="html"><![CDATA[<p>乘着物联网的东风，中国的安信可（AI-Thinker）推出的ESP8266系列可是火了一把。<br>所谓物美价廉，花很少的钱就能让你的老爷车51单片机系统插上无线的翅膀，真的是带你zb带你飞。。。<br>其实不仅仅是51，AVR/STM甚至Aduino系列都能鸡犬升天。<br>说了这么多废话，这篇文章不是教程，只是记录一下上手esp01时掉过的坑以及怎么爬出来的。。。</p>
+<a id="more"></a>
+<h3 id="一定要进入flash模式！！一定要进入flash模式！！一定要进入flash模式！！">一定要进入flash模式！！一定要进入flash模式！！一定要进入flash模式！！</h3><p>不然无法烧录。<br>进入方法 GPIO0下拉CH_PD上拉 的状态下reset，重新上电就行。</p>
+<h3 id="■_■_■_重要！！！！_■_■_■">■ ■ ■ 重要！！！！ ■ ■ ■</h3><p>   ESP01 烧录这个模块的时候，我最初直接用USB转串口模块直接供电，最后烧录是成功了但是无限重启，各种奇怪的现象<br>         最后，用两节5号电池单独给模块供电（一定要跟USB串口模块共地，否则串口不能工作）后解决了。<br>         原因是电脑USB口驱动电流太小，实测ESP01上电电流达到200ma，直接把电源电压拉低到1.几伏特。模块当然无法工作。<br>         事后仔细查看了我用的USB转串口模块上使用的稳压芯片662K，这个芯片最高输出电流只有250ma，ESP01启动时需要200多ma的电流确实比较吃力。<br>         以后再购买USB转串口模块的时候可以注意一下输出电流的参数，大一点比较方便。<br>         后来又自己用输出电流800ma的LM1117T来供电，没有问题了。（注意尽量避免面包板跟杜邦线多次转接，会影响正常启动的）<br>         总结，电源很重要。奇怪的问题大多跟电源有关。</p>
+<h3 id="Flasher的设置">Flasher的设置</h3><h4 id="■DIO">■DIO</h4><h4 id="■波特率选115200（注意，这里选的波特率并不是烧录完成以后的系统的默认波特率，只是烧录时使用的波特率而已，大一点就快一点）">■波特率选115200（注意，这里选的波特率并不是烧录完成以后的系统的默认波特率，只是烧录时使用的波特率而已，大一点就快一点）</h4><h4 id="■Flash大小可以用下面的esptool工具查看，同样需要先进入flash模式（GPIO0下拉CH_PD上拉）">■Flash大小可以用下面的esptool工具查看，同样需要先进入flash模式（GPIO0下拉CH_PD上拉）</h4><pre><code><span class="comment"><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">　　esptool<span class="class">.py</span> -<span class="tag">p</span> COM5 flash_id</span><br></pre></td></tr></table></figure></span>
+</code></pre><p>　　※为了安装这个tool，需要先安装python27以上，然后再python里安装依赖包 setuptools / pyserial ，最后才能安装esptool成功。<br>      安装顺序:<br>        1 - python27  装完以后吧python安装目录以及python/script目录一起加入环境变量path<br>        2 - 进入文件夹 ./pythonLib/<br>            <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">python</span> ez_setup.<span class="keyword">py</span> install (必须,安装pyserial用）</span><br><span class="line"><span class="keyword">python</span> <span class="built_in">get</span>-pip.<span class="keyword">py</span> install (非必须，只是为了方便以后用pip安装<span class="keyword">python</span>库)</span><br></pre></td></tr></table></figure></p>
+<pre><code>  3 - 进入文件夹 ./pyserial-3.2.1/  
+      <span class="comment"><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python setup<span class="class">.py</span> install</span><br></pre></td></tr></table></figure></span>
+
+  4 - 进入文件夹 ./esptool-master/
+      <span class="comment"><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python setup<span class="class">.py</span> install</span><br></pre></td></tr></table></figure></span>
+
+运行时需要进入安装的目录。
+常用命令 （COM5根据实际情况修改）
+   擦除flash : 
+   <span class="comment"><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">esptool<span class="class">.py</span> -<span class="tag">p</span> COM5 erase_flash</span><br></pre></td></tr></table></figure></span>
+
+   查看芯片信息 : 
+   <span class="comment"><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">esptool<span class="class">.py</span> -<span class="tag">p</span> COM5 flash_id</span><br></pre></td></tr></table></figure></span>
+
+   详细命令:      [详细命令](https://github.com/espressif/esptool "详细命令")
+</code></pre><h4 id="■esp_init_data_default-bin_烧录文件的烧录地址需要用到flash大小的信息。（这个data可以不烧录）">■esp_init_data_default.bin 烧录文件的烧录地址需要用到flash大小的信息。（这个data可以不烧录）</h4><p>　　　<a href="https://nodemcu.readthedocs.io/en/master/en/flash/" target="_blank" rel="external">https://nodemcu.readthedocs.io/en/master/en/flash/</a></p>
+<p>　　　SDK Init Data</p>
+<p>　　　0x7c000 for 512 kB, modules like most ESP-01, -03, -07 etc.<br>　　　0xfc000 for 1 MB, modules like ESP8285, PSF-A85, some ESP-01, -03 etc.<br>　　　0x1fc000 for 2 MB<br>　　　0x3fc000 for 4 MB, modules like ESP-12E, NodeMCU devkit 1.0, WeMos D1 mini<br>　　　0x7fc000 for 8 MB<br>　　　0xffc000 for 16 MB, modules like WeMos D1 mini pro<br>　　　See “4.1 Non-FOTA Flash Map” and “6.3 RF Initialization Configuration” of the ESP8266 Getting Started Guide for details on init </p>
+<h4 id="■烧录完成后，去掉GPIO0的下拉，重新上电-">■烧录完成后，去掉GPIO0的下拉，重新上电.</h4><p>   第一次上电可能会看到 Formatting file system. Please wait…<br>   这种消息反复出现，不要以为又失败了无限重启，这是正常的，反复几次以后就进入NodeMCU系统了。</p>
+<h4 id="下一篇可能会写一些具体的代码和实现的功能，可能。。。">下一篇可能会写一些具体的代码和实现的功能，可能。。。</h4>]]></content>
+    <summary type="html">
+    <![CDATA[<p>乘着物联网的东风，中国的安信可（AI-Thinker）推出的ESP8266系列可是火了一把。<br>所谓物美价廉，花很少的钱就能让你的老爷车51单片机系统插上无线的翅膀，真的是带你zb带你飞。。。<br>其实不仅仅是51，AVR/STM甚至Aduino系列都能鸡犬升天。<br>说了这么多废话，这篇文章不是教程，只是记录一下上手esp01时掉过的坑以及怎么爬出来的。。。</p>]]>
+    
+    </summary>
+    
+      <category term="ESP01" scheme="http://blog.mangolovecarrot.net/tags/ESP01/"/>
+    
+      <category term="ESP8266" scheme="http://blog.mangolovecarrot.net/tags/ESP8266/"/>
+    
+      <category term="无线模块" scheme="http://blog.mangolovecarrot.net/tags/%E6%97%A0%E7%BA%BF%E6%A8%A1%E5%9D%97/"/>
+    
+      <category term="单片机" scheme="http://blog.mangolovecarrot.net/categories/%E5%8D%95%E7%89%87%E6%9C%BA/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[树莓派GPIO入门11-驱动液晶屏幕（二）]]></title>
